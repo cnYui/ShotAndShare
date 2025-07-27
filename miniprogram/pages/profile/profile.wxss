@@ -4,6 +4,139 @@
   background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 50%, #FF9F55 100%);
   padding: 20rpx;
   padding-bottom: 120rpx;
+  transition: all 0.3s ease;
+}
+
+/* 深色主题 */
+.profile-container.dark-theme {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+}
+
+.dark-theme .user-card {
+  background: rgba(45, 45, 45, 0.95);
+  color: #ffffff;
+}
+
+.dark-theme .user-name {
+  color: #ffffff;
+}
+
+.dark-theme .user-level {
+  color: #7fb069;
+}
+
+.dark-theme .stat-value {
+  color: #ffffff;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .user-stats {
+  background: rgba(127, 176, 105, 0.2);
+}
+
+.dark-theme .section-title text {
+  color: #ffffff;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .pet-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .pet-name {
+  color: #ffffff;
+}
+
+.dark-theme .pet-level {
+  color: #d4a574;
+}
+
+.dark-theme .pet-mood {
+  color: #cccccc;
+}
+
+.dark-theme .setting-group {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .group-title {
+  background: rgba(127, 176, 105, 0.3);
+  color: #ffffff;
+  border-bottom: 1rpx solid rgba(127, 176, 105, 0.5);
+}
+
+.dark-theme .setting-item {
+  border-bottom: 1rpx solid #404040;
+}
+
+.dark-theme .setting-item:active {
+  background-color: rgba(127, 176, 105, 0.2);
+}
+
+.dark-theme .item-title {
+  color: #ffffff;
+}
+
+.dark-theme .item-value {
+  color: #cccccc;
+}
+
+.dark-theme .logout-btn {
+  background: rgba(45, 45, 45, 0.9);
+  color: #e74c3c;
+}
+
+.dark-theme .logout-btn:active {
+  background: rgba(231, 76, 60, 0.2);
+}
+
+.dark-theme .modal-content {
+  background: #2d2d2d;
+}
+
+.dark-theme .modal-title {
+  color: #ffffff;
+}
+
+.dark-theme .modal-header {
+  border-bottom: 1rpx solid #404040;
+}
+
+.dark-theme .input-label {
+  color: #ffffff;
+}
+
+.dark-theme .user-input {
+  background: #404040;
+  border: 2rpx solid #555555;
+  color: #ffffff;
+}
+
+.dark-theme .user-input:focus {
+  border-color: #7fb069;
+}
+
+.dark-theme .user-textarea {
+  background: #404040;
+  border: 2rpx solid #555555;
+  color: #ffffff;
+}
+
+.dark-theme .user-textarea:focus {
+  border-color: #7fb069;
+}
+
+.dark-theme .modal-btn.cancel {
+  background: #555555;
+  color: #cccccc;
+}
+
+.dark-theme .modal-btn.confirm {
+  background: #7fb069;
+  color: #ffffff;
 }
 
 /* 用户信息卡片 */

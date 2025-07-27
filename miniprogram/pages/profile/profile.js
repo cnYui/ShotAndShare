@@ -1,4 +1,7 @@
 // 个人设置页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     // 用户信息
@@ -32,6 +35,11 @@ Page({
       language: '简体中文'
     },
     
+    // 主题和语言
+    isDarkMode: false,
+    themeClass: 'light-theme',
+    texts: {},
+    
     // 应用信息
     appVersion: '1.0.0',
     cacheSize: '12.5MB',
@@ -52,6 +60,9 @@ Page({
       return;
     }
     
+    // 初始化主题和语言
+    this.initThemeAndLanguage();
+    
     this.loadUserInfo();
     this.loadPetInfo();
     this.loadSettings();
@@ -60,6 +71,36 @@ Page({
   
   onShow() {
     this.refreshUserData();
+    // 重新应用主题（可能在其他页面改变了主题）
+    this.applyCurrentTheme();
+  },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    // 加载语言文本
+    this.loadTexts();
+    
+    // 应用当前主题
+    this.applyCurrentTheme();
+  },
+  
+  // 加载语言文本
+  loadTexts() {
+    this.setData({
+      texts: {
+        profile: i18n.t('profile'),
+        common: i18n.t('common')
+      }
+    });
+  },
+  
+  // 应用当前主题
+  applyCurrentTheme() {
+    const isDark = themeManager.isDark();
+    this.setData({
+      isDarkMode: isDark,
+      themeClass: isDark ? 'dark-theme' : 'light-theme'
+    });
   },
   
   // 加载用户信息
@@ -418,19 +459,28 @@ Page({
   
   // 打开主题设置
   openThemeSettings() {
-    const themes = ['自动', '浅色', '深色'];
+    const themes = themeManager.getAvailableThemes();
+    const themeNames = themes.map(theme => theme.name);
     
     wx.showActionSheet({
-      itemList: themes,
+      itemList: themeNames,
       success: (res) => {
         const selectedTheme = themes[res.tapIndex];
+        
+        // 设置主题
+        themeManager.setTheme(selectedTheme.code);
+        
+        // 更新页面数据
         this.setData({
-          'settings.theme': selectedTheme
+          'settings.theme': selectedTheme.name
         });
         this.saveSettings();
+        this.applyCurrentTheme();
         
+        // 显示提示
+        const message = i18n.t('profile.settings.theme.switched', { theme: selectedTheme.name });
         wx.showToast({
-          title: `已切换到${selectedTheme}主题`,
+          title: message,
           icon: 'success'
         });
       }
@@ -439,19 +489,28 @@ Page({
   
   // 打开语言设置
   openLanguageSettings() {
-    const languages = ['简体中文', '繁体中文', 'English'];
+    const languages = i18n.getAvailableLanguages();
+    const languageNames = languages.map(lang => lang.name);
     
     wx.showActionSheet({
-      itemList: languages,
+      itemList: languageNames,
       success: (res) => {
         const selectedLanguage = languages[res.tapIndex];
+        
+        // 设置语言
+        i18n.setLanguage(selectedLanguage.code);
+        
+        // 更新页面数据
         this.setData({
-          'settings.language': selectedLanguage
+          'settings.language': selectedLanguage.name
         });
         this.saveSettings();
+        this.loadTexts(); // 重新加载文本
         
+        // 显示提示
+        const message = i18n.t('profile.settings.language.switched', { language: selectedLanguage.name });
         wx.showToast({
-          title: `语言已切换为${selectedLanguage}`,
+          title: message,
           icon: 'success'
         });
       }

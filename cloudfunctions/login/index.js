@@ -13,9 +13,23 @@ const db = cloud.database();
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
-  const sessionKey = wxContext.SESSION_KEY;
+  let sessionKey = wxContext.SESSION_KEY;
   
   console.log('登录云函数调用，openid:', openid, 'sessionKey存在:', !!sessionKey);
+  console.log('event参数:', { hasUserInfo: !!event.userInfo, hasCode: !!event.code });
+  
+  // 如果有code参数，使用code2Session获取session_key
+  if (event.code && !sessionKey) {
+    try {
+      const codeResult = await cloud.openapi.sns.jscode2session({
+        jsCode: event.code
+      });
+      sessionKey = codeResult.sessionKey;
+      console.log('通过code2session获取sessionKey:', !!sessionKey);
+    } catch (codeError) {
+      console.error('code2session失败:', codeError);
+    }
+  }
   
   try {
     // 查询用户是否已存在

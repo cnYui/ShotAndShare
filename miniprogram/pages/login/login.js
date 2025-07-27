@@ -36,9 +36,22 @@ Page({
   // 调用登录云函数
   async loginWithUserInfo(userInfo) {
     try {
+      // 先调用wx.login获取code
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
+        });
+      });
+      
+      console.log('wx.login成功，code:', loginRes.code);
+      
       const result = await wx.cloud.callFunction({
         name: 'login',
-        data: { userInfo }
+        data: { 
+          userInfo,
+          code: loginRes.code
+        }
       });
 
       if (result.result.success) {

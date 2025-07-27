@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云函数测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>云函数测试 - petManager</h1>
+        <p>这个页面用于测试云函数返回的数据结构，特别是 companionDays 和 totalExp 字段。</p>
+        
+        <button onclick="testGetPetStatus()">测试 getPetStatus</button>
+        <button onclick="testCalculateCompanionDays()">测试陪伴天数计算</button>
+        <button onclick="clearResults()">清除结果</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${JSON.stringify(content, null, 2)}</pre>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function testGetPetStatus() {
+            addResult('测试说明', {
+                message: '由于这是静态HTML页面，无法直接调用微信云函数',
+                suggestion: '请在微信开发者工具中查看控制台输出',
+                expectedFields: {
+                    companionDays: '陪伴天数（数字）',
+                    totalExp: '总经验值（数字）',
+                    created_at: '创建时间',
+                    _createTime: '系统创建时间'
+                }
+            }, 'info');
+        }
+
+        function testCalculateCompanionDays() {
+            // 模拟陪伴天数计算
+            const now = new Date();
+            const testDates = [
+                new Date(now.getTime() - 24 * 60 * 60 * 1000), // 1天前
+                new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7天前
+                new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000), // 30天前
+            ];
+
+            const results = testDates.map(date => {
+                const timeDiff = now.getTime() - date.getTime();
+                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                return {
+                    createTime: date.toISOString(),
+                    companionDays: Math.max(daysDiff, 0)
+                };
+            });
+
+            addResult('陪伴天数计算测试', {
+                currentTime: now.toISOString(),
+                testResults: results,
+                formula: 'Math.floor((now - createTime) / (1000 * 60 * 60 * 24))'
+            }, 'success');
+        }
+
+        // 页面加载时显示说明
+        window.onload = function() {
+            addResult('使用说明', {
+                step1: '1. 在微信开发者工具中打开项目',
+                step2: '2. 进入宠物主页面',
+                step3: '3. 查看控制台输出，寻找包含 companionDays 和 totalExp 的日志',
+                step4: '4. 如果这些字段为 undefined 或 0，说明云函数有问题',
+                step5: '5. 检查云函数是否已正确部署'
+            }, 'info');
+        };
+    </script>
+</body>
+</html>

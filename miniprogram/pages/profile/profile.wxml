@@ -1,5 +1,5 @@
 <!-- 个人设置页面 -->
-<view class="profile-container">
+<view class="profile-container {{themeClass}}">
   <!-- 用户信息卡片 -->
   <view class="user-card">
     <view class="user-avatar">
@@ -14,15 +14,15 @@
       <view class="user-stats">
         <view class="stat-item">
           <text class="stat-value">{{userInfo.totalDays}}</text>
-          <text class="stat-label">陪伴天数</text>
+          <text class="stat-label">{{texts.profile.userInfo.totalDays}}</text>
         </view>
         <view class="stat-item">
           <text class="stat-value">{{userInfo.totalTasks}}</text>
-          <text class="stat-label">完成任务</text>
+          <text class="stat-label">{{texts.profile.userInfo.totalTasks}}</text>
         </view>
         <view class="stat-item">
           <text class="stat-value">{{userInfo.totalExp}}</text>
-          <text class="stat-label">总经验</text>
+          <text class="stat-label">{{texts.profile.userInfo.totalExp}}</text>
         </view>
       </view>
     </view>
@@ -32,7 +32,7 @@
   <view class="pet-section">
     <view class="section-title">
       <image src="/images/icon-pet.png" class="title-icon" />
-      <text>我的宠物</text>
+      <text>{{texts.profile.pet.title}}</text>
     </view>
     <view class="pet-card" bindtap="editPet">
       <view class="pet-avatar">
@@ -41,7 +41,7 @@
       <view class="pet-info">
         <view class="pet-name">{{petInfo.name}}</view>
         <view class="pet-level">Lv.{{petInfo.level}} · {{petInfo.type}}</view>
-        <view class="pet-mood">心情：{{petInfo.mood}}</view>
+        <view class="pet-mood">{{texts.profile.pet.mood}}{{petInfo.mood}}</view>
       </view>
       <view class="arrow-right">
         <image src="/images/icon-arrow-right.png" />
@@ -53,30 +53,30 @@
   <view class="settings-section">
     <view class="section-title">
       <image src="/images/icon-settings.png" class="title-icon" />
-      <text>设置</text>
+      <text>{{texts.profile.settings.title}}</text>
     </view>
     
     <!-- 通知设置 -->
     <view class="setting-group">
-      <view class="group-title">通知设置</view>
+      <view class="group-title">{{texts.profile.settings.notification.title}}</view>
       <view class="setting-item">
         <view class="item-left">
           <image src="/images/icon-notification.png" class="item-icon" />
-          <text class="item-title">任务提醒</text>
+          <text class="item-title">{{texts.profile.settings.notification.taskReminder}}</text>
         </view>
         <switch checked="{{settings.taskNotification}}" bindchange="onTaskNotificationChange" color="#A3D39C" />
       </view>
       <view class="setting-item">
         <view class="item-left">
           <image src="/images/icon-water.png" class="item-icon" />
-          <text class="item-title">饮水提醒</text>
+          <text class="item-title">{{texts.profile.settings.notification.waterReminder}}</text>
         </view>
         <switch checked="{{settings.waterReminder}}" bindchange="onWaterReminderChange" color="#A3D39C" />
       </view>
       <view class="setting-item">
         <view class="item-left">
           <image src="/images/icon-sleep.png" class="item-icon" />
-          <text class="item-title">睡眠提醒</text>
+          <text class="item-title">{{texts.profile.settings.notification.sleepReminder}}</text>
         </view>
         <switch checked="{{settings.sleepReminder}}" bindchange="onSleepReminderChange" color="#A3D39C" />
       </view>
@@ -84,18 +84,18 @@
 
     <!-- 隐私设置 -->
     <view class="setting-group">
-      <view class="group-title">隐私设置</view>
+      <view class="group-title">{{texts.profile.settings.privacy.title}}</view>
       <view class="setting-item">
         <view class="item-left">
           <image src="/images/icon-data.png" class="item-icon" />
-          <text class="item-title">数据同步</text>
+          <text class="item-title">{{texts.profile.settings.privacy.dataSync}}</text>
         </view>
         <switch checked="{{settings.dataSync}}" bindchange="onDataSyncChange" color="#A3D39C" />
       </view>
       <view class="setting-item" bindtap="openPrivacyPolicy">
         <view class="item-left">
           <image src="/images/icon-privacy.png" class="item-icon" />
-          <text class="item-title">隐私政策</text>
+          <text class="item-title">{{texts.profile.settings.privacy.privacyPolicy}}</text>
         </view>
         <view class="arrow-right">
           <image src="/images/icon-arrow-right.png" />
@@ -105,11 +105,11 @@
 
     <!-- 应用设置 -->
     <view class="setting-group">
-      <view class="group-title">应用设置</view>
+      <view class="group-title">{{texts.profile.settings.app.title}}</view>
       <view class="setting-item" bindtap="openThemeSettings">
         <view class="item-left">
           <image src="/images/icon-theme.png" class="item-icon" />
-          <text class="item-title">主题设置</text>
+          <text class="item-title">{{texts.profile.settings.app.theme}}</text>
         </view>
         <view class="item-right">
           <text class="item-value">{{settings.theme}}</text>
@@ -121,7 +121,7 @@
       <view class="setting-item" bindtap="openLanguageSettings">
         <view class="item-left">
           <image src="/images/icon-language.png" class="item-icon" />
-          <text class="item-title">语言设置</text>
+          <text class="item-title">{{texts.profile.settings.app.language}}</text>
         </view>
         <view class="item-right">
           <text class="item-value">{{settings.language}}</text>
@@ -133,7 +133,7 @@
       <view class="setting-item" bindtap="clearCache">
         <view class="item-left">
           <image src="/images/icon-cache.png" class="item-icon" />
-          <text class="item-title">清理缓存</text>
+          <text class="item-title">{{texts.profile.settings.app.clearCache}}</text>
         </view>
         <view class="item-right">
           <text class="item-value">{{cacheSize}}</text>
@@ -146,11 +146,11 @@
 
     <!-- 关于应用 -->
     <view class="setting-group">
-      <view class="group-title">关于</view>
+      <view class="group-title">{{texts.profile.settings.about.title}}</view>
       <view class="setting-item" bindtap="checkUpdate">
         <view class="item-left">
           <image src="/images/icon-update.png" class="item-icon" />
-          <text class="item-title">检查更新</text>
+          <text class="item-title">{{texts.profile.settings.about.checkUpdate}}</text>
         </view>
         <view class="item-right">
           <text class="item-value">v{{appVersion}}</text>
@@ -162,7 +162,7 @@
       <view class="setting-item" bindtap="openAbout">
         <view class="item-left">
           <image src="/images/icon-about.png" class="item-icon" />
-          <text class="item-title">关于我们</text>
+          <text class="item-title">{{texts.profile.settings.about.aboutUs}}</text>
         </view>
         <view class="arrow-right">
           <image src="/images/icon-arrow-right.png" />
@@ -171,7 +171,7 @@
       <view class="setting-item" bindtap="openFeedback">
         <view class="item-left">
           <image src="/images/icon-feedback.png" class="item-icon" />
-          <text class="item-title">意见反馈</text>
+          <text class="item-title">{{texts.profile.settings.about.feedback}}</text>
         </view>
         <view class="arrow-right">
           <image src="/images/icon-arrow-right.png" />
@@ -182,7 +182,7 @@
 
   <!-- 退出登录 -->
   <view class="logout-section">
-    <button class="logout-btn" bindtap="logout">退出登录</button>
+    <button class="logout-btn" bindtap="logout">{{texts.profile.logout.title}}</button>
   </view>
 </view>
 
@@ -191,24 +191,24 @@
   <view class="modal-mask" bindtap="hideEditModal"></view>
   <view class="modal-content">
     <view class="modal-header">
-      <text class="modal-title">编辑个人信息</text>
+      <text class="modal-title">{{texts.profile.userInfo.editProfile}}</text>
       <button class="modal-close" bindtap="hideEditModal">
         <image src="/images/icon-close.png" />
       </button>
     </view>
     <view class="modal-body">
       <view class="input-group">
-        <text class="input-label">昵称</text>
-        <input class="user-input" value="{{editUserInfo.name}}" placeholder="请输入昵称" bindinput="onNameInput" />
+        <text class="input-label">{{texts.profile.userInfo.nickname}}</text>
+        <input class="user-input" value="{{editUserInfo.name}}" placeholder="{{texts.profile.userInfo.nicknamePlaceholder}}" bindinput="onNameInput" />
       </view>
       <view class="input-group">
-        <text class="input-label">个性签名</text>
-        <textarea class="user-textarea" value="{{editUserInfo.signature}}" placeholder="请输入个性签名" bindinput="onSignatureInput" maxlength="50"></textarea>
+        <text class="input-label">{{texts.profile.userInfo.signature}}</text>
+        <textarea class="user-textarea" value="{{editUserInfo.signature}}" placeholder="{{texts.profile.userInfo.signaturePlaceholder}}" bindinput="onSignatureInput" maxlength="50"></textarea>
       </view>
     </view>
     <view class="modal-footer">
-      <button class="modal-btn cancel" bindtap="hideEditModal">取消</button>
-      <button class="modal-btn confirm" bindtap="confirmEdit">确认</button>
+      <button class="modal-btn cancel" bindtap="hideEditModal">{{texts.common.cancel}}</button>
+      <button class="modal-btn confirm" bindtap="confirmEdit">{{texts.common.confirm}}</button>
     </view>
   </view>
 </view>

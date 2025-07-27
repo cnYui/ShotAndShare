@@ -1,4 +1,7 @@
 // 健康任务页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     currentCategory: 'all',
@@ -23,7 +26,10 @@ Page({
     completedTaskReward: 0,
     petCongratulation: '',
     loading: false,
-    hasData: false
+    hasData: false,
+    isDarkMode: false,
+    themeClass: '',
+    texts: {}
   },
 
   onLoad() {
@@ -32,11 +38,37 @@ Page({
       return;
     }
     
+    this.initThemeAndLanguage();
     this.loadTaskData();
     this.updatePetMood();
   },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    this.loadTexts();
+    this.applyCurrentTheme();
+  },
+  
+  // 加载文本
+  loadTexts() {
+    const texts = i18n.getTexts();
+    this.setData({ texts });
+  },
+  
+  // 应用当前主题
+  applyCurrentTheme() {
+    const theme = themeManager.getCurrentTheme();
+    const isDarkMode = themeManager.isDark();
+    const themeClass = isDarkMode ? 'dark-theme' : '';
+    
+    this.setData({
+      isDarkMode,
+      themeClass
+    });
+  },
 
   onShow() {
+    this.initThemeAndLanguage();
     this.refreshTasks();
   },
 

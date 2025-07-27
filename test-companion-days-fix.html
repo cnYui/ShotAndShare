@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陪伴天数修复验证</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            color: #2d3748;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .problem {
+            background: #fff5f5;
+            border-left-color: #e53e3e;
+        }
+        .solution {
+            background: #f0fff4;
+            border-left-color: #38a169;
+        }
+        .verification {
+            background: #fffaf0;
+            border-left-color: #d69e2e;
+        }
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .highlight {
+            background: #fed7d7;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .success {
+            background: #c6f6d5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .steps {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .step::before {
+            content: counter(step-counter);
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .note {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .note::before {
+            content: "💡 ";
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 陪伴天数修复验证指南</h1>
+        
+        <div class="section problem">
+            <h2>🔍 问题分析</h2>
+            <p>根据数据库检查，发现pets集合中的记录缺少 <span class="highlight">created_at</span> 字段，导致陪伴天数计算失败，始终显示为0。</p>
+            
+            <div class="code">
+// 原始数据结构（缺少created_at字段）
+{
+  "_id": "9d458e0f688455c2001febad540e2d1c",
+  "pet_name": "小绿",
+  "user_id": "od5hLvLnBKWGTGM9F5GFvM_zb35I",
+  "level": 3,
+  "exp": 200,
+  // ❌ 缺少 created_at 字段
+  "last_active": "Sun Jul 27 2025 10:11:40 GMT+0800"
+}
+            </div>
+        </div>
+        
+        <div class="section solution">
+            <h2>✅ 修复方案</h2>
+            <p>已在 <code>getPetStatus</code> 函数中添加自动修复逻辑：</p>
+            
+            <div class="code">
+// 修复逻辑
+if (!pet.created_at && pet._createTime) {
+  // 使用_createTime作为创建时间
+  await db.collection('pets').doc(pet._id).update({
+    data: { created_at: new Date(pet._createTime) }
+  });
+} else if (!pet.created_at) {
+  // 使用当前时间作为创建时间
+  const now = new Date();
+  await db.collection('pets').doc(pet._id).update({
+    data: { created_at: now }
+  });
+}
+            </div>
+            
+            <p><span class="success">✨ 修复效果</span>：首次调用getPetStatus时会自动为宠物添加created_at字段，后续计算陪伴天数将正常工作。</p>
+        </div>
+        
+        <div class="section verification">
+            <h2>🧪 验证步骤</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <strong>部署云函数</strong><br>
+                    在微信开发者工具中右键点击petManager云函数，选择"上传并部署：云端安装依赖"
+                </div>
+                
+                <div class="step">
+                    <strong>测试宠物状态获取</strong><br>
+                    在小程序中进入宠物主页，触发loadPetData函数调用
+                </div>
+                
+                <div class="step">
+                    <strong>检查控制台日志</strong><br>
+                    查看开发者工具控制台，应该能看到companionDays和totalExp的调试信息
+                </div>
+                
+                <div class="step">
+                    <strong>验证数据库更新</strong><br>
+                    在云开发控制台检查pets集合，确认created_at字段已添加
+                </div>
+                
+                <div class="step">
+                    <strong>确认前端显示</strong><br>
+                    检查宠物主页是否正确显示陪伴天数和总经验值
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>重要提醒</strong>：修复是渐进式的，每个用户首次访问宠物页面时会自动为其宠物添加created_at字段。如果使用当前时间作为创建时间，陪伴天数将从0开始重新计算。
+        </div>
+        
+        <div class="section">
+            <h2>📊 预期结果</h2>
+            <ul>
+                <li><strong>陪伴天数</strong>：基于created_at字段计算的实际天数</li>
+                <li><strong>总经验值</strong>：从task_records集合中统计的累计经验</li>
+                <li><strong>数据持久化</strong>：created_at字段永久保存到数据库</li>
+                <li><strong>后续访问</strong>：无需重复修复，直接使用已有的created_at字段</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

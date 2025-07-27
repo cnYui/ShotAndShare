@@ -163,6 +163,33 @@
   display: block;
 }
 
+/* 陪伴统计 */
+.companion-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF9F55;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
 /* 互动按钮区域 */
 .action-section {
   margin-bottom: 30rpx;
@@ -367,4 +394,65 @@
 .message-bubble text {
   font-size: 26rpx;
   color: #333;
+}
+
+/* 暗色主题 */
+.dark-theme .home-container {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+}
+
+.dark-theme .pet-display-area,
+.dark-theme .status-card,
+.dark-theme .exp-container,
+.dark-theme .action-btn,
+.dark-theme .today-tasks {
+  background: rgba(52, 73, 94, 0.8);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .pet-name,
+.dark-theme .status-label,
+.dark-theme .exp-label,
+.dark-theme .section-title text:first-child,
+.dark-theme .task-name,
+.dark-theme .action-btn text {
+  color: #ecf0f1;
+}
+
+.dark-theme .pet-status,
+.dark-theme .status-value,
+.dark-theme .exp-text,
+.dark-theme .loading-state text,
+.dark-theme .empty-state text,
+.dark-theme .stat-label {
+  color: #bdc3c7;
+}
+
+.dark-theme .task-progress,
+.dark-theme .task-reward,
+.dark-theme .stat-value {
+  color: #f39c12;
+}
+
+.dark-theme .progress-bar,
+.dark-theme .exp-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .companion-stats {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .task-icon {
+  border-color: #7f8c8d;
+}
+
+.dark-theme .task-icon.completed {
+  background: #27ae60;
+  border-color: #27ae60;
+}
+
+.dark-theme .pet-message .message-bubble {
+  background: rgba(52, 73, 94, 0.9);
+  color: #ecf0f1;
 }

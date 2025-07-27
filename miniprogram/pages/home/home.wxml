@@ -50,6 +50,18 @@
       </view>
       <text class="exp-text">{{petInfo.exp || 150}}/{{petInfo.nextLevelExp || 200}}</text>
     </view>
+    
+    <!-- 陪伴统计 -->
+    <view class="companion-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{petInfo.companionDays}}</text>
+        <text class="stat-label">陪伴天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{petInfo.totalExp}}</text>
+        <text class="stat-label">总经验</text>
+      </view>
+    </view>
   </view>
 
   <!-- 互动按钮区域 -->

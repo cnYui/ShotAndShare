@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题管理修复验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .fix-item {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .error-item {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .before {
+            color: #dc3545;
+        }
+        .after {
+            color: #28a745;
+        }
+        h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 主题管理错误修复报告</h1>
+        
+        <div class="error-item">
+            <h3>❌ 原始错误</h3>
+            <p><strong>错误信息：</strong> TypeError: themeManager.isDarkMode is not a function</p>
+            <p><strong>错误位置：</strong> home.js, chat.js, tasks.js 的 applyCurrentTheme 方法</p>
+            <p><strong>错误原因：</strong> 调用了不存在的方法名</p>
+        </div>
+
+        <div class="fix-item">
+            <h3>✅ 修复内容</h3>
+            <p><strong>问题分析：</strong></p>
+            <ul>
+                <li>theme.js 中定义的方法名是 <code class="code">isDark()</code></li>
+                <li>但各页面调用的是 <code class="code">isDarkMode()</code></li>
+                <li>方法名不匹配导致运行时错误</li>
+            </ul>
+        </div>
+
+        <div class="fix-item">
+            <h3>🔄 修复详情</h3>
+            
+            <h4>1. home.js 修复</h4>
+            <div class="code before">修复前: const isDarkMode = themeManager.isDarkMode();</div>
+            <div class="code after">修复后: const isDarkMode = themeManager.isDark();</div>
+            
+            <h4>2. chat.js 修复</h4>
+            <div class="code before">修复前: const isDarkMode = themeManager.isDarkMode();</div>
+            <div class="code after">修复后: const isDarkMode = themeManager.isDark();</div>
+            
+            <h4>3. tasks.js 修复</h4>
+            <div class="code before">修复前: const isDarkMode = themeManager.isDarkMode();</div>
+            <div class="code after">修复后: const isDarkMode = themeManager.isDark();</div>
+        </div>
+
+        <div class="fix-item">
+            <h3>✨ 验证步骤</h3>
+            <ol>
+                <li>在微信开发者工具中重新编译项目</li>
+                <li>进入宠物主页面</li>
+                <li>检查控制台是否还有 "isDarkMode is not a function" 错误</li>
+                <li>测试页面切换（主页 → 任务 → 聊天）是否正常</li>
+                <li>测试主题切换功能是否正常工作</li>
+            </ol>
+        </div>
+
+        <div class="fix-item">
+            <h3>🎯 预期结果</h3>
+            <ul>
+                <li>页面加载和切换时不再出现 TypeError</li>
+                <li>主题管理功能正常工作</li>
+                <li>深色/浅色模式切换正常</li>
+                <li>所有页面的主题状态同步</li>
+            </ul>
+        </div>
+
+        <div class="fix-item">
+            <h3>📋 theme.js 可用方法</h3>
+            <div class="code">
+                <div>✅ themeManager.getCurrentTheme() - 获取当前主题</div>
+                <div>✅ themeManager.isDark() - 检查是否为深色模式</div>
+                <div>✅ themeManager.setTheme(code) - 设置主题</div>
+                <div>✅ themeManager.getAvailableThemes() - 获取可用主题</div>
+                <div>✅ themeManager.getThemeVars() - 获取主题变量</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('主题管理修复验证页面已加载');
+        console.log('请在微信开发者工具中测试修复效果');
+    </script>
+</body>
+</html>

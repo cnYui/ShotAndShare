@@ -1,4 +1,7 @@
 // 宠物聊天页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     petInfo: {
@@ -41,7 +44,10 @@ Page({
       smartReply: true,
       voicePlay: false,
       notification: true
-    }
+    },
+    isDarkMode: false,
+    themeClass: '',
+    texts: {}
   },
 
   onLoad() {
@@ -50,12 +56,38 @@ Page({
       return;
     }
     
+    this.initThemeAndLanguage();
     this.initChat();
     // 不自动加载聊天历史，每次进入都是新的对话
     this.clearChatHistory();
   },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    this.loadTexts();
+    this.applyCurrentTheme();
+  },
+  
+  // 加载文本
+  loadTexts() {
+    const texts = i18n.getTexts();
+    this.setData({ texts });
+  },
+  
+  // 应用当前主题
+  applyCurrentTheme() {
+    const theme = themeManager.getCurrentTheme();
+    const isDarkMode = themeManager.isDark();
+    const themeClass = isDarkMode ? 'dark-theme' : '';
+    
+    this.setData({
+      isDarkMode,
+      themeClass
+    });
+  },
 
   onShow() {
+    this.initThemeAndLanguage();
     this.scrollToBottom();
   },
 

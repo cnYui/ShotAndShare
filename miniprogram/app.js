@@ -1,15 +1,34 @@
 // app.js
+const i18n = require('./utils/i18n.js');
+const themeManager = require('./utils/theme.js');
+
 App({
   globalData: {
     env: "cloud1-6g4qsd2kcddd1be0",
     userInfo: null,
     petInfo: null,
-    isLoggedIn: false
+    isLoggedIn: false,
+    i18n: null,
+    themeManager: null
   },
 
   onLaunch() {
     this.initCloudBase();
+    this.initThemeAndLanguage();
     this.checkLoginStatus();
+  },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    // 初始化主题管理器
+    themeManager.loadTheme();
+    
+    // 初始化国际化
+    i18n.loadLanguage();
+    
+    // 将管理器实例添加到全局数据
+    this.globalData.i18n = i18n;
+    this.globalData.themeManager = themeManager;
   },
 
   initCloudBase() {
@@ -38,8 +57,19 @@ App({
     
     // 如果本地没有，尝试云端验证
     try {
+      // 先调用wx.login获取code
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
+        });
+      });
+      
       const result = await wx.cloud.callFunction({
-        name: 'login'
+        name: 'login',
+        data: {
+          code: loginRes.code
+        }
       });
 
       if (result.result.success) {

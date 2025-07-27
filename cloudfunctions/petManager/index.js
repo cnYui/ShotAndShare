@@ -63,6 +63,32 @@ async function getPetStatus(userId) {
     // 计算实时状态值（基于时间衰减）
     const realTimeStatus = calculateRealTimeStatus(pet);
     
+    // 如果宠物没有created_at字段，使用_createTime或当前时间
+    if (!pet.created_at && pet._createTime) {
+      // 更新数据库，添加created_at字段
+      await db.collection('pets').doc(pet._id).update({
+        data: {
+          created_at: new Date(pet._createTime)
+        }
+      });
+      pet.created_at = new Date(pet._createTime);
+    } else if (!pet.created_at) {
+      // 如果都没有，使用当前时间作为创建时间
+      const now = new Date();
+      await db.collection('pets').doc(pet._id).update({
+        data: {
+          created_at: now
+        }
+      });
+      pet.created_at = now;
+    }
+    
+    // 计算陪伴天数
+    const companionDays = calculateCompanionDays(pet.created_at);
+    
+    // 计算总经验值（从任务完成记录中统计）
+    const totalExp = await calculateTotalExp(userId);
+    
     // 如果状态值有变化，更新数据库
     if (realTimeStatus.health !== pet.health || 
         realTimeStatus.vitality !== pet.vitality) {
@@ -81,7 +107,9 @@ async function getPetStatus(userId) {
         ...pet,
         ...realTimeStatus,
         mood: calculateMood(realTimeStatus),
-        nextLevelExp: (pet.level * 100) - pet.exp
+        nextLevelExp: (pet.level * 100) - pet.exp,
+        companionDays: companionDays,
+        totalExp: totalExp
       }
     };
     
@@ -527,5 +555,51 @@ async function listPets(userId) {
       success: false,
       error: error.message
     };
+  }
+}
+
+/**
+ * 计算陪伴天数
+ */
+function calculateCompanionDays(createTime) {
+  if (!createTime) {
+    return 0;
+  }
+  
+  const now = new Date();
+  const created = new Date(createTime);
+  const timeDiff = now.getTime() - created.getTime();
+  const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  
+  return Math.max(daysDiff, 0);
+}
+
+/**
+ * 计算总经验值（从任务完成记录中统计）
+ */
+async function calculateTotalExp(userId) {
+  try {
+    // 获取所有已完成的任务记录
+    const taskRecords = await db.collection('task_records')
+      .where({
+        user_id: userId,
+        status: 'completed'
+      })
+      .get();
+    
+    let totalExp = 0;
+    
+    // 累计所有任务的经验值
+    taskRecords.data.forEach(record => {
+      if (record.task_info && record.task_info.reward_exp) {
+        totalExp += record.task_info.reward_exp;
+      }
+    });
+    
+    return totalExp;
+    
+  } catch (error) {
+    console.error('计算总经验值失败:', error);
+    return 0;
   }
 }

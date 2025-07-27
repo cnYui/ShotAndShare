@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陪伴天数和总经验值调试指南</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .step {
+            background: #ecf0f1;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 陪伴天数和总经验值调试指南</h1>
+        
+        <div class="warning">
+            <strong>⚠️ 重要提示：</strong>本调试需要在微信开发者工具中进行，因为需要访问云数据库。
+        </div>
+
+        <h2>🔍 问题排查步骤</h2>
+
+        <div class="step">
+            <h3>步骤1：检查云函数部署状态</h3>
+            <p>在微信开发者工具中：</p>
+            <ul>
+                <li>打开云开发控制台</li>
+                <li>进入云函数标签页</li>
+                <li>确认 <code>petManager</code> 云函数已部署</li>
+                <li>检查部署时间是否是最新的</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>步骤2：在控制台中执行数据库查询</h3>
+            <p>在微信开发者工具的控制台中执行以下代码：</p>
+            
+            <div class="code">
+// 检查pets集合数据
+wx.cloud.database().collection('pets').get().then(res => {
+  console.log('🐾 pets集合数据:', res.data);
+  res.data.forEach((pet, index) => {
+    console.log(`宠物 ${index + 1}:`, {
+      user_id: pet.user_id,
+      pet_name: pet.pet_name,
+      created_at: pet.created_at,
+      _createTime: pet._createTime,
+      level: pet.level,
+      exp: pet.exp
+    });
+    
+    // 计算陪伴天数
+    const createTime = pet.created_at || pet._createTime;
+    if (createTime) {
+      const now = new Date();
+      const created = new Date(createTime);
+      const timeDiff = now.getTime() - created.getTime();
+      const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      console.log('计算的陪伴天数:', Math.max(daysDiff, 0));
+    }
+  });
+}).catch(err => {
+  console.error('❌ 查询pets失败:', err);
+});
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>步骤3：检查任务记录数据</h3>
+            <div class="code">
+// 检查task_records集合数据
+wx.cloud.database().collection('task_records').get().then(res => {
+  console.log('📋 task_records集合数据:', res.data);
+  
+  // 统计每个用户的总经验值
+  const userStats = {};
+  res.data.forEach(record => {
+    const userId = record.user_id;
+    if (!userStats[userId]) {
+      userStats[userId] = { total: 0, completed: 0, totalExp: 0 };
+    }
+    
+    userStats[userId].total++;
+    if (record.status === 'completed') {
+      userStats[userId].completed++;
+      if (record.task_info && record.task_info.reward_exp) {
+        userStats[userId].totalExp += record.task_info.reward_exp;
+      }
+    }
+  });
+  
+  console.log('📊 用户任务统计:', userStats);
+}).catch(err => {
+  console.error('❌ 查询task_records失败:', err);
+});
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>步骤4：测试云函数调用</h3>
+            <div class="code">
+// 测试getPetStatus云函数
+wx.cloud.callFunction({
+  name: 'petManager',
+  data: {
+    action: 'getPetStatus'
+  }
+}).then(res => {
+  console.log('✅ getPetStatus结果:', res.result);
+  if (res.result.success) {
+    console.log('🔍 关键字段检查:', {
+      companionDays: res.result.data.companionDays,
+      totalExp: res.result.data.totalExp,
+      created_at: res.result.data.created_at,
+      _createTime: res.result.data._createTime
+    });
+  }
+}).catch(err => {
+  console.error('❌ 云函数调用失败:', err);
+});
+            </div>
+        </div>
+
+        <h2>🔧 常见问题解决方案</h2>
+
+        <div class="error">
+            <h3>问题1：陪伴天数显示为0</h3>
+            <p><strong>可能原因：</strong></p>
+            <ul>
+                <li>宠物记录缺少 <code>created_at</code> 字段</li>
+                <li>字段值为 null 或无效日期</li>
+            </ul>
+            <p><strong>解决方案：</strong></p>
+            <div class="code">
+// 修复缺少created_at字段的宠物记录
+wx.cloud.database().collection('pets').get().then(res => {
+  res.data.forEach(pet => {
+    if (!pet.created_at && pet._createTime) {
+      // 使用_createTime作为created_at
+      wx.cloud.database().collection('pets').doc(pet._id).update({
+        data: {
+          created_at: pet._createTime
+        }
+      }).then(() => {
+        console.log('✅ 修复宠物', pet.pet_name, '的created_at字段');
+      });
+    }
+  });
+});
+            </div>
+        </div>
+
+        <div class="error">
+            <h3>问题2：总经验值显示为0</h3>
+            <p><strong>可能原因：</strong></p>
+            <ul>
+                <li>task_records集合中没有已完成的任务</li>
+                <li>任务记录缺少 <code>task_info.reward_exp</code> 字段</li>
+            </ul>
+            <p><strong>解决方案：</strong></p>
+            <div class="code">
+// 创建测试任务记录
+wx.cloud.database().collection('task_records').add({
+  data: {
+    user_id: 'your_openid_here', // 替换为实际的openid
+    task_id: 'test_task',
+    status: 'completed',
+    date: new Date().toISOString().split('T')[0],
+    task_info: {
+      name: '测试任务',
+      reward_exp: 50
+    },
+    completed_at: new Date()
+  }
+}).then(res => {
+  console.log('✅ 创建测试任务记录成功:', res._id);
+});
+            </div>
+        </div>
+
+        <div class="success">
+            <h3>✅ 验证修复结果</h3>
+            <p>修复后，重新加载宠物主页面，检查：</p>
+            <ul>
+                <li>陪伴天数是否正确显示</li>
+                <li>总经验值是否正确显示</li>
+                <li>控制台是否有相关的调试日志</li>
+            </ul>
+        </div>
+
+        <h2>📝 调试日志说明</h2>
+        
+        <div class="step">
+            <p>在宠物主页面，查看控制台中的以下日志：</p>
+            <ul>
+                <li><code>🔄 开始加载宠物数据...</code> - 数据加载开始</li>
+                <li><code>✅ 获取宠物状态成功:</code> - 云函数调用成功</li>
+                <li><code>🔍 检查返回数据中的关键字段:</code> - 关键字段值检查</li>
+                <li><code>📊 宠物数据更新:</code> - 前端数据更新</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>💡 提示：</strong>如果问题仍然存在，请检查：
+            <ul>
+                <li>云函数是否已正确部署</li>
+                <li>数据库权限设置是否正确</li>
+                <li>网络连接是否正常</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

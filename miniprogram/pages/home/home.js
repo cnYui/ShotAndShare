@@ -1,4 +1,7 @@
 // 宠物主页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     petInfo: {
@@ -19,7 +22,10 @@ Page({
     petMessage: '',
     isFeeding: false,
     isPlaying: false,
-    loading: true
+    loading: true,
+    isDarkMode: false,
+    themeClass: '',
+    texts: {}
   },
 
   onLoad() {
@@ -33,9 +39,49 @@ Page({
       return;
     }
     
+    this.initThemeAndLanguage();
     this.loadPetData();
     this.loadTodayTasks();
     this.showRandomMessage();
+  },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    this.loadTexts();
+    this.applyCurrentTheme();
+  },
+  
+  // 加载文本
+  loadTexts() {
+    const texts = i18n.getTexts();
+    this.setData({ texts });
+  },
+  
+  // 应用当前主题
+  applyCurrentTheme() {
+    const theme = themeManager.getCurrentTheme();
+    const isDarkMode = themeManager.isDark();
+    const themeClass = isDarkMode ? 'dark-theme' : '';
+    
+    this.setData({
+      isDarkMode,
+      themeClass
+    });
+    
+    // 设置页面主题类
+    if (isDarkMode) {
+      wx.setPageStyle({
+        style: {
+          backgroundColor: '#1a1a1a'
+        }
+      });
+    } else {
+      wx.setPageStyle({
+        style: {
+          backgroundColor: '#f6f6f6'
+        }
+      });
+    }
   },
 
   /**
@@ -43,6 +89,9 @@ Page({
    */
   onShow() {
     console.log('🔄 页面显示，开始刷新数据...');
+    
+    // 重新应用主题和语言
+    this.initThemeAndLanguage();
     
     // 检查是否从任务页面返回
     const pages = getCurrentPages();
@@ -104,6 +153,12 @@ Page({
       },
       success: (res) => {
         console.log('✅ 获取宠物状态成功:', res.result);
+        console.log('🔍 检查返回数据中的关键字段:', {
+          companionDays: res.result.data?.companionDays,
+          totalExp: res.result.data?.totalExp,
+          created_at: res.result.data?.created_at,
+          _createTime: res.result.data?._createTime
+        });
         if (res.result.success) {
           const petData = res.result.data;
           this.updatePetDisplay(petData);
@@ -138,6 +193,8 @@ Page({
       exp: petData.exp,
       nextLevelExp: nextLevelExp,
       expProgress: expProgress,
+      companionDays: petData.companionDays,
+      totalExp: petData.totalExp,
       shouldLevelUp: petData.exp >= nextLevelExp
     });
     
@@ -158,7 +215,9 @@ Page({
         exp: petData.exp,
         nextLevelExp: nextLevelExp,
         avatar: petData.avatar || '/images/pets/default-pet.png',
-        statusText: this.getPetStatusText(petData)
+        statusText: this.getPetStatusText(petData),
+        companionDays: petData.companionDays !== undefined ? petData.companionDays : 0,
+        totalExp: petData.totalExp !== undefined ? petData.totalExp : 0
       },
       expProgress: expProgress
     });
