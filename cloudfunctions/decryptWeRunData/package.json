@@ -1,0 +1,21 @@
+{
+  "name": "decryptWeRunData",
+  "version": "1.0.0",
+  "description": "解密微信运动数据云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wechat",
+    "werun",
+    "decrypt",
+    "health",
+    "steps"
+  ],
+  "author": "健康宠物伴侣",
+  "license": "MIT"
+}

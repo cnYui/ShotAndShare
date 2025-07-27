@@ -1,0 +1,19 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="30" cy="30" r="28" fill="#FF69B4" stroke="#FF1493" stroke-width="2"/>
+  <!-- 游戏手柄主体 -->
+  <rect x="15" y="22" width="30" height="16" rx="8" fill="#FFF" stroke="#333" stroke-width="2"/>
+  <!-- 左侧方向键 -->
+  <rect x="20" y="26" width="8" height="2" fill="#333"/>
+  <rect x="23" y="23" width="2" height="8" fill="#333"/>
+  <!-- 右侧按钮 -->
+  <circle cx="35" cy="26" r="2" fill="#FF4444"/>
+  <circle cx="39" cy="26" r="2" fill="#44FF44"/>
+  <circle cx="35" cy="30" r="2" fill="#4444FF"/>
+  <circle cx="39" cy="30" r="2" fill="#FFFF44"/>
+  <!-- 手柄握把 -->
+  <ellipse cx="18" cy="35" rx="3" ry="6" fill="#DDD" stroke="#333" stroke-width="1"/>
+  <ellipse cx="42" cy="35" rx="3" ry="6" fill="#DDD" stroke="#333" stroke-width="1"/>
+  <!-- 装饰星星 -->
+  <path d="M12 15 L13 18 L16 18 L14 20 L15 23 L12 21 L9 23 L10 20 L8 18 L11 18 Z" fill="#FFD700"/>
+  <path d="M48 12 L49 15 L52 15 L50 17 L51 20 L48 18 L45 20 L46 17 L44 15 L47 15 Z" fill="#FFD700"/>
+</svg>

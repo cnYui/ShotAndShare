@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "timeout": 20,
+  "envVariables": {
+    "DASHSCOPE_API_KEY": "sk-55007bbcba6347aa8d6341dd4a71a77b"
+  },
+  "runtime": "Nodejs16.13",
+  "memorySize": 256
+}

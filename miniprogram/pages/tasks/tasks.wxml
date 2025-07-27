@@ -1,0 +1,127 @@
+<!--健康任务页面-->
+<view class="tasks-container">
+  <!-- 顶部统计区域 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <view class="stat-item">
+        <text class="stat-number">{{todayCompleted}}</text>
+        <text class="stat-label">今日完成</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-number">{{weeklyCompleted}}</text>
+        <text class="stat-label">本周完成</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-number">{{totalExp}}</text>
+        <text class="stat-label">总经验值</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 任务分类标签 -->
+  <view class="category-tabs">
+    <view class="tab-item {{currentCategory === 'all' ? 'active' : ''}}" 
+          bindtap="switchCategory" data-category="all">
+      <text>全部</text>
+    </view>
+    <view class="tab-item {{currentCategory === 'daily' ? 'active' : ''}}" 
+          bindtap="switchCategory" data-category="daily">
+      <text>日常</text>
+    </view>
+    <view class="tab-item {{currentCategory === 'exercise' ? 'active' : ''}}" 
+          bindtap="switchCategory" data-category="exercise">
+      <text>运动</text>
+    </view>
+    <view class="tab-item {{currentCategory === 'diet' ? 'active' : ''}}" 
+          bindtap="switchCategory" data-category="diet">
+      <text>饮食</text>
+    </view>
+    <view class="tab-item {{currentCategory === 'sleep' ? 'active' : ''}}" 
+          bindtap="switchCategory" data-category="sleep">
+      <text>睡眠</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 任务列表 -->
+  <view class="tasks-list" wx:if="{{!loading}}">
+    <!-- 过滤后的任务 -->
+    <view class="task-group" wx:if="{{filteredTasks.length > 0}}">
+      <view class="group-header">
+        <text class="group-title">{{currentCategory === 'all' ? '全部任务' : categoryNames[currentCategory] + '任务'}}</text>
+        <text class="group-progress">{{filteredCompletedCount}}/{{filteredTotalCount}}</text>
+      </view>
+      
+      <view class="task-item {{item.completed ? 'completed' : ''}}" 
+            wx:for="{{filteredTasks}}" wx:key="id"
+            bindtap="toggleTask" data-id="{{item.id}}">
+        <view class="task-checkbox {{item.completed ? 'checked' : ''}}">
+          <image wx:if="{{item.completed}}" class="check-icon" src="/images/icons/check.png"></image>
+        </view>
+        
+        <view class="task-content">
+          <view class="task-header">
+            <text class="task-title">{{item.title}}</text>
+            <view class="task-category {{item.category}}">{{item.categoryText}}</view>
+          </view>
+          <text class="task-description">{{item.description}}</text>
+          <view class="task-footer">
+            <view class="task-reward">
+              <image class="reward-icon" src="/images/icons/exp.png"></image>
+              <text>+{{item.reward}}经验</text>
+            </view>
+            <text class="task-time">{{item.deadline}}</text>
+          </view>
+        </view>
+        
+        <view class="task-action" wx:if="{{!item.completed}}">
+          <button class="action-btn" bindtap="startTask" data-id="{{item.id}}" catchtap="startTask">
+            {{item.type === 'check' ? '打卡' : '开始'}}
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && todayTasks.length === 0 && weeklyTasks.length === 0}}">
+      <view class="empty-icon">📋</view>
+      <text class="empty-title">暂无健康任务</text>
+      <text class="empty-desc">数据库可能未初始化，点击下方按钮进行初始化</text>
+      <button class="init-btn" bindtap="initializeDatabase">初始化数据库</button>
+      <button class="refresh-btn" bindtap="refreshTasks">刷新任务</button>
+    </view>
+    
+    <!-- 过滤后的空状态 -->
+    <view class="empty-state" wx:if="{{!loading && (todayTasks.length > 0 || weeklyTasks.length > 0) && filteredTasks.length === 0}}">
+      <view class="empty-icon">🔍</view>
+      <text class="empty-title">暂无{{currentCategory === 'all' ? '' : categoryNames[currentCategory]}}任务</text>
+      <text class="empty-desc">切换其他分类查看更多任务</text>
+      <button class="refresh-btn" bindtap="refreshTasks">刷新任务</button>
+    </view>
+  </view>
+
+  <!-- 浮动刷新按钮 -->
+  <view class="fab-container">
+    <button class="fab-btn" bindtap="refreshTasks">
+      <image class="fab-icon" src="/images/icons/sync.png"></image>
+    </button>
+  </view>
+
+  <!-- 任务完成提示 -->
+  <view class="completion-modal" wx:if="{{showCompletionModal}}">
+    <view class="modal-content">
+      <image class="success-icon" src="/images/icons/success.png"></image>
+      <text class="modal-title">任务完成！</text>
+      <text class="modal-message">获得 {{completedTaskReward}} 经验值</text>
+      <text class="pet-message">{{petCongratulation}}</text>
+      <button class="modal-btn" bindtap="closeCompletionModal">继续加油</button>
+    </view>
+  </view>
+</view>

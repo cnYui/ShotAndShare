@@ -1,0 +1,14 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F86F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#48CAE4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#shareGradient)" rx="20"/>
+  <circle cx="100" cy="80" r="25" fill="white" opacity="0.9"/>
+  <circle cx="100" cy="75" r="8" fill="#4F86F7"/>
+  <path d="M100 85 Q90 95 80 100 Q90 105 100 115 Q110 105 120 100 Q110 95 100 85" fill="white" opacity="0.9"/>
+  <text x="100" y="140" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="bold">健康宠物伴侣</text>
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle" opacity="0.8">分享健康生活</text>
+</svg>

@@ -1,0 +1,479 @@
+/* 健康任务页面样式 */
+.tasks-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 50%, #FF9F55 100%);
+  padding: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 统计区域 */
+.stats-section {
+  margin-bottom: 30rpx;
+}
+
+.stats-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FF9F55;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #eee;
+}
+
+/* 分类标签 */
+.category-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 10rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 10rpx;
+  border-radius: 15rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #FF9F55;
+  color: white;
+}
+
+.tab-item text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.tab-item.active text {
+  color: white;
+}
+
+/* 任务列表 */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.task-group {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.group-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.group-progress {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+/* 任务项 */
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-item.completed {
+  opacity: 0.6;
+}
+
+.task-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #ddd;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  margin-top: 5rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.task-checkbox.checked {
+  background: #A3D39C;
+  border-color: #A3D39C;
+}
+
+.check-icon {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.task-content {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.task-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-right: 15rpx;
+}
+
+.task-category {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+  color: white;
+}
+
+.task-category.daily {
+  background: #A3D39C;
+}
+
+.task-category.exercise {
+  background: #FF9F55;
+}
+
+.task-category.diet {
+  background: #F6D03A;
+  color: #333;
+}
+
+.task-category.sleep {
+  background: #9B59B6;
+}
+
+.task-description {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  line-height: 1.4;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-reward {
+  display: flex;
+  align-items: center;
+}
+
+.reward-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 8rpx;
+}
+
+.task-reward text {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+.task-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.task-progress-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.progress-text {
+  font-size: 22rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
+
+.progress-bar {
+  width: 120rpx;
+  height: 8rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #A3D39C, #FF9F55);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.task-action {
+  display: flex;
+  align-items: center;
+}
+
+.action-btn {
+  background: #FF9F55;
+  color: white;
+  border: none;
+  border-radius: 20rpx;
+  padding: 15rpx 25rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #FF9F55;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  margin: 20rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+
+.init-btn {
+  background: #A3D39C;
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 25rpx 50rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 20rpx;
+}
+
+.init-btn::after {
+  border: none;
+}
+
+.refresh-btn {
+  background: #FF9F55;
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 20rpx 40rpx;
+  font-size: 26rpx;
+}
+
+.refresh-btn::after {
+  border: none;
+}
+
+/* 浮动按钮 */
+.fab-container {
+  position: fixed;
+  bottom: 120rpx;
+  right: 30rpx;
+  z-index: 100;
+}
+
+.fab-btn {
+  width: 80rpx !important;
+  height: 80rpx !important;
+  background: #FF9F55 !important;
+  border: none !important;
+  border-radius: 16rpx !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 8rpx 20rpx rgba(255, 159, 85, 0.3) !important;
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  min-width: 80rpx !important;
+  min-height: 80rpx !important;
+  max-width: 80rpx !important;
+  max-height: 80rpx !important;
+}
+
+.fab-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 6rpx 15rpx rgba(255, 159, 85, 0.4);
+}
+
+.fab-btn::after {
+  border: none;
+}
+
+.fab-icon {
+  width: 32rpx;
+  height: 32rpx;
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+
+/* 完成提示模态框 */
+.completion-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 30rpx;
+  padding: 60rpx 40rpx;
+  margin: 0 40rpx;
+  text-align: center;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+}
+
+.success-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.modal-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.modal-message {
+  display: block;
+  font-size: 28rpx;
+  color: #FF9F55;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+}
+
+.pet-message {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+  line-height: 1.4;
+}
+
+.modal-btn {
+  background: #A3D39C;
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 25rpx 50rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.modal-btn::after {
+  border: none;
+}

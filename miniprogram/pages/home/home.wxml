@@ -1,0 +1,114 @@
+<!--宠物主页面-->
+<view class="home-container">
+  <!-- 顶部宠物展示区域 -->
+  <view class="pet-display-area">
+    <view class="pet-avatar-container">
+      <image class="pet-avatar" src="{{petInfo.avatar || '/images/default-pet.png'}}" mode="aspectFit"></image>
+      <view class="pet-level">Lv.{{petInfo.level || 1}}</view>
+    </view>
+    <view class="pet-info">
+      <text class="pet-name">{{petInfo.name || '我的小宠物'}}</text>
+      <text class="pet-status">{{petInfo.statusText || '开心'}}</text>
+    </view>
+  </view>
+
+  <!-- 宠物状态值显示 -->
+  <view class="status-section">
+    <view class="status-card">
+      <view class="status-item">
+        <text class="status-label">健康值</text>
+        <view class="progress-bar">
+          <view class="progress-fill health" style="width: {{petInfo.health || 80}}%"></view>
+        </view>
+        <text class="status-value">{{petInfo.health || 80}}/100</text>
+      </view>
+      
+      <view class="status-item">
+        <text class="status-label">活力值</text>
+        <view class="progress-bar">
+          <view class="progress-fill vitality" style="width: {{petInfo.vitality || 65}}%"></view>
+        </view>
+        <text class="status-value">{{petInfo.vitality || 65}}/100</text>
+      </view>
+      
+      <view class="status-item">
+        <text class="status-label">亲密度</text>
+        <view class="progress-bar">
+          <view class="progress-fill intimacy" style="width: {{petInfo.intimacy || 90}}%"></view>
+        </view>
+        <text class="status-value">{{petInfo.intimacy || 90}}/100</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 经验值和成长进度 -->
+  <view class="growth-section">
+    <view class="exp-container">
+      <text class="exp-label">经验值</text>
+      <view class="exp-bar">
+        <view class="exp-fill" style="width: {{expProgress}}%"></view>
+      </view>
+      <text class="exp-text">{{petInfo.exp || 150}}/{{petInfo.nextLevelExp || 200}}</text>
+    </view>
+  </view>
+
+  <!-- 互动按钮区域 -->
+  <view class="action-section">
+    <view class="action-buttons">
+      <button class="action-btn feed-btn" bindtap="feedPet">
+        <image class="btn-icon" src="/images/icons/feed.png"></image>
+        <text>喂食</text>
+      </button>
+      
+      <button class="action-btn play-btn" bindtap="playWithPet">
+        <image class="btn-icon" src="/images/icons/play.png"></image>
+        <text>互动</text>
+      </button>
+      
+      <button class="action-btn walk-btn" bindtap="walkWithPet">
+        <image class="btn-icon" src="/images/icons/walk.svg"></image>
+        <text>散步</text>
+      </button>
+      
+      <button class="action-btn game-btn" bindtap="playGame">
+        <image class="btn-icon" src="/images/icons/game.svg"></image>
+        <text>游戏</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 今日任务概览 -->
+  <view class="today-tasks">
+    <view class="section-title">
+      <text>今日任务</text>
+      <text class="task-progress">{{completedTasks}}/{{totalTasks}}</text>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>加载任务中...</text>
+    </view>
+    
+    <!-- 任务列表 -->
+    <view class="task-preview" wx:elif="{{todayTasks.length > 0}}">
+      <view class="task-item" wx:for="{{todayTasks}}" wx:key="id">
+        <view class="task-icon {{item.completed ? 'completed' : ''}}"></view>
+        <text class="task-name">{{item.name}}</text>
+        <text class="task-reward">+{{item.reward}}经验</text>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <text>暂无任务数据</text>
+      <button class="refresh-btn" bindtap="loadTodayTasks">刷新</button>
+    </view>
+  </view>
+
+  <!-- 宠物提示语 -->
+  <view class="pet-message" wx:if="{{petMessage}}">
+    <view class="message-bubble">
+      <text>{{petMessage}}</text>
+    </view>
+  </view>
+</view>

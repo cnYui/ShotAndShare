@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/login/login",
+    "pages/tasks/tasks",
+    "pages/chat/chat",
+    "pages/data/data",
+    "pages/profile/profile",
+    "pages/test/test"
+  ],
+  "window": {
+    "backgroundColor": "#A3D39C",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#A3D39C",
+    "navigationBarTitleText": "健康养宠",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#FF9F55",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "宠物主页",
+        "iconPath": "images/icons/home.png",
+        "selectedIconPath": "images/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/tasks/tasks",
+        "text": "健康任务",
+        "iconPath": "images/icons/tasks.png",
+        "selectedIconPath": "images/icons/tasks-active.png"
+      },
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "宠物聊天",
+        "iconPath": "images/icons/chat.png",
+        "selectedIconPath": "images/icons/chat-active.png"
+      },
+      {
+        "pagePath": "pages/data/data",
+        "text": "健康数据",
+        "iconPath": "images/icons/data.png",
+        "selectedIconPath": "images/icons/data-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "个人设置",
+        "iconPath": "images/icons/profile.png",
+        "selectedIconPath": "images/icons/profile-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

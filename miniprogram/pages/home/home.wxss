@@ -1,0 +1,370 @@
+/* 宠物主页面样式 */
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 100%);
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+/* 宠物展示区域 */
+.pet-display-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.pet-avatar-container {
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
+.pet-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  border: 6rpx solid #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.pet-level {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  background: #FF9F55;
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 8rpx rgba(255, 159, 85, 0.3);
+}
+
+.pet-info {
+  text-align: center;
+}
+
+.pet-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.pet-status {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 状态值区域 */
+.status-section {
+  margin-bottom: 30rpx;
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.status-item:last-child {
+  margin-bottom: 0;
+}
+
+.status-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  margin: 0 20rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.health {
+  background: linear-gradient(90deg, #A3D39C, #7BC97B);
+}
+
+.progress-fill.vitality {
+  background: linear-gradient(90deg, #F6D03A, #F4C430);
+}
+
+.progress-fill.intimacy {
+  background: linear-gradient(90deg, #FF9F55, #FF8C42);
+}
+
+.status-value {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 80rpx;
+  text-align: right;
+}
+
+/* 成长区域 */
+.growth-section {
+  margin-bottom: 30rpx;
+}
+
+.exp-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 25rpx 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.exp-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.exp-bar {
+  height: 20rpx;
+  background: #f0f0f0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.exp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF9F55, #F6D03A);
+  border-radius: 10rpx;
+  transition: width 0.3s ease;
+}
+
+.exp-text {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+  display: block;
+}
+
+/* 互动按钮区域 */
+.action-section {
+  margin-bottom: 30rpx;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.feed-btn:active {
+  background: rgba(163, 211, 156, 0.2);
+}
+
+.play-btn:active {
+  background: rgba(246, 208, 58, 0.2);
+}
+
+.walk-btn:active {
+  background: rgba(135, 206, 235, 0.2);
+}
+
+.game-btn:active {
+  background: rgba(255, 105, 180, 0.2);
+}
+
+.btn-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-btn text {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 今日任务区域 */
+.today-tasks {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.section-title text:first-child {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.task-progress {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+.task-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 0;
+}
+
+.task-icon {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  border: 3rpx solid #ddd;
+  margin-right: 20rpx;
+}
+
+.task-icon.completed {
+  background: #A3D39C;
+  border-color: #A3D39C;
+}
+
+.task-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.task-reward {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx 0;
+}
+
+.loading-state text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+  gap: 20rpx;
+}
+
+.empty-state text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.refresh-btn {
+  background: #A3D39C;
+  color: white;
+  border: none;
+  border-radius: 30rpx;
+  padding: 15rpx 30rpx;
+  font-size: 26rpx;
+  box-shadow: 0 4rpx 12rpx rgba(163, 211, 156, 0.3);
+}
+
+.refresh-btn::after {
+  border: none;
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+  background: #8BC98B;
+}
+
+/* 宠物提示语 */
+.pet-message {
+  position: fixed;
+  bottom: 200rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.message-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20rpx 30rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15rpx solid transparent;
+  border-right: 15rpx solid transparent;
+  border-top: 15rpx solid rgba(255, 255, 255, 0.95);
+}
+
+.message-bubble text {
+  font-size: 26rpx;
+  color: #333;
+}
