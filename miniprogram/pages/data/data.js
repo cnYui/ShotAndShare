@@ -157,8 +157,53 @@ Page({
       success: (res) => {
         console.log('微信运动数据获取成功:', res);
         
-        if (res.encryptedData && res.iv) {
-          // 调用云函数解密数据
+        if (res.cloudID) {
+          // 使用CloudID方式调用云函数解密数据
+          wx.cloud.callFunction({
+            name: 'decryptWeRunData',
+            data: {
+              weRunData: wx.cloud.CloudID(res.cloudID)
+            },
+            success: (cloudRes) => {
+              console.log('云函数解密成功:', cloudRes);
+              
+              if (cloudRes.result.success) {
+                const { todaySteps, weeklySteps } = cloudRes.result.data;
+                const today = new Date();
+                const todayStr = this.formatDate(today);
+                
+                const stepsData = {
+                  steps: todaySteps || 0,
+                  date: todayStr,
+                  weeklyData: weeklySteps || []
+                };
+                
+                // 更新步数图表数据
+                this.updateStepsChart(weeklySteps);
+                
+                resolve(stepsData);
+              } else {
+                console.error('云函数解密失败:', cloudRes.result.error);
+                // 解密失败，使用默认值
+                resolve({ 
+                  steps: 0, 
+                  date: this.formatDate(new Date()),
+                  weeklyData: []
+                });
+              }
+            },
+            fail: (cloudError) => {
+              console.error('调用解密云函数失败:', cloudError);
+              // 云函数调用失败，使用默认值
+              resolve({ 
+                steps: 0, 
+                date: this.formatDate(new Date()),
+                weeklyData: []
+              });
+            }
+          });
+        } else if (res.encryptedData && res.iv) {
+          // 兼容旧版本：使用传统方式
           wx.cloud.callFunction({
             name: 'decryptWeRunData',
             data: {

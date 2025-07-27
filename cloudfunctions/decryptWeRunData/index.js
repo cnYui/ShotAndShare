@@ -19,55 +19,83 @@ exports.main = async (event, context) => {
   console.log('解密微信运动数据请求:', event);
   
   try {
-    const { encryptedData, iv, sessionKey } = event;
+    const { encryptedData, iv, sessionKey, weRunData } = event;
     const { OPENID } = cloud.getWXContext();
     
-    if (!encryptedData || !iv) {
-      throw new Error('缺少必要的加密参数');
-    }
+    let stepInfoList = [];
     
-    let actualSessionKey = sessionKey;
-    
-    // 如果没有提供sessionKey，从数据库获取
-    if (!actualSessionKey) {
-      console.log('从数据库获取session_key，用户OPENID:', OPENID);
+    // 优先使用CloudID方式（推荐）
+    if (weRunData) {
+      console.log('使用CloudID方式获取微信运动数据');
+      console.log('weRunData结构:', JSON.stringify(weRunData, null, 2));
       
-      const userResult = await db.collection('pet_users').where({
-        user_id: OPENID
-      }).get();
-      
-      console.log('数据库查询结果:', userResult.data.length, '条记录');
-      
-      if (userResult.data.length === 0) {
-        throw new Error('用户不存在，请先登录');
+      // 检查CloudID解密是否成功
+      if (weRunData.errCode && weRunData.errCode !== 0) {
+        throw new Error(`微信运动数据获取失败: ${weRunData.errMsg || '未知错误'}`);
       }
       
-      const userData = userResult.data[0];
-      actualSessionKey = userData.session_key;
+      // 直接使用解密后的数据
+      if (weRunData.data && weRunData.data.stepInfoList) {
+        stepInfoList = weRunData.data.stepInfoList;
+      } else if (weRunData.stepInfoList) {
+        // 有些情况下数据可能直接在根级别
+        stepInfoList = weRunData.stepInfoList;
+      } else {
+        console.warn('CloudID数据中未找到stepInfoList，使用空数组');
+        stepInfoList = [];
+      }
       
-      console.log('用户数据:', {
-        user_id: userData.user_id,
-        session_key_exists: !!userData.session_key,
-        session_key_length: userData.session_key ? userData.session_key.length : 0,
-        last_login: userData.last_login
+      console.log('CloudID解密成功，获取到', stepInfoList.length, '天的步数数据');
+      
+    } else if (encryptedData && iv) {
+      console.log('使用传统方式解密微信运动数据');
+      
+      let actualSessionKey = sessionKey;
+      
+      // 如果没有提供sessionKey，从数据库获取
+      if (!actualSessionKey) {
+        console.log('从数据库获取session_key，用户OPENID:', OPENID);
+        
+        const userResult = await db.collection('pet_users').where({
+          user_id: OPENID
+        }).get();
+        
+        console.log('数据库查询结果:', userResult.data.length, '条记录');
+        
+        if (userResult.data.length === 0) {
+          throw new Error('用户不存在，请先登录');
+        }
+        
+        const userData = userResult.data[0];
+        actualSessionKey = userData.session_key;
+        
+        console.log('用户数据:', {
+          user_id: userData.user_id,
+          session_key_exists: !!userData.session_key,
+          session_key_length: userData.session_key ? userData.session_key.length : 0,
+          last_login: userData.last_login
+        });
+        
+        if (!actualSessionKey) {
+          throw new Error('用户session_key不存在，请重新登录');
+        }
+      }
+      
+      // 解密运动数据
+      const decryptedData = cloud.CloudSDK.wxDecrypt({
+        encryptedData,
+        iv,
+        sessionKey: actualSessionKey
       });
       
-      if (!actualSessionKey) {
-        throw new Error('用户session_key不存在，请重新登录');
-      }
+      console.log('传统方式解密成功:', decryptedData);
+      
+      // 解析步数数据
+      stepInfoList = JSON.parse(decryptedData).stepInfoList || [];
+      
+    } else {
+      throw new Error('缺少必要的参数：需要weRunData或者encryptedData+iv');
     }
-    
-    // 解密运动数据
-    const decryptedData = cloud.CloudSDK.wxDecrypt({
-      encryptedData,
-      iv,
-      sessionKey: actualSessionKey
-    });
-    
-    console.log('解密成功:', decryptedData);
-    
-    // 解析步数数据
-    const stepInfoList = JSON.parse(decryptedData).stepInfoList || [];
     
     // 获取今日步数
     const today = new Date();
