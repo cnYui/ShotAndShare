@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>宠物图片测试</title>
+    <style>
+        .image-test {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .image-test img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border: 1px solid #ccc;
+        }
+        .image-test p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>宠物图片路径测试</h1>
+    
+    <h2>Baby 阶段图片</h2>
+    <div class="image-test">
+        <img src="miniprogram/pet_images/babyBody_Normal@2x.png" alt="Baby Body">
+        <p>babyBody_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/babyCheeks_Normal@2x.png" alt="Baby Cheeks">
+        <p>babyCheeks_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/babyEyes_Normal@2x.png" alt="Baby Eyes">
+        <p>babyEyes_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/babyMouthNeutral_Normal@2x.png" alt="Baby Mouth">
+        <p>babyMouthNeutral_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/babyTail1_Normal@2x.png" alt="Baby Tail">
+        <p>babyTail1_Normal@2x.png</p>
+    </div>
+    
+    <h2>互动效果图片</h2>
+    <div class="image-test">
+        <img src="miniprogram/pet_images/foodBaby_Normal@2x.png" alt="Food Baby">
+        <p>foodBaby_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/heart_Normal@2x.png" alt="Heart">
+        <p>heart_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/poopBaby_Normal@2x.png" alt="Poop Baby">
+        <p>poopBaby_Normal@2x.png</p>
+    </div>
+    
+    <div class="image-test">
+        <img src="miniprogram/pet_images/laserpointer_Normal@2x.png" alt="Laser Pointer">
+        <p>laserpointer_Normal@2x.png</p>
+    </div>
+    
+    <script>
+        // 检查图片加载状态
+        document.querySelectorAll('img').forEach(img => {
+            img.onload = function() {
+                this.style.border = '2px solid green';
+            };
+            img.onerror = function() {
+                this.style.border = '2px solid red';
+                this.alt = '加载失败: ' + this.src;
+            };
+        });
+    </script>
+</body>
+</html>

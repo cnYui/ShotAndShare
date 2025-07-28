@@ -2,9 +2,18 @@
 <view class="home-container">
   <!-- 顶部宠物展示区域 -->
   <view class="pet-display-area">
-    <view class="pet-avatar-container">
-      <image class="pet-avatar" src="{{petInfo.avatar || '/images/default-pet.png'}}" mode="aspectFit"></image>
-      <view class="pet-level">Lv.{{petInfo.level || 1}}</view>
+    <view class="pet-stage">
+      <view class="pet-avatar-container">
+        <!-- 动态宠物组件 -->
+        <dynamic-pet 
+          pet-data="{{petInfo}}"
+          size="large"
+          show-level="{{true}}"
+          animation-speed="{{1}}"
+          id="mainPet"
+          bind:hatch="onPetHatch"
+        ></dynamic-pet>
+      </view>
     </view>
     <view class="pet-info">
       <text class="pet-name">{{petInfo.name || texts.home.petName}}</text>
@@ -88,6 +97,8 @@
       </button>
     </view>
   </view>
+  
+
 
   <!-- 今日任务概览 -->
   <view class="today-tasks">

@@ -7,6 +7,9 @@ Page({
     petInfo: {
       name: '小绿',
       level: 1,
+      stage: 'baby',
+      mood: 'happy',
+      action: 'idle',
       health: 100,
       vitality: 100,
       intimacy: 50,
@@ -186,7 +189,11 @@ Page({
   updatePetDisplay(petData) {
     // 修复升级逻辑：下一级所需经验应该是(当前等级+1) * 100
     const nextLevelExp = (petData.level + 1) * 100;
-    const expProgress = nextLevelExp > 0 ? Math.round((petData.exp / nextLevelExp) * 100) : 0;
+    // 修复经验值进度条计算：应该是当前等级内的经验进度
+    const currentLevelBaseExp = petData.level * 100;
+    const currentLevelExp = petData.exp - currentLevelBaseExp;
+    const expForThisLevel = nextLevelExp - currentLevelBaseExp;
+    const expProgress = expForThisLevel > 0 ? Math.round((currentLevelExp / expForThisLevel) * 100) : 0;
     
     console.log('📊 宠物数据更新:', {
       level: petData.level,
@@ -209,6 +216,9 @@ Page({
       petInfo: {
         name: petData.pet_name || '小绿',
         level: petData.level,
+        stage: petData.stage || 'baby', // 添加stage属性
+        mood: petData.mood || 'happy', // 添加mood属性
+        action: petData.action || 'idle', // 添加action属性
         health: petData.health,
         vitality: petData.vitality,
         intimacy: petData.intimacy,
@@ -341,6 +351,12 @@ Page({
 
   // 显示升级动画
   showLevelUpAnimation() {
+    // 触发宠物升级动画
+    const petComponent = this.selectComponent('#mainPet');
+    if (petComponent) {
+      petComponent.levelUp();
+    }
+    
     const texts = this.data.texts;
     wx.showModal({
       title: texts.home?.levelUpTitle || '🎉 恭喜升级！',
@@ -490,6 +506,13 @@ Page({
     }
     
     this.setData({ isFeeding: true });
+    
+    // 触发宠物喂食动画
+    const petComponent = this.selectComponent('#mainPet');
+    if (petComponent) {
+      petComponent.feed();
+    }
+    
     wx.showLoading({ title: '喂食中...' });
     
     wx.cloud.callFunction({
@@ -548,6 +571,13 @@ Page({
     }
     
     this.setData({ isPlaying: true });
+    
+    // 触发宠物互动动画
+    const petComponent = this.selectComponent('#mainPet');
+    if (petComponent) {
+      petComponent.play();
+    }
+    
     wx.showLoading({ title: '互动中...' });
     
     wx.cloud.callFunction({
@@ -634,6 +664,12 @@ Page({
 
   // 带宠物散步
   walkWithPet() {
+    // 触发宠物散步动画
+    const petComponent = this.selectComponent('#mainPet');
+    if (petComponent) {
+      petComponent.walk();
+    }
+    
     wx.showLoading({ title: '散步中...' });
     
     wx.cloud.callFunction({
@@ -685,6 +721,12 @@ Page({
 
   // 和宠物玩游戏
   playGame() {
+    // 触发宠物游戏动画
+    const petComponent = this.selectComponent('#mainPet');
+    if (petComponent) {
+      petComponent.playGame();
+    }
+    
     wx.showLoading({ title: '游戏中...' });
     
     wx.cloud.callFunction({
@@ -786,6 +828,95 @@ Page({
       url: `/pages/task-detail/task-detail?id=${taskId}`
     });
   },
+
+  // 处理蛋孵化事件
+  onPetHatch(e) {
+    console.log('🥚 宠物蛋孵化事件:', e.detail);
+    const { newStage, newLevel } = e.detail;
+    
+    // 显示孵化成功提示
+    wx.showModal({
+      title: '🎉 孵化成功！',
+      content: '恭喜你！宠物蛋成功孵化出了可爱的小猫咪！\n现在你可以开始照顾它了！',
+      showCancel: false,
+      confirmText: '太棒了！',
+      success: () => {
+        // 更新宠物数据到云端
+        this.updatePetStageToCloud(newStage, newLevel);
+      }
+    });
+    
+    // 触觉反馈
+    wx.vibrateShort();
+  },
+  
+  // 更新宠物阶段到云端
+  updatePetStageToCloud(newStage, newLevel) {
+    wx.showLoading({ title: '更新中...' });
+    
+    wx.cloud.callFunction({
+      name: 'petManager',
+      data: {
+        action: 'updatePetStage',
+        stage: newStage,
+        level: newLevel
+      },
+      success: (res) => {
+        console.log('✅ 更新宠物阶段成功:', res.result);
+        if (res.result.success) {
+          // 重新加载宠物数据
+          this.loadPetData();
+          
+          // 显示欢迎消息
+          this.setData({
+            petMessage: '你好主人！我是你的新宠物！请多多照顾我哦！'
+          });
+          
+          setTimeout(() => {
+            this.setData({ petMessage: '' });
+          }, 5000);
+        } else {
+          console.error('❌ 更新宠物阶段失败:', res.result.error);
+          wx.showToast({
+            title: '更新失败，请重试',
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('❌ 调用云函数失败:', err);
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'none'
+        });
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
+  },
+
+  // 处理孵化事件
+  onPetHatch(e) {
+    console.log('🥚 宠物孵化事件:', e.detail);
+    const { newStage, newLevel } = e.detail;
+    
+    this.setData({
+      'petInfo.stage': newStage,
+      'petInfo.level': newLevel
+    });
+    
+    wx.showToast({
+      title: '🎉 孵化成功！',
+      icon: 'success',
+      duration: 2000
+    });
+    
+    // 触觉反馈
+    wx.vibrateShort();
+  },
+
+
 
   // 页面分享
   onShareAppMessage() {

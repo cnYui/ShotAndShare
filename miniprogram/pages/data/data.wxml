@@ -107,8 +107,7 @@
       
       <view class="progress-section">
         <view class="circular-progress">
-          <view class="progress-circle">
-            <view class="progress-fill" style="--progress: {{stepsProgress}}%"></view>
+          <view class="progress-circle" style="background: conic-gradient(#A3D39C {{stepsProgress}}%, #f0f0f0 {{stepsProgress}}%)">
             <view class="progress-content">
               <text class="progress-value">{{todayData.steps}}</text>
               <text class="progress-unit">步</text>
@@ -116,7 +115,7 @@
           </view>
         </view>
         <view class="progress-info">
-          <text class="completion-rate">完成度: {{Math.round(stepsProgress)}}%</text>
+          <text class="completion-rate">完成度: {{stepsProgressRounded}}%</text>
           <text class="remaining">还需: {{stepsRemaining}}步</text>
         </view>
       </view>
@@ -189,11 +188,11 @@
         <view class="sleep-time">
           <view class="time-item">
             <text class="time-label">入睡时间</text>
-            <text class="time-value">{{sleepData.bedTime || '--:--'}}</text>
+            <text class="time-value">{{sleepData.bedtime || '--:--'}}</text>
           </view>
           <view class="time-item">
             <text class="time-label">起床时间</text>
-            <text class="time-value">{{sleepData.wakeTime || '--:--'}}</text>
+            <text class="time-value">{{sleepData.wakeup || '--:--'}}</text>
           </view>
           <view class="time-item">
             <text class="time-label">睡眠时长</text>
@@ -251,26 +250,20 @@
         </view>
       </view>
       
-      <view class="exercise-types">
-        <text class="types-title">运动类型</text>
-        <view class="type-list">
-          <view class="type-item" wx:for="{{exerciseTypes}}" wx:key="type">
-            <view class="type-icon">
-              <image src="/images/icons/{{item.type}}.png"></image>
+      <view class="exercise-time-chart">
+        <text class="chart-title">运动时间分布</text>
+        <view class="time-bars">
+          <view class="time-bar" wx:for="{{exerciseTimeData}}" wx:key="day">
+            <view class="bar-container">
+              <view class="bar-fill" style="height: {{item.percentage}}%; background: linear-gradient(to top, #FF6B6B, #4ECDC4);"></view>
+              <text class="bar-value">{{item.duration}}分</text>
             </view>
-            <view class="type-info">
-              <text class="type-name">{{item.name}}</text>
-              <text class="type-duration">{{item.duration}}分钟</text>
-            </view>
-            <view class="type-calories">
-              <text>{{item.calories}}卡</text>
-            </view>
+            <text class="bar-label">{{item.day}}</text>
           </view>
         </view>
-      </view>
-      
-      <view class="exercise-chart">
-        <canvas class="data-chart" canvas-id="exerciseChart" disable-scroll="true"></canvas>
+        <view class="chart-legend">
+          <text class="legend-text">最近7天运动时间统计</text>
+        </view>
       </view>
     </view>
   </view>

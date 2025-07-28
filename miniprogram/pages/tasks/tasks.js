@@ -495,6 +495,7 @@ Page({
     console.log('🔄 刷新任务数据...');
     this.setData({ hasData: false });
     this.loadTaskData();
+    this.loadTaskStats(); // 同时刷新统计数据
   },
 
 

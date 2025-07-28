@@ -6,7 +6,8 @@
     "pages/chat/chat",
     "pages/data/data",
     "pages/profile/profile",
-    "pages/test/test"
+    "pages/test/test",
+    "pages/test-egg/test-egg"
   ],
   "window": {
     "backgroundColor": "#A3D39C",

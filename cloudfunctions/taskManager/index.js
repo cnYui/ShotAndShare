@@ -359,13 +359,14 @@ async function updatePetStatus(userId, expReward) {
 }
 
 /**
- * 获取本周开始日期
+ * 获取本周开始日期（周一为一周开始）
  */
 function getWeekStart() {
   const now = new Date();
-  const dayOfWeek = now.getDay();
-  const diff = now.getDate() - dayOfWeek;
-  const weekStart = new Date(now.getFullYear(), now.getMonth(), diff);
+  const dayOfWeek = now.getDay(); // 0=周日, 1=周一, ..., 6=周六
+  // 计算到周一的偏移量
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 如果是周日，则偏移-6天；否则偏移到周一
+  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
   return weekStart.toISOString().split('T')[0];
 }
 

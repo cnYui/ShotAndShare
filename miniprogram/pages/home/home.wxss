@@ -8,16 +8,281 @@
 
 /* 宠物展示区域 */
 .pet-display-area {
+  background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
+  border-radius: 30rpx;
+  padding: 40rpx 30rpx;
+  margin: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(168, 230, 207, 0.3);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40rpx 20rpx;
+}
+
+/* 宠物舞台区域 */
+.pet-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 30rpx;
+  position: relative;
+  min-height: 240rpx;
+  width: 100%;
+  height: 400rpx;
+  overflow: hidden;
+  background: 
+    /* 像素草地 */
+    repeating-linear-gradient(
+      0deg,
+      #7CB342 0rpx,
+      #7CB342 8rpx,
+      #8BC34A 8rpx,
+      #8BC34A 16rpx
+    ),
+    /* 像素天空 */
+    linear-gradient(
+      180deg,
+      #87CEEB 0%,
+      #98D8E8 50%,
+      #A8E6CF 100%
+    );
+  background-size: 100% 80rpx, 100% 100%;
+  background-position: 0 320rpx, 0 0;
+  border-radius: 20rpx;
+  /* 添加像素化效果 */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* 像素云朵装饰 */
+.pet-stage::before {
+  content: '';
+  position: absolute;
+  top: 40rpx;
+  left: 100rpx;
+  width: 80rpx;
+  height: 40rpx;
+  background: 
+    radial-gradient(circle at 20rpx 20rpx, #FFF 0, #FFF 16rpx, transparent 16rpx),
+    radial-gradient(circle at 40rpx 15rpx, #FFF 0, #FFF 20rpx, transparent 20rpx),
+    radial-gradient(circle at 60rpx 20rpx, #FFF 0, #FFF 16rpx, transparent 16rpx);
+  opacity: 0.8;
+  animation: cloudFloat 8s ease-in-out infinite;
+}
+
+/* 第二朵云 */
+.pet-stage::after {
+  content: '';
+  position: absolute;
+  top: 80rpx;
+  right: 120rpx;
+  width: 60rpx;
+  height: 30rpx;
+  background: 
+    radial-gradient(circle at 15rpx 15rpx, #FFF 0, #FFF 12rpx, transparent 12rpx),
+    radial-gradient(circle at 30rpx 12rpx, #FFF 0, #FFF 15rpx, transparent 15rpx),
+    radial-gradient(circle at 45rpx 15rpx, #FFF 0, #FFF 12rpx, transparent 12rpx);
+  opacity: 0.6;
+  animation: cloudFloat 10s ease-in-out infinite reverse;
+}
+
+@keyframes cloudFloat {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20rpx);
+  }
 }
 
 .pet-avatar-container {
   position: relative;
+  width: 240rpx;
+  height: 240rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20rpx;
+}
+
+/* 像素宠物容器 */
+.pixel-pet-container {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: petWalk 30s linear infinite;
+}
+
+.pixel-pet {
+  width: 120rpx;
+  height: 96rpx;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2));
+  position: absolute;
+  opacity: 0;
+}
+
+/* 正面小猫 - 静止状态 */
+.cat-front {
+  animation: showFront 30s linear infinite;
+}
+
+/* 右侧面小猫动画 */
+.cat-right {
+  animation: showRightStatic 30s linear infinite;
+}
+
+.cat-right-walk1 {
+  animation: showRightWalk1 30s linear infinite;
+}
+
+.cat-right-walk2 {
+  animation: showRightWalk2 30s linear infinite;
+}
+
+/* 左侧面小猫动画 */
+.cat-left {
+  animation: showLeftStatic 30s linear infinite;
+}
+
+.cat-left-walk1 {
+  animation: showLeftWalk1 30s linear infinite;
+}
+
+.cat-left-walk2 {
+  animation: showLeftWalk2 30s linear infinite;
+}
+
+/* 睡觉小猫动画 */
+.cat-sleep {
+  animation: showSleep 30s linear infinite;
+}
+
+/* 正面显示时机 (开始和结束时) */
+@keyframes showFront {
+  0%, 3% { opacity: 1; }
+  3.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 97% { opacity: 0; }
+  97.01%, 100% { opacity: 1; }
+}
+
+/* 右侧面静态显示 */
+@keyframes showRightStatic {
+  3%, 8% { opacity: 1; }
+  8.01%, 15% { opacity: 0; }
+  15.01%, 20% { opacity: 1; }
+  20.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 63% { opacity: 1; }
+  63.01%, 68% { opacity: 0; }
+  68.01%, 73% { opacity: 1; }
+  73.01%, 78% { opacity: 0; }
+  78.01%, 83% { opacity: 1; }
+  83.01%, 100% { opacity: 0; }
+}
+
+/* 右侧面走路动画1 - 抬前腿 */
+@keyframes showRightWalk1 {
+  0%, 8% { opacity: 0; }
+  8.01%, 15% { opacity: 1; }
+  15.01%, 20% { opacity: 0; }
+  20.01%, 25% { opacity: 1; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 63% { opacity: 0; }
+  63.01%, 68% { opacity: 1; }
+  68.01%, 73% { opacity: 0; }
+  73.01%, 78% { opacity: 1; }
+  78.01%, 100% { opacity: 0; }
+}
+
+/* 右侧面走路动画2 - 抬后腿 */
+@keyframes showRightWalk2 {
+  0%, 15% { opacity: 0; }
+  15.01%, 20% { opacity: 1; }
+  20.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 68% { opacity: 0; }
+  68.01%, 73% { opacity: 1; }
+  73.01%, 78% { opacity: 0; }
+  78.01%, 83% { opacity: 1; }
+  83.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面静态显示 */
+@keyframes showLeftStatic {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 88% { opacity: 1; }
+  88.01%, 93% { opacity: 0; }
+  93.01%, 97% { opacity: 1; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面走路动画1 - 抬前腿 */
+@keyframes showLeftWalk1 {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 88% { opacity: 0; }
+  88.01%, 93% { opacity: 1; }
+  93.01%, 97% { opacity: 0; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面走路动画2 - 抬后腿 */
+@keyframes showLeftWalk2 {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 93% { opacity: 0; }
+  93.01%, 97% { opacity: 1; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 睡觉动画 - 随机在动画中间出现 */
+@keyframes showSleep {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 1; }
+  58.01%, 100% { opacity: 0; }
+}
+
+/* 左右移动动画 - 睡觉时停止移动 */
+@keyframes petWalk {
+  0% {
+    left: 20rpx;
+    transform: translateY(-50%);
+  }
+  25% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  25.01% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  58% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  58.01% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  83% {
+    left: calc(100% - 140rpx);
+    transform: translateY(-50%);
+  }
+  100% {
+    left: 20rpx;
+    transform: translateY(-50%);
+  }
 }
 
 .pet-avatar {
@@ -30,15 +295,16 @@
 
 .pet-level {
   position: absolute;
-  top: -10rpx;
-  right: -10rpx;
+  top: -15rpx;
+  right: -15rpx;
   background: #FF9F55;
   color: white;
-  padding: 8rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 24rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
   font-weight: bold;
   box-shadow: 0 4rpx 8rpx rgba(255, 159, 85, 0.3);
+  z-index: 10;
 }
 
 .pet-info {
@@ -238,6 +504,10 @@
   background: rgba(255, 105, 180, 0.2);
 }
 
+.test-btn:active {
+  background: rgba(138, 43, 226, 0.2);
+}
+
 .btn-icon {
   width: 60rpx;
   height: 60rpx;
@@ -248,6 +518,67 @@
   font-size: 26rpx;
   color: #333;
   font-weight: 500;
+}
+
+/* 宠物阶段测试区域 */
+.test-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.stage-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin: 20rpx 0;
+  justify-content: center;
+}
+
+.stage-btn {
+  background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+  color: #333;
+  border: none;
+  border-radius: 25rpx;
+  padding: 15rpx 25rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 15rpx rgba(255, 154, 158, 0.3);
+  transition: all 0.3s ease;
+  min-width: 120rpx;
+}
+
+.stage-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 10rpx rgba(255, 154, 158, 0.4);
+}
+
+.action-test-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-top: 20rpx;
+  justify-content: center;
+}
+
+.test-action-btn {
+  background: linear-gradient(135deg, #A8E6CF 0%, #88D8A3 100%);
+  color: #333;
+  border: none;
+  border-radius: 20rpx;
+  padding: 12rpx 20rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-shadow: 0 3rpx 12rpx rgba(168, 230, 207, 0.3);
+  transition: all 0.3s ease;
+  min-width: 140rpx;
+}
+
+.test-action-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(168, 230, 207, 0.4);
 }
 
 /* 今日任务区域 */

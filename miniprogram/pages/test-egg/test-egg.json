@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "dynamic-pet": "/components/dynamic-pet/dynamic-pet"
+  }
+}

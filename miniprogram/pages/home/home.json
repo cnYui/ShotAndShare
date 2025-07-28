@@ -1,4 +1,8 @@
 {
+  "usingComponents": {
+    "cloud-tip-modal": "../../components/cloudTipModal/index",
+    "dynamic-pet": "../../components/dynamic-pet/dynamic-pet"
+  },
   "navigationBarTitleText": "我的宠物",
   "navigationBarBackgroundColor": "#A3D39C",
   "navigationBarTextStyle": "white",

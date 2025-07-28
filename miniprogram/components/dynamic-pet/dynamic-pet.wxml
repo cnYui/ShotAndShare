@@ -1,0 +1,106 @@
+<!--动态宠物组件-->
+<view class="pet-container {{petClass}}" style="{{containerStyle}}">
+  <!-- 宠物身体 -->
+  <view class="pet-body-layer">
+    <image 
+      class="pet-body {{bodyClass}}" 
+      src="{{bodyImage}}" 
+      mode="aspectFit"
+      style="{{bodyStyle}}"
+      bindtap="{{stage === 'egg' ? 'onEggTap' : ''}}"
+    ></image>
+  </view>
+  
+  <!-- 宠物脸颊 -->
+  <view class="pet-cheeks-layer" wx:if="{{cheeksImage}}">
+    <image 
+      class="pet-cheeks {{cheeksClass}}" 
+      src="{{cheeksImage}}" 
+      mode="aspectFit"
+      style="{{cheeksStyle}}"
+    ></image>
+  </view>
+  
+  <!-- 宠物眼睛 -->
+  <view class="pet-eyes-layer">
+    <image 
+      class="pet-eyes {{eyesClass}}" 
+      src="{{eyesImage}}" 
+      mode="aspectFit"
+      style="{{eyesStyle}}"
+    ></image>
+  </view>
+  
+  <!-- 宠物嘴巴 -->
+  <view class="pet-mouth-layer">
+    <image 
+      class="pet-mouth {{mouthClass}}" 
+      src="{{mouthImage}}" 
+      mode="aspectFit"
+      style="{{mouthStyle}}"
+    ></image>
+  </view>
+  
+  <!-- 宠物尾巴 -->
+  <view class="pet-tail-layer" wx:if="{{tailImage}}">
+    <image 
+      class="pet-tail {{tailClass}}" 
+      src="{{tailImage}}" 
+      mode="aspectFit"
+      style="{{tailStyle}}"
+    ></image>
+  </view>
+  
+  <!-- 互动效果层 -->
+  <view class="pet-effects-layer">
+    <!-- 食物 -->
+    <image 
+      class="effect-food {{foodClass}}" 
+      src="{{foodImage}}" 
+      mode="aspectFit"
+      style="{{foodStyle}}"
+      wx:if="{{showFood}}"
+    ></image>
+    
+    <!-- 爱心 -->
+    <image 
+      class="effect-heart {{heartClass}}" 
+      src="{{heartImage}}" 
+      mode="aspectFit"
+      style="{{heartStyle}}"
+      wx:if="{{showHeart}}"
+    ></image>
+    
+    <!-- 便便 -->
+    <view class="effect-poop-container" wx:if="{{showPoop}}">
+      <image 
+        class="effect-poop {{poopClass}}" 
+        src="{{poopImage}}" 
+        mode="aspectFit"
+        style="{{poopStyle}}"
+      ></image>
+      <!-- 便便臭气线 -->
+      <image 
+        class="poop-stink {{stinkClass}}" 
+        src="{{stinkImage}}" 
+        mode="aspectFit"
+        style="{{stinkStyle}}"
+        wx:if="{{showStink}}"
+      ></image>
+    </view>
+    
+    <!-- 激光笔 -->
+    <image 
+      class="effect-laser {{laserClass}}" 
+      src="{{laserImage}}" 
+      mode="aspectFit"
+      style="{{laserStyle}}"
+      wx:if="{{showLaser}}"
+    ></image>
+  </view>
+  
+  <!-- 宠物等级显示 -->
+  <view class="pet-level-badge" wx:if="{{showLevel}}">
+    <text class="level-text">Lv.{{level}}</text>
+  </view>
+</view>
