@@ -5,17 +5,17 @@
     <view class="stats-card">
       <view class="stat-item">
         <text class="stat-number">{{todayCompleted}}</text>
-        <text class="stat-label">今日完成</text>
+        <text class="stat-label">{{texts.tasks.todayCompleted}}</text>
       </view>
       <view class="stat-divider"></view>
       <view class="stat-item">
         <text class="stat-number">{{weeklyCompleted}}</text>
-        <text class="stat-label">本周完成</text>
+        <text class="stat-label">{{texts.tasks.weeklyCompleted}}</text>
       </view>
       <view class="stat-divider"></view>
       <view class="stat-item">
         <text class="stat-number">{{totalExp}}</text>
-        <text class="stat-label">总经验值</text>
+        <text class="stat-label">{{texts.tasks.totalExp}}</text>
       </view>
     </view>
   </view>
@@ -24,23 +24,23 @@
   <view class="category-tabs">
     <view class="tab-item {{currentCategory === 'all' ? 'active' : ''}}" 
           bindtap="switchCategory" data-category="all">
-      <text>全部</text>
+      <text>{{texts.tasks.categories.all}}</text>
     </view>
     <view class="tab-item {{currentCategory === 'daily' ? 'active' : ''}}" 
           bindtap="switchCategory" data-category="daily">
-      <text>日常</text>
+      <text>{{texts.tasks.categories.daily}}</text>
     </view>
     <view class="tab-item {{currentCategory === 'exercise' ? 'active' : ''}}" 
           bindtap="switchCategory" data-category="exercise">
-      <text>运动</text>
+      <text>{{texts.tasks.categories.exercise}}</text>
     </view>
     <view class="tab-item {{currentCategory === 'diet' ? 'active' : ''}}" 
           bindtap="switchCategory" data-category="diet">
-      <text>饮食</text>
+      <text>{{texts.tasks.categories.diet}}</text>
     </view>
     <view class="tab-item {{currentCategory === 'sleep' ? 'active' : ''}}" 
           bindtap="switchCategory" data-category="sleep">
-      <text>睡眠</text>
+      <text>{{texts.tasks.categories.sleep}}</text>
     </view>
   </view>
 

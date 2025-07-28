@@ -28,7 +28,7 @@
     <view class="welcome-message" wx:if="{{messages.length === 0}}">
       <view class="welcome-card">
         <image class="welcome-pet" src="{{petInfo.avatar || '/images/default-pet.png'}}"></image>
-        <text class="welcome-text">你好！我是{{petInfo.name || '小绿'}}，很高兴和你聊天！</text>
+        <text class="welcome-text">{{texts.chat.welcomeMessage}}</text>
       </view>
     </view>
 
@@ -85,12 +85,13 @@
         <image class="avatar-img" src="{{petInfo.avatar || '/images/default-pet.png'}}"></image>
       </view>
       <view class="typing-content">
-        <view class="typing-dots">
-          <view class="dot"></view>
-          <view class="dot"></view>
-          <view class="dot"></view>
+          <text>{{texts.chat.typingIndicator}}</text>
+          <view class="typing-dots">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+          </view>
         </view>
-      </view>
     </view>
   </scroll-view>
 
@@ -101,7 +102,7 @@
     <view class="input-container">
       <view class="input-box">
         <textarea class="message-input" 
-                  placeholder="和{{petInfo.name || '小绿'}}说点什么吧..."
+                  placeholder="{{texts.chat.inputPlaceholder}}"
                   value="{{inputText}}"
                   bindinput="onInputChange"
                   bindconfirm="sendMessage"
@@ -138,7 +139,7 @@
     <view class="settings-mask" bindtap="closeChatSettings"></view>
     <view class="settings-content">
       <view class="settings-header">
-        <text class="settings-title">聊天设置</text>
+        <text class="settings-title">{{texts.chat.settings.title}}</text>
         <button class="close-btn" bindtap="closeChatSettings">
           <image class="close-icon" src="/images/icons/close.png"></image>
         </button>
@@ -146,22 +147,22 @@
       
       <view class="settings-options">
         <view class="option-item">
-          <text class="option-label">智能回复</text>
+          <text class="option-label">{{texts.chat.settings.smartReply}}</text>
           <switch class="option-switch" checked="{{settings.smartReply}}" bindchange="toggleSmartReply"></switch>
         </view>
         
         <view class="option-item">
-          <text class="option-label">语音播报</text>
+          <text class="option-label">{{texts.chat.settings.voicePlay}}</text>
           <switch class="option-switch" checked="{{settings.voicePlay}}" bindchange="toggleVoicePlay"></switch>
         </view>
         
         <view class="option-item">
-          <text class="option-label">消息提醒</text>
+          <text class="option-label">{{texts.chat.settings.notification}}</text>
           <switch class="option-switch" checked="{{settings.notification}}" bindchange="toggleNotification"></switch>
         </view>
         
         <view class="option-item" bindtap="clearChatHistoryManual">
-          <text class="option-label danger">清空当前对话</text>
+          <text class="option-label danger">{{texts.chat.settings.clearHistory}}</text>
           <image class="option-arrow" src="/images/icons/arrow-right.svg"></image>
         </view>
       </view>

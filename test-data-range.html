@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康数据日周月切换功能测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .range-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .range-tab {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .range-tab.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        .data-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .data-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .data-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .data-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .insights {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>健康数据日周月切换功能测试</h1>
+            <p>测试前端日周月切换时的数据计算功能</p>
+        </div>
+        
+        <!-- 时间范围选择 -->
+        <div class="range-tabs">
+            <div class="range-tab active" data-range="day" onclick="switchRange('day')">
+                日
+            </div>
+            <div class="range-tab" data-range="week" onclick="switchRange('week')">
+                周
+            </div>
+            <div class="range-tab" data-range="month" onclick="switchRange('month')">
+                月
+            </div>
+        </div>
+        
+        <!-- 数据显示区域 -->
+        <div id="dataDisplay" class="data-display">
+            <div class="data-card">
+                <div class="data-value" id="stepsValue">0</div>
+                <div class="data-label">步数</div>
+            </div>
+            <div class="data-card">
+                <div class="data-value" id="waterValue">0ml</div>
+                <div class="data-label">饮水</div>
+            </div>
+            <div class="data-card">
+                <div class="data-value" id="sleepValue">0h</div>
+                <div class="data-label">睡眠</div>
+            </div>
+            <div class="data-card">
+                <div class="data-value" id="exerciseValue">0min</div>
+                <div class="data-label">运动</div>
+            </div>
+        </div>
+        
+        <!-- 数据洞察 -->
+        <div class="insights">
+            <h3>数据洞察</h3>
+            <p id="insightsText">请选择时间范围查看数据</p>
+        </div>
+        
+        <!-- 状态显示 -->
+        <div id="statusDisplay"></div>
+        
+        <!-- 测试说明 -->
+        <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+            <h3>功能说明</h3>
+            <ul>
+                <li><strong>日</strong>：显示今日数据</li>
+                <li><strong>周</strong>：显示最近7天数据总和（步数、饮水、运动）或平均值（睡眠）</li>
+                <li><strong>月</strong>：显示最近30天数据总和（步数、饮水、运动）或平均值（睡眠）</li>
+                <li>如果某天没有数据，计算时按0处理</li>
+                <li>数据来源：微信云开发数据库中的health_data表</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let currentRange = 'day';
+        
+        // 模拟数据（实际应用中会从云函数获取）
+        const mockData = {
+            day: {
+                steps: 1327,
+                water: 1146,
+                sleep: 7.1,
+                exercise: 55
+            },
+            week: {
+                steps: 8500,  // 7天总和
+                water: 9800,  // 7天总和
+                sleep: 7.3,   // 7天平均
+                exercise: 320  // 7天总和
+            },
+            month: {
+                steps: 35000, // 30天总和
+                water: 42000, // 30天总和
+                sleep: 7.2,   // 30天平均
+                exercise: 1200 // 30天总和
+            }
+        };
+        
+        function switchRange(range) {
+            // 更新选中状态
+            document.querySelectorAll('.range-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-range="${range}"]`).classList.add('active');
+            
+            currentRange = range;
+            
+            // 显示加载状态
+            showStatus('loading', '正在加载数据...');
+            
+            // 模拟加载延迟
+            setTimeout(() => {
+                loadRangeData(range);
+            }, 500);
+        }
+        
+        function loadRangeData(range) {
+            try {
+                // 模拟云函数调用
+                const data = mockData[range];
+                
+                if (data) {
+                    updateDisplay(data, range);
+                    showStatus('success', `${getRangeText(range)}数据加载成功`);
+                } else {
+                    showStatus('error', '数据加载失败');
+                }
+            } catch (error) {
+                showStatus('error', '数据处理出错: ' + error.message);
+            }
+        }
+        
+        function updateDisplay(data, range) {
+            // 更新数值显示
+            document.getElementById('stepsValue').textContent = data.steps.toLocaleString();
+            document.getElementById('waterValue').textContent = data.water + 'ml';
+            document.getElementById('sleepValue').textContent = data.sleep + 'h';
+            document.getElementById('exerciseValue').textContent = data.exercise + 'min';
+            
+            // 更新洞察文本
+            const insights = generateInsights(data, range);
+            document.getElementById('insightsText').textContent = insights;
+        }
+        
+        function generateInsights(data, range) {
+            const rangeText = getRangeText(range);
+            
+            if (range === 'day') {
+                const target = 10000;
+                if (data.steps >= target) {
+                    return `恭喜！今日步数已达标，超出目标${data.steps - target}步`;
+                } else {
+                    return `今日还需${target - data.steps}步即可达标，加油！`;
+                }
+            } else if (range === 'week') {
+                const avgDaily = Math.round(data.steps / 7);
+                return `本周平均每日${avgDaily}步，总计${data.steps.toLocaleString()}步`;
+            } else {
+                const avgDaily = Math.round(data.steps / 30);
+                return `本月平均每日${avgDaily}步，总计${data.steps.toLocaleString()}步`;
+            }
+        }
+        
+        function getRangeText(range) {
+            switch(range) {
+                case 'day': return '今日';
+                case 'week': return '本周';
+                case 'month': return '本月';
+                default: return '';
+            }
+        }
+        
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('statusDisplay');
+            
+            if (type === 'loading') {
+                statusDiv.innerHTML = `<div class="loading">${message}</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="${type}">${message}</div>`;
+                
+                // 3秒后清除状态
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+        
+        // 页面加载时初始化
+        window.onload = function() {
+            loadRangeData('day');
+        };
+    </script>
+</body>
+</html>

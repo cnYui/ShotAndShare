@@ -94,6 +94,26 @@
   margin-bottom: 5rpx;
 }
 
+.stat-value.editable {
+  cursor: pointer;
+  position: relative;
+  padding: 5rpx 10rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.stat-value.editable:hover {
+  background: rgba(255, 159, 85, 0.1);
+  transform: scale(1.05);
+}
+
+.stat-value.editable::after {
+  content: '✏️';
+  font-size: 20rpx;
+  margin-left: 8rpx;
+  opacity: 0.6;
+}
+
 .stat-label {
   font-size: 24rpx;
   color: #666;
@@ -837,4 +857,235 @@
 .modal-btn.confirm {
   background: #3498db;
   color: white;
+}
+
+/* 深色主题样式 */
+.dark-theme .data-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #e67e22 100%);
+}
+
+.dark-theme .overview-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .overview-title {
+  color: #ffffff;
+}
+
+.dark-theme .overview-date {
+  color: #cccccc;
+}
+
+.dark-theme .stat-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .stat-value {
+  color: #ffffff;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .category-tabs {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .tab-item {
+  color: #cccccc;
+}
+
+.dark-theme .tab-item.active {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .range-tabs {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .range-tab {
+  color: #cccccc;
+}
+
+.dark-theme .range-tab.active {
+  background: #7fb069;
+  color: #ffffff;
+}
+
+.dark-theme .data-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .card-title {
+  color: #ffffff;
+}
+
+.dark-theme .chart-container {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .insights-content {
+  color: #cccccc;
+}
+
+.dark-theme .record-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .record-time {
+  color: #cccccc;
+}
+
+.dark-theme .record-amount {
+  color: #ffffff;
+}
+
+.dark-theme .phase-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .phase-name {
+  color: #ffffff;
+}
+
+.dark-theme .phase-duration {
+  color: #cccccc;
+}
+
+.dark-theme .type-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .type-name {
+  color: #ffffff;
+}
+
+.dark-theme .type-duration {
+  color: #cccccc;
+}
+
+.dark-theme .type-calories {
+  color: #e67e22;
+}
+
+/* 编辑弹窗样式 */
+.edit-data-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 深色主题编辑弹窗样式 */
+.dark-theme .edit-data-modal {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.dark-theme .edit-modal-content {
+  background: #2c3e50;
+}
+
+.dark-theme .edit-modal-title {
+  color: #ffffff;
+}
+
+.dark-theme .edit-form-group {
+  border-bottom-color: #555555;
+}
+
+.dark-theme .edit-label {
+  color: #ffffff;
+}
+
+.dark-theme .edit-input {
+  background: rgba(60, 60, 60, 0.8);
+  color: #ffffff;
+  border-color: #666666;
+}
+
+.dark-theme .edit-input::placeholder {
+  color: #999999;
+}
+
+.dark-theme .edit-buttons {
+  border-top-color: #555555;
+}
+
+.dark-theme .edit-cancel-btn {
+  background: #7f8c8d;
+  color: #ffffff;
+}
+
+.dark-theme .edit-confirm-btn {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .edit-cancel-btn:active {
+  background: #6c7b7d;
+}
+
+.dark-theme .edit-confirm-btn:active {
+  background: #d35400;
+}
+
+.data-input {
+  flex: 1;
+  font-size: 32rpx;
+  color: #333;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+/* 其他可编辑元素样式 */
+.water-current.editable,
+.time-value.editable,
+.summary-value.editable {
+  cursor: pointer;
+  position: relative;
+  padding: 5rpx 10rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.water-current.editable:hover,
+.time-value.editable:hover,
+.summary-value.editable:hover {
+  background: rgba(255, 159, 85, 0.1);
+  transform: scale(1.05);
+}
+
+.water-current.editable::after,
+.time-value.editable::after,
+.summary-value.editable::after {
+  content: '✏️';
+  font-size: 20rpx;
+  margin-left: 8rpx;
+  opacity: 0.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .modal-content {
+    width: 90%;
+    max-width: 600rpx;
+  }
+  
+  .overview-stats {
+    grid-template-columns: 1fr;
+    gap: 15rpx;
+  }
+  
+  .data-actions {
+    flex-direction: column;
+  }
 }

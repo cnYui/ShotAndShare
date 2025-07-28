@@ -7,8 +7,8 @@
       <view class="pet-level">Lv.{{petInfo.level || 1}}</view>
     </view>
     <view class="pet-info">
-      <text class="pet-name">{{petInfo.name || '我的小宠物'}}</text>
-      <text class="pet-status">{{petInfo.statusText || '开心'}}</text>
+      <text class="pet-name">{{petInfo.name || texts.home.petName}}</text>
+      <text class="pet-status">{{petInfo.statusText || texts.home.petMood.happy}}</text>
     </view>
   </view>
 
@@ -68,12 +68,12 @@
   <view class="action-section">
     <view class="action-buttons">
       <button class="action-btn feed-btn" bindtap="feedPet">
-        <image class="btn-icon" src="/images/icons/feed.png"></image>
+        <image class="btn-icon" src="/images/icons/feed.svg"></image>
         <text>喂食</text>
       </button>
       
       <button class="action-btn play-btn" bindtap="playWithPet">
-        <image class="btn-icon" src="/images/icons/play.png"></image>
+        <image class="btn-icon" src="/images/icons/play.svg"></image>
         <text>互动</text>
       </button>
       

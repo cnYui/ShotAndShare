@@ -1,7 +1,7 @@
-<view class="login-container">
+<view class="login-container {{themeClass}}">
   <view class="logo-section">
     <image src="/images/logo.svg" class="logo"></image>
-    <text class="app-name">健康宠物伴侣</text>
+    <text class="app-name">{{texts.login.appName}}</text>
   </view>
   
   <view class="login-section">
@@ -10,17 +10,17 @@
             open-type="getUserProfile" 
             bindtap="onGetUserProfile">
       <image src="/images/wechat-icon.svg" class="wechat-icon"></image>
-      微信登录
+      {{texts.login.wechatLogin}}
     </button>
     
     <view wx:else class="user-info">
       <image src="{{userInfo.avatarUrl}}" class="avatar"></image>
       <text class="nickname">{{userInfo.nickName}}</text>
-      <button class="continue-btn" bindtap="onContinue">继续使用</button>
+      <button class="continue-btn" bindtap="onContinue">{{texts.login.continueUse}}</button>
     </view>
   </view>
   
   <view wx:if="{{loading}}" class="loading">
-    <text>登录中...</text>
+    <text>{{texts.login.loggingIn}}</text>
   </view>
 </view>

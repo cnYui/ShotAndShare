@@ -9,7 +9,7 @@
       </view>
     </view>
     <view class="user-info">
-      <view class="user-name">{{userInfo.name || '点击设置昵称'}}</view>
+      <view class="user-name">{{userInfo.name || texts.profile.userInfo.setNickname}}</view>
       <view class="user-level">Lv.{{userInfo.level}} · {{userInfo.title}}</view>
       <view class="user-stats">
         <view class="stat-item">

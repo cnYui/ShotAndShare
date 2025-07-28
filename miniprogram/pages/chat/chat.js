@@ -350,7 +350,7 @@ Page({
     const messageId = e.currentTarget.dataset.id;
     const messages = this.data.messages.map(msg => {
       if (msg.id === messageId) {
-        return { ...msg, liked: !msg.liked };
+        return Object.assign({}, msg, { liked: !msg.liked });
       }
       return msg;
     });

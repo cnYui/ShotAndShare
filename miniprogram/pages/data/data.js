@@ -1,10 +1,15 @@
 // 健康数据页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     // 当前选中的分类
     activeCategory: 'steps',
+    currentTab: 'steps',
     // 当前选中的时间范围
     activeRange: 'day',
+    currentRange: 'day',
     
     // 今日数据概览
     todayData: {
@@ -16,7 +21,7 @@ Page({
     
     // 目标数据
     targets: {
-      steps: 10000,
+      steps: 8000,
       water: 2000,
       sleep: 8,
       exercise: 60
@@ -25,9 +30,9 @@ Page({
     // 步数数据
     stepsData: {
       current: 8520,
-      target: 10000,
-      completion: 85.2,
-      remaining: 1480,
+      target: 8000,
+      completion: 106.5,
+      remaining: 0,
       weeklyAverage: 8200,
       insights: '今天的步数比昨天多了1200步，继续保持！'
     },
@@ -82,10 +87,53 @@ Page({
     stepsChartData: null,
     
     // 当前日期
-    currentDate: ''
+    currentDate: '',
+    
+    // 统计数据
+    statsData: {
+      steps: { day: 0, week: 0, month: 0 },
+      water: { day: 0, week: 0, month: 0 },
+      sleep: { day: 0, week: 0, month: 0 },
+      exercise: { day: 0, week: 0, month: 0 }
+    },
+    
+    // 目标和进度
+    stepsTarget: 8000,
+    waterTarget: 2000,
+    sleepTarget: 8,
+    exerciseTarget: 60,
+    stepsProgress: 0,
+    waterProgress: 0,
+    stepsInsights: '暂无数据洞察',
+    
+    // 其他数据
+    waterRecords: [],
+    waterMarks: [25, 50, 75, 100],
+    sleepData: {},
+    sleepQualityDesc: '良好',
+    sleepPhases: [],
+    exerciseData: {},
+    exerciseTypes: [],
+    showCustomWaterModal: false,
+    customWaterAmount: '',
+    
+    // 编辑弹窗相关
+    showEditModal: false,
+    editDataType: '',
+    editValue: '',
+    
+    // 国际化文本
+    texts: {},
+    
+    // 主题相关
+    isDarkMode: false,
+    themeClass: ''
   },
   
   onLoad() {
+    // 初始化主题和语言
+    this.initThemeAndLanguage();
+    
     // 设置当前日期
     const today = new Date();
     const currentDate = `${today.getMonth() + 1}月${today.getDate()}日`;
@@ -93,12 +141,44 @@ Page({
       currentDate: currentDate
     });
     
+    // 首次加载时清理重复数据
+    this.cleanDuplicateData();
+    
     this.loadTodayData();
     this.updateProgressStyles();
+    
+    // 初始化加载日数据
+    this.loadRangeData('day');
   },
   
   onShow() {
+    // 重新应用主题和语言
+    this.initThemeAndLanguage();
     this.refreshData();
+  },
+  
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    this.loadTexts();
+    this.applyCurrentTheme();
+  },
+  
+  // 加载文本
+  loadTexts() {
+    const texts = i18n.getTexts();
+    this.setData({ texts });
+  },
+  
+  // 应用当前主题
+  applyCurrentTheme() {
+    const theme = themeManager.getCurrentTheme();
+    const isDarkMode = themeManager.isDark();
+    const themeClass = isDarkMode ? 'dark-theme' : '';
+    
+    this.setData({
+      isDarkMode,
+      themeClass
+    });
   },
 
   // 获取微信步数数据
@@ -358,11 +438,24 @@ Page({
     this.loadCategoryData(category);
   },
   
+  // 切换标签页
+  switchTab(e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({
+      currentTab: tab,
+      activeCategory: tab
+    });
+    
+    // 根据分类加载对应数据
+    this.loadCategoryData(tab);
+  },
+  
   // 切换时间范围
   switchRange(e) {
     const range = e.currentTarget.dataset.range;
     this.setData({
-      activeRange: range
+      activeRange: range,
+      currentRange: range
     });
     
     // 根据时间范围重新加载数据
@@ -394,7 +487,255 @@ Page({
   // 加载时间范围数据
   loadRangeData(range) {
     console.log(`加载${range}范围数据`);
-    // 根据时间范围调用不同的API
+    
+    wx.showLoading({
+      title: '加载数据中...'
+    });
+    
+    // 调用云函数获取统计数据
+    wx.cloud.callFunction({
+      name: 'healthDataManager',
+      data: {
+        action: 'getHealthStats',
+        range: range // 'day', 'week', 'month'
+      },
+      success: (res) => {
+        wx.hideLoading();
+        
+        if (res.result.success) {
+          const statsData = res.result.data;
+          this.processStatsData(statsData, range);
+        } else {
+          console.error('获取统计数据失败:', res.result.error);
+          this.setDefaultStatsData(range);
+        }
+      },
+      fail: (error) => {
+        wx.hideLoading();
+        console.error('调用云函数失败:', error);
+        this.setDefaultStatsData(range);
+      }
+    });
+  },
+  
+  // 处理统计数据
+  processStatsData(data, range) {
+    const currentTab = this.data.currentTab;
+    
+    // 更新统计数据
+    const statsData = this.data.statsData;
+    
+    // 计算各项数据的总和或平均值
+    if (data && data.length > 0) {
+      // 步数：求总和，确保不为负数
+      const totalSteps = Math.max(0, data.reduce((sum, item) => {
+        const steps = parseInt(item.steps) || 0;
+        return sum + Math.max(0, steps); // 确保每个值都不为负
+      }, 0));
+      statsData.steps[range] = totalSteps;
+      
+      // 饮水：求总和 (注意字段名是 water_ml)，确保不为负数
+      const totalWater = Math.max(0, data.reduce((sum, item) => {
+        const water = parseInt(item.water_ml) || 0;
+        return sum + Math.max(0, water);
+      }, 0));
+      statsData.water[range] = totalWater;
+      
+      // 睡眠：求平均值 (注意字段名是 sleep_hours)
+      const validSleepData = data.filter(item => {
+        const sleepHours = parseFloat(item.sleep_hours) || 0;
+        return sleepHours > 0 && sleepHours <= 24; // 合理的睡眠时间范围
+      });
+      const avgSleep = validSleepData.length > 0 
+        ? validSleepData.reduce((sum, item) => sum + parseFloat(item.sleep_hours), 0) / validSleepData.length
+        : 0;
+      statsData.sleep[range] = Math.round(Math.max(0, avgSleep) * 10) / 10;
+      
+      // 运动：求总和 (注意字段名是 exercise_minutes)，确保不为负数
+      const totalExercise = Math.max(0, data.reduce((sum, item) => {
+        const exercise = parseInt(item.exercise_minutes) || 0;
+        return sum + Math.max(0, exercise);
+      }, 0));
+      statsData.exercise[range] = totalExercise;
+    } else {
+      // 没有数据时设为0
+      statsData.steps[range] = 0;
+      statsData.water[range] = 0;
+      statsData.sleep[range] = 0;
+      statsData.exercise[range] = 0;
+    }
+    
+    // 更新页面数据
+    this.setData({
+      statsData: statsData
+    });
+    
+    // 更新当前显示的数据
+    this.updateDisplayData(currentTab, range);
+  },
+  
+  // 设置默认统计数据（当获取失败时）
+  setDefaultStatsData(range) {
+    const statsData = this.data.statsData;
+    statsData.steps[range] = 0;
+    statsData.water[range] = 0;
+    statsData.sleep[range] = 0;
+    statsData.exercise[range] = 0;
+    
+    this.setData({
+      statsData: statsData
+    });
+    
+    this.updateDisplayData(this.data.currentTab, range);
+  },
+  
+  // 更新显示数据
+  updateDisplayData(tab, range) {
+    const statsData = this.data.statsData;
+    
+    // 更新顶部数据概览（始终显示当前时间范围的所有数据）
+    const stepsValue = statsData.steps[range];
+    const waterValue = statsData.water[range];
+    const sleepValue = statsData.sleep[range];
+    const exerciseValue = statsData.exercise[range];
+    
+    // 计算动态目标值
+    const dailyStepsTarget = this.data.stepsTarget;
+    const dailyWaterTarget = this.data.waterTarget;
+    const dailySleepTarget = this.data.sleepTarget;
+    const dailyExerciseTarget = this.data.exerciseTarget;
+    
+    let displayStepsTarget, displayWaterTarget, displaySleepTarget, displayExerciseTarget;
+    let stepsProgress, waterProgress;
+    
+    if (range === 'day') {
+      // 日目标保持不变
+      displayStepsTarget = dailyStepsTarget;
+      displayWaterTarget = dailyWaterTarget;
+      displaySleepTarget = dailySleepTarget;
+      displayExerciseTarget = dailyExerciseTarget;
+      stepsProgress = Math.round((stepsValue / dailyStepsTarget) * 100 * 10) / 10;
+      waterProgress = Math.round((waterValue / dailyWaterTarget) * 100);
+    } else if (range === 'week') {
+      // 周目标：显示平均每日目标，但计算基于总目标
+      displayStepsTarget = `平均每日${dailyStepsTarget}`;
+      displayWaterTarget = `平均每日${dailyWaterTarget}`;
+      displaySleepTarget = `平均每日${dailySleepTarget}`;
+      displayExerciseTarget = `平均每日${dailyExerciseTarget}`;
+      const avgSteps = Math.round(stepsValue / 7);
+      const avgWater = Math.round(waterValue / 7);
+      stepsProgress = Math.round((avgSteps / dailyStepsTarget) * 100 * 10) / 10;
+      waterProgress = Math.round((avgWater / dailyWaterTarget) * 100);
+    } else {
+      // 月目标：显示平均每日目标，但计算基于总目标
+      displayStepsTarget = `平均每日${dailyStepsTarget}`;
+      displayWaterTarget = `平均每日${dailyWaterTarget}`;
+      displaySleepTarget = `平均每日${dailySleepTarget}`;
+      displayExerciseTarget = `平均每日${dailyExerciseTarget}`;
+      const avgSteps = Math.round(stepsValue / 30);
+      const avgWater = Math.round(waterValue / 30);
+      stepsProgress = Math.round((avgSteps / dailyStepsTarget) * 100 * 10) / 10;
+      waterProgress = Math.round((avgWater / dailyWaterTarget) * 100);
+    }
+    
+    // 计算"还需"显示值
+    let stepsRemaining, waterRemaining;
+    if (range === 'day') {
+      stepsRemaining = Math.max(0, dailyStepsTarget - stepsValue);
+      waterRemaining = Math.max(0, dailyWaterTarget - waterValue);
+    } else if (range === 'week') {
+      const avgSteps = Math.round(stepsValue / 7);
+      const avgWater = Math.round(waterValue / 7);
+      stepsRemaining = Math.max(0, dailyStepsTarget - avgSteps);
+      waterRemaining = Math.max(0, dailyWaterTarget - avgWater);
+    } else {
+      const avgSteps = Math.round(stepsValue / 30);
+      const avgWater = Math.round(waterValue / 30);
+      stepsRemaining = Math.max(0, dailyStepsTarget - avgSteps);
+      waterRemaining = Math.max(0, dailyWaterTarget - avgWater);
+    }
+    
+    // 计算水位标记值
+    const waterMarkTarget = range === 'day' ? dailyWaterTarget : 
+                           range === 'week' ? dailyWaterTarget : dailyWaterTarget;
+    
+    // 更新所有数据显示
+    this.setData({
+      'todayData.steps': stepsValue,
+      'todayData.water': waterValue,
+      'todayData.sleep': sleepValue,
+      'todayData.exercise': exerciseValue,
+      displayStepsTarget: displayStepsTarget,
+      displayWaterTarget: displayWaterTarget,
+      displaySleepTarget: displaySleepTarget,
+      displayExerciseTarget: displayExerciseTarget,
+      stepsRemaining: stepsRemaining,
+      waterRemaining: waterRemaining,
+      waterMarkTarget: waterMarkTarget,
+      stepsProgress: Math.min(stepsProgress, 100),
+      waterProgress: Math.min(waterProgress, 100),
+      stepsInsights: this.generateStepsInsights(stepsValue, range),
+      'sleepData.duration': sleepValue
+    });
+  },
+  
+  // 获取时间范围对应的天数
+  getRangeDays(range) {
+    switch(range) {
+      case 'day': return 1;
+      case 'week': return 7;
+      case 'month': return 30;
+      default: return 1;
+    }
+  },
+
+  // 清理重复数据
+  cleanDuplicateData() {
+    wx.cloud.callFunction({
+      name: 'healthDataManager',
+      data: {
+        action: 'cleanAllDuplicates'
+      }
+    }).then(res => {
+      console.log('清理重复数据完成:', res.result);
+    }).catch(err => {
+      console.error('清理重复数据失败:', err);
+    });
+  },
+  
+  // 生成步数洞察
+  generateStepsInsights(steps, range) {
+    if (steps === 0) {
+      return `${range === 'day' ? '今日' : range === 'week' ? '本周' : '本月'}暂无步数数据`;
+    }
+    
+    const dailyTarget = this.data.stepsTarget;
+    
+    if (range === 'day') {
+      if (steps >= dailyTarget) {
+        return `恭喜！今日步数已达标，超出目标${steps - dailyTarget}步`;
+      } else {
+        return `今日还需${dailyTarget - steps}步即可达标，加油！`;
+      }
+    } else if (range === 'week') {
+      const avgDaily = Math.round(steps / 7);
+      const weekTarget = dailyTarget * 7; // 本周总目标
+      if (avgDaily >= dailyTarget) {
+        return `本周平均每日${avgDaily}步，已达到每日目标！`;
+      } else {
+        const needDaily = dailyTarget - avgDaily;
+        return `本周平均每日${avgDaily}步，还需每日增加${needDaily}步达标`;
+      }
+    } else {
+      const avgDaily = Math.round(steps / 30);
+      const monthTarget = dailyTarget * 30; // 本月总目标
+      if (avgDaily >= dailyTarget) {
+        return `本月平均每日${avgDaily}步，已达到每日目标！`;
+      } else {
+        const needDaily = dailyTarget - avgDaily;
+        return `本月平均每日${avgDaily}步，还需每日增加${needDaily}步达标`;
+      }
+    }
   },
   
   // 加载步数图表
@@ -498,7 +839,7 @@ Page({
       amount: amount
     };
     
-    const records = [...this.data.waterData.records, newRecord];
+    const records = this.data.waterData.records.concat([newRecord]);
     
     this.setData({
       'waterData.current': newAmount,
@@ -514,11 +855,38 @@ Page({
     });
   },
   
+  // 添加饮水（与wxml中的bindtap对应）
+  addWater(e) {
+    this.quickAddWater(e);
+  },
+  
   // 显示自定义饮水弹窗
   showCustomWater() {
     this.setData({
       showWaterModal: true,
       customWaterAmount: ''
+    });
+  },
+  
+  // 显示自定义饮水输入（与wxml中的bindtap对应）
+  showCustomWaterInput() {
+    this.setData({
+      showCustomWaterModal: true,
+      customWaterAmount: ''
+    });
+  },
+  
+  // 隐藏自定义饮水输入
+  hideCustomWaterInput() {
+    this.setData({
+      showCustomWaterModal: false
+    });
+  },
+  
+  // 自定义饮水输入
+  onCustomWaterInput(e) {
+    this.setData({
+      customWaterAmount: e.detail.value
     });
   },
   
@@ -568,7 +936,7 @@ Page({
       amount: amount
     };
     
-    const records = [...this.data.waterData.records, newRecord];
+    const records = this.data.waterData.records.concat([newRecord]);
     
     this.setData({
       'waterData.current': newAmount,
@@ -610,7 +978,18 @@ Page({
     // 模拟同步过程
     setTimeout(() => {
       wx.hideLoading();
+      
+      // 切换回"今日"标签
+      this.setData({
+        currentRange: 'day'
+      });
+      
+      // 刷新数据
       this.refreshData();
+      
+      // 重新加载今日数据
+      this.loadRangeData('day');
+      
       wx.showToast({
         title: '数据同步成功',
         icon: 'success'
@@ -622,6 +1001,176 @@ Page({
   openSettings() {
     wx.navigateTo({
       url: '/pages/settings/settings'
+    });
+  },
+  
+  // 打开数据设置
+  openDataSettings() {
+    wx.navigateTo({
+      url: '/pages/settings/settings'
+    });
+  },
+
+  // 编辑饮水量
+  editWater() {
+    this.setData({
+      showEditModal: true,
+      editDataType: 'water',
+      editValue: this.data.todayData.water || 0
+    });
+  },
+
+  // 编辑睡眠时长
+  editSleep() {
+    this.setData({
+      showEditModal: true,
+      editDataType: 'sleep',
+      editValue: this.data.todayData.sleep || 0
+    });
+  },
+
+  // 编辑运动时长
+  editExercise() {
+    this.setData({
+      showEditModal: true,
+      editDataType: 'exercise',
+      editValue: this.data.todayData.exercise || 0
+    });
+  },
+
+  // 隐藏编辑弹窗
+  hideEditModal() {
+    this.setData({
+      showEditModal: false,
+      editDataType: '',
+      editValue: ''
+    });
+  },
+
+  // 编辑值输入
+  onEditValueInput(e) {
+    this.setData({
+      editValue: e.detail.value
+    });
+  },
+
+  // 确认编辑
+  confirmEdit() {
+    const { editDataType, editValue } = this.data;
+    const value = parseFloat(editValue);
+    
+    if (!value || value < 0) {
+      wx.showToast({
+        title: '请输入有效的数值',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 验证数值范围
+    if (editDataType === 'water' && value > 5000) {
+      wx.showToast({
+        title: '饮水量不能超过5000ml',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    if (editDataType === 'sleep' && value > 24) {
+      wx.showToast({
+        title: '睡眠时长不能超过24小时',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    if (editDataType === 'exercise' && value > 1440) {
+      wx.showToast({
+        title: '运动时长不能超过1440分钟',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 更新本地数据
+    this.updateLocalData(editDataType, value);
+    
+    // 更新数据库
+    this.updateHealthDataInDB(editDataType, value);
+    
+    // 隐藏弹窗
+    this.hideEditModal();
+    
+    wx.showToast({
+      title: '数据更新成功',
+      icon: 'success'
+    });
+  },
+
+  // 更新本地数据
+  updateLocalData(dataType, value) {
+    const updateData = {};
+    
+    // 更新今日数据概览
+    updateData[`todayData.${dataType}`] = value;
+    
+    // 更新统计数据
+    updateData[`statsData.${dataType}.day`] = value;
+    
+    // 根据数据类型更新相关显示
+    if (dataType === 'water') {
+      const waterProgress = Math.round((value / this.data.waterTarget) * 100);
+      updateData.waterProgress = Math.min(waterProgress, 100);
+      updateData['waterData.current'] = value;
+    } else if (dataType === 'sleep') {
+      updateData['sleepData.duration'] = value;
+    } else if (dataType === 'exercise') {
+      updateData['exerciseData.totalDuration'] = value;
+    }
+    
+    this.setData(updateData);
+    
+    // 重新计算显示数据
+    this.updateDisplayData(this.data.currentTab, this.data.currentRange);
+  },
+
+  // 更新数据库中的健康数据
+  updateHealthDataInDB(dataType, value) {
+    wx.showLoading({
+      title: '正在保存数据...'
+    });
+    
+    const updateData = {
+      action: 'upsertHealthData'
+    };
+    
+    // 根据数据类型设置对应字段
+    if (dataType === 'water') {
+      updateData.water_ml = value;
+    } else if (dataType === 'sleep') {
+      updateData.sleep_hours = value;
+    } else if (dataType === 'exercise') {
+      updateData.exercise_minutes = value;
+    }
+    
+    wx.cloud.callFunction({
+      name: 'healthDataManager',
+      data: updateData,
+      success: (res) => {
+        wx.hideLoading();
+        console.log('健康数据更新成功:', res);
+        
+        // 重新加载当前范围的数据
+        this.loadRangeData(this.data.currentRange);
+      },
+      fail: (error) => {
+        wx.hideLoading();
+        console.error('健康数据更新失败:', error);
+        wx.showToast({
+          title: '数据保存失败',
+          icon: 'none'
+        });
+      }
     });
   },
   

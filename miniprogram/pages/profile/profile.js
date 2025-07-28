@@ -112,7 +112,7 @@ Page({
       // 从全局数据获取用户信息
       this.setData({
         userInfo: {
-          ...this.data.userInfo,
+          // 合并用户信息
           avatar: globalUserInfo.avatar_url || '/images/default-avatar.png',
           name: globalUserInfo.nickname || '健康达人',
           signature: globalUserInfo.signature || '每天都要健康快乐！'
@@ -126,7 +126,7 @@ Page({
       const userInfo = wx.getStorageSync('userInfo');
       if (userInfo) {
         this.setData({
-          userInfo: { ...this.data.userInfo, ...userInfo }
+          userInfo: Object.assign({}, this.data.userInfo, userInfo)
         });
       }
     }
@@ -134,24 +134,82 @@ Page({
   
   // 加载用户统计数据
   loadUserStats() {
+    // 先获取宠物数据以获取等级
     wx.cloud.callFunction({
-      name: 'userManager',
+      name: 'petManager',
       data: {
-        action: 'getUserStats'
+        action: 'getPetStatus'
       },
-      success: (res) => {
-        if (res.result.success) {
-          const stats = res.result.data;
-          this.setData({
-            'userInfo.totalDays': stats.total_days || 0,
-            'userInfo.totalTasks': stats.total_tasks || 0,
-            'userInfo.totalExp': stats.total_exp || 0,
-            'userInfo.level': stats.level || 1
-          });
+      success: (petRes) => {
+        let petLevel = 1;
+        let companionDays = 0;
+        let totalExp = 0;
+        
+        if (petRes.result.success) {
+          const petData = petRes.result.data;
+          petLevel = petData.level || 1;
+          companionDays = petData.companionDays || 0;
+          totalExp = petData.totalExp || 0;
         }
+        
+        // 再获取用户统计数据
+        wx.cloud.callFunction({
+          name: 'userManager',
+          data: {
+            action: 'getUserStats'
+          },
+          success: (res) => {
+            if (res.result.success) {
+              const stats = res.result.data;
+              this.setData({
+                'userInfo.totalDays': companionDays, // 使用宠物的陪伴天数
+                'userInfo.totalTasks': stats.total_tasks || 0,
+                'userInfo.totalExp': totalExp, // 使用宠物的总经验
+                'userInfo.level': petLevel // 使用宠物的等级
+              });
+            } else {
+              // 如果获取用户统计失败，至少设置宠物相关数据
+              this.setData({
+                'userInfo.totalDays': companionDays,
+                'userInfo.totalExp': totalExp,
+                'userInfo.level': petLevel
+              });
+            }
+          },
+          fail: (err) => {
+            console.error('获取用户统计失败:', err);
+            // 即使用户统计失败，也要设置宠物相关数据
+            this.setData({
+              'userInfo.totalDays': companionDays,
+              'userInfo.totalExp': totalExp,
+              'userInfo.level': petLevel
+            });
+          }
+        });
       },
       fail: (err) => {
-        console.error('获取用户统计失败:', err);
+        console.error('获取宠物数据失败:', err);
+        // 如果获取宠物数据失败，使用默认的用户统计
+        wx.cloud.callFunction({
+          name: 'userManager',
+          data: {
+            action: 'getUserStats'
+          },
+          success: (res) => {
+            if (res.result.success) {
+              const stats = res.result.data;
+              this.setData({
+                'userInfo.totalDays': stats.total_days || 0,
+                'userInfo.totalTasks': stats.total_tasks || 0,
+                'userInfo.totalExp': stats.total_exp || 0,
+                'userInfo.level': stats.level || 1
+              });
+            }
+          },
+          fail: (err) => {
+            console.error('获取用户统计失败:', err);
+          }
+        });
       }
     });
   },
@@ -215,7 +273,7 @@ Page({
     const settings = wx.getStorageSync('settings');
     if (settings) {
       this.setData({
-        settings: { ...this.data.settings, ...settings }
+        settings: Object.assign({}, this.data.settings, settings)
       });
     }
   },

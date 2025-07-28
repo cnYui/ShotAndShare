@@ -1,11 +1,54 @@
+// 登录页面逻辑
+const i18n = require('../../utils/i18n.js');
+const themeManager = require('../../utils/theme.js');
+
 Page({
   data: {
     userInfo: null,
-    loading: false
+    loading: false,
+    // 主题和语言
+    isDarkMode: false,
+    themeClass: 'light-theme',
+    texts: {}
   },
 
   onLoad() {
+    // 初始化主题和语言
+    this.initThemeAndLanguage();
     this.checkLoginStatus();
+  },
+
+  onShow() {
+    // 重新应用主题（可能在其他页面改变了主题）
+    this.applyCurrentTheme();
+  },
+
+  // 初始化主题和语言
+  initThemeAndLanguage() {
+    // 加载语言文本
+    this.loadTexts();
+    
+    // 应用当前主题
+    this.applyCurrentTheme();
+  },
+
+  // 加载语言文本
+  loadTexts() {
+    this.setData({
+      texts: {
+        login: i18n.t('login'),
+        common: i18n.t('common')
+      }
+    });
+  },
+
+  // 应用当前主题
+  applyCurrentTheme() {
+    const isDark = themeManager.isDark();
+    this.setData({
+      isDarkMode: isDark,
+      themeClass: isDark ? 'dark-theme' : 'light-theme'
+    });
   },
 
   // 检查登录状态
@@ -26,7 +69,7 @@ Page({
       },
       fail: () => {
         wx.showToast({
-          title: '需要授权才能使用',
+          title: this.data.texts.login?.authRequired || '需要授权才能使用',
           icon: 'none'
         });
       }
@@ -74,7 +117,7 @@ Page({
         });
         
         wx.showToast({
-          title: userData.isNewUser ? '注册成功' : '登录成功',
+          title: userData.isNewUser ? (this.data.texts.login?.registerSuccess || '注册成功') : (this.data.texts.login?.loginSuccess || '登录成功'),
           icon: 'success'
         });
         
@@ -86,7 +129,7 @@ Page({
       console.error('登录失败:', error);
       this.setData({ loading: false });
       wx.showToast({
-        title: '登录失败，请重试',
+        title: this.data.texts.login?.loginFailed || '登录失败，请重试',
         icon: 'none'
       });
     }

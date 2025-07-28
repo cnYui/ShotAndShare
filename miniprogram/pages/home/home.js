@@ -129,7 +129,7 @@ Page({
     this.refreshTimer = setInterval(() => {
       console.log('⏰ 定时刷新宠物状态...');
       this.loadPetData();
-    }, 30000); // 30秒刷新一次
+    }, 300000); // 5分钟刷新一次 (300000毫秒)
   },
 
   // 停止自动刷新
@@ -258,11 +258,12 @@ Page({
 
   // 显示错误并提供重试选项
   showErrorAndRetry(message) {
+    const texts = this.data.texts;
     wx.showModal({
-      title: '提示',
+      title: texts.common?.tip || '提示',
       content: message + '，是否重试？',
-      confirmText: '重试',
-      cancelText: '取消',
+      confirmText: texts.common?.retry || '重试',
+      cancelText: texts.common?.cancel || '取消',
       success: (res) => {
         if (res.confirm) {
           this.loadPetData();
@@ -316,8 +317,9 @@ Page({
     }
     
     // 显示经验值获得提示
+    const texts = this.data.texts;
     wx.showToast({
-      title: `🎉 +${expGain} 经验值`,
+      title: `🎉 +${expGain} ${texts.home?.experience || '经验值'}`,
       icon: 'success',
       duration: 2000
     });
@@ -339,11 +341,12 @@ Page({
 
   // 显示升级动画
   showLevelUpAnimation() {
+    const texts = this.data.texts;
     wx.showModal({
-      title: '🎉 恭喜升级！',
-      content: `宠物升级到 ${this.data.petInfo.level} 级！\n获得升级奖励：满血满活力！`,
+      title: texts.home?.levelUpTitle || '🎉 恭喜升级！',
+      content: `${texts.home?.levelUpContent || '宠物升级到'} ${this.data.petInfo.level} ${texts.home?.level || '级'}！\n${texts.home?.levelUpReward || '获得升级奖励：满血满活力！'}`,
       showCancel: false,
-      confirmText: '太棒了！'
+      confirmText: texts.home?.levelUpConfirm || '太棒了！'
     });
   },
 
@@ -633,92 +636,147 @@ Page({
   walkWithPet() {
     wx.showLoading({ title: '散步中...' });
     
-    // 模拟散步过程
-    setTimeout(() => {
-      wx.hideLoading();
-      
-      // 散步增加健康值和活力值
-      const currentPetInfo = this.data.petInfo;
-      const newHealth = Math.min(100, currentPetInfo.health + 5);
-      const newVitality = Math.min(100, currentPetInfo.vitality + 8);
-      const newIntimacy = Math.min(100, currentPetInfo.intimacy + 3);
-      
-      this.setData({
-        'petInfo.health': newHealth,
-        'petInfo.vitality': newVitality,
-        'petInfo.intimacy': newIntimacy,
-        'petInfo.statusText': this.getPetStatusText({ health: newHealth, vitality: newVitality, intimacy: newIntimacy }),
-        petMessage: '散步真舒服！我感觉更健康了！'
-      });
-      
-      // 更新全局宠物信息
-      const app = getApp();
-      if (app.globalData.petInfo) {
-        app.globalData.petInfo.health = newHealth;
-        app.globalData.petInfo.vitality = newVitality;
-        app.globalData.petInfo.intimacy = newIntimacy;
-        wx.setStorageSync('petInfo', app.globalData.petInfo);
+    wx.cloud.callFunction({
+      name: 'petManager',
+      data: {
+        action: 'walkWithPet'
+      },
+      success: (res) => {
+        if (res.result.success) {
+          wx.showToast({
+            title: res.result.data.message || '散步完成！',
+            icon: 'success'
+          });
+          
+          // 更新本地宠物状态
+          this.updatePetStatusFromWalk(res.result.data);
+          
+          this.setData({
+            petMessage: '散步真舒服！我感觉更健康了！'
+          });
+          
+          // 延迟刷新宠物数据以获取最新状态
+          setTimeout(() => {
+            this.loadPetData();
+          }, 500);
+          
+          setTimeout(() => {
+            this.setData({ petMessage: '' });
+          }, 3000);
+        } else {
+          wx.showToast({
+            title: res.result.error,
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('散步失败:', err);
+        wx.showToast({
+          title: '操作失败',
+          icon: 'none'
+        });
+      },
+      complete: () => {
+        wx.hideLoading();
       }
-      
-      wx.showToast({
-        title: '散步完成！',
-        icon: 'success'
-      });
-      
-      // 3秒后隐藏消息
-      setTimeout(() => {
-        this.setData({ petMessage: '' });
-      }, 3000);
-      
-    }, 2000);
+    });
   },
 
   // 和宠物玩游戏
   playGame() {
-    const games = [
-      { name: '捉迷藏', message: '找到我了！好开心！', intimacy: 10, vitality: 5 },
-      { name: '飞盘游戏', message: '接住了！我好厉害！', intimacy: 8, vitality: 12 },
-      { name: '智力游戏', message: '我变聪明了！', intimacy: 12, vitality: 3 },
-      { name: '追逐游戏', message: '跑步真快乐！', intimacy: 9, vitality: 10 }
-    ];
+    wx.showLoading({ title: '游戏中...' });
     
-    const randomGame = games[Math.floor(Math.random() * games.length)];
-    
-    wx.showLoading({ title: `玩${randomGame.name}中...` });
-    
-    setTimeout(() => {
-      wx.hideLoading();
-      
-      const currentPetInfo = this.data.petInfo;
-      const newIntimacy = Math.min(100, currentPetInfo.intimacy + randomGame.intimacy);
-      const newVitality = Math.min(100, currentPetInfo.vitality + randomGame.vitality);
-      
-      this.setData({
-        'petInfo.intimacy': newIntimacy,
-        'petInfo.vitality': newVitality,
-        'petInfo.statusText': this.getPetStatusText({ health: currentPetInfo.health, vitality: newVitality, intimacy: newIntimacy }),
-        petMessage: randomGame.message
-      });
-      
-      // 更新全局宠物信息
-      const app = getApp();
-      if (app.globalData.petInfo) {
-        app.globalData.petInfo.intimacy = newIntimacy;
-        app.globalData.petInfo.vitality = newVitality;
-        wx.setStorageSync('petInfo', app.globalData.petInfo);
+    wx.cloud.callFunction({
+      name: 'petManager',
+      data: {
+        action: 'playGame'
+      },
+      success: (res) => {
+        if (res.result.success) {
+          wx.showToast({
+            title: res.result.data.message || '游戏完成！',
+            icon: 'success'
+          });
+          
+          // 更新本地宠物状态
+          this.updatePetStatusFromGame(res.result.data);
+          
+          this.setData({
+            petMessage: res.result.data.message || '和主人一起玩真开心！'
+          });
+          
+          // 延迟刷新宠物数据以获取最新状态
+          setTimeout(() => {
+            this.loadPetData();
+          }, 500);
+          
+          setTimeout(() => {
+            this.setData({ petMessage: '' });
+          }, 3000);
+        } else {
+          wx.showToast({
+            title: res.result.error,
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('游戏失败:', err);
+        wx.showToast({
+          title: '操作失败',
+          icon: 'none'
+        });
+      },
+      complete: () => {
+        wx.hideLoading();
       }
-      
-      wx.showToast({
-        title: `${randomGame.name}完成！`,
-        icon: 'success'
-      });
-      
-      // 3秒后隐藏消息
-      setTimeout(() => {
-        this.setData({ petMessage: '' });
-      }, 3000);
-      
-    }, 2500);
+    });
+  },
+
+  // 从散步结果更新宠物状态
+  updatePetStatusFromWalk(walkResult) {
+    const currentPetInfo = this.data.petInfo;
+    const newHealth = walkResult.health;
+    const newVitality = walkResult.vitality;
+    const newIntimacy = walkResult.intimacy;
+    
+    this.setData({
+      'petInfo.health': newHealth,
+      'petInfo.vitality': newVitality,
+      'petInfo.intimacy': newIntimacy,
+      'petInfo.statusText': this.getPetStatusText({ health: newHealth, vitality: newVitality, intimacy: newIntimacy })
+    });
+    
+    // 更新全局宠物信息
+    const app = getApp();
+    if (app.globalData.petInfo) {
+      app.globalData.petInfo.health = newHealth;
+      app.globalData.petInfo.vitality = newVitality;
+      app.globalData.petInfo.intimacy = newIntimacy;
+      wx.setStorageSync('petInfo', app.globalData.petInfo);
+    }
+  },
+  
+  // 从游戏结果更新宠物状态
+  updatePetStatusFromGame(gameResult) {
+    const currentPetInfo = this.data.petInfo;
+    const newIntimacy = gameResult.intimacy;
+    const newVitality = gameResult.vitality;
+    
+    this.setData({
+      'petInfo.intimacy': newIntimacy,
+      'petInfo.vitality': newVitality,
+      'petInfo.statusText': this.getPetStatusText({ health: currentPetInfo.health, vitality: newVitality, intimacy: newIntimacy })
+    });
+    
+    // 更新全局宠物信息
+    const app = getApp();
+    if (app.globalData.petInfo) {
+      app.globalData.petInfo.intimacy = newIntimacy;
+      app.globalData.petInfo.vitality = newVitality;
+      wx.setStorageSync('petInfo', app.globalData.petInfo);
+    }
   },
 
   // 处理任务点击

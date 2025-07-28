@@ -4,7 +4,7 @@
   <view class="overview-section">
     <view class="overview-card">
       <view class="overview-header">
-        <text class="overview-title">今日数据概览</text>
+        <text class="overview-title">{{texts.data.todayOverview}}</text>
         <text class="overview-date">{{currentDate}}</text>
       </view>
       
@@ -15,7 +15,7 @@
           </view>
           <view class="stat-info">
             <text class="stat-value">{{todayData.steps || 0}}</text>
-            <text class="stat-label">步数</text>
+            <text class="stat-label">{{texts.data.categories.steps}}</text>
           </view>
         </view>
         
@@ -24,8 +24,8 @@
             <image src="/images/icons/water.png"></image>
           </view>
           <view class="stat-info">
-            <text class="stat-value">{{todayData.water || 0}}ml</text>
-            <text class="stat-label">饮水</text>
+            <text class="stat-value editable" bindtap="editWater">{{todayData.water || 0}}ml</text>
+            <text class="stat-label">{{texts.data.categories.water}}</text>
           </view>
         </view>
         
@@ -34,8 +34,8 @@
             <image src="/images/icons/sleep.png"></image>
           </view>
           <view class="stat-info">
-            <text class="stat-value">{{todayData.sleep || 0}}h</text>
-            <text class="stat-label">睡眠</text>
+            <text class="stat-value editable" bindtap="editSleep">{{todayData.sleep || 0}}h</text>
+            <text class="stat-label">{{texts.data.categories.sleep}}</text>
           </view>
         </view>
         
@@ -44,8 +44,8 @@
             <image src="/images/icons/exercise.png"></image>
           </view>
           <view class="stat-info">
-            <text class="stat-value">{{todayData.exercise || 0}}min</text>
-            <text class="stat-label">运动</text>
+            <text class="stat-value editable" bindtap="editExercise">{{todayData.exercise || 0}}min</text>
+            <text class="stat-label">{{texts.data.categories.exercise}}</text>
           </view>
         </view>
       </view>
@@ -57,22 +57,22 @@
     <view class="tab-item {{currentTab === 'steps' ? 'active' : ''}}" 
           bindtap="switchTab" data-tab="steps">
       <image class="tab-icon" src="/images/icons/steps.png"></image>
-      <text>步数</text>
+      <text>{{texts.data.categories.steps}}</text>
     </view>
     <view class="tab-item {{currentTab === 'water' ? 'active' : ''}}" 
           bindtap="switchTab" data-tab="water">
       <image class="tab-icon" src="/images/icons/water.png"></image>
-      <text>饮水</text>
+      <text>{{texts.data.categories.water}}</text>
     </view>
     <view class="tab-item {{currentTab === 'sleep' ? 'active' : ''}}" 
           bindtap="switchTab" data-tab="sleep">
       <image class="tab-icon" src="/images/icons/sleep.png"></image>
-      <text>睡眠</text>
+      <text>{{texts.data.categories.sleep}}</text>
     </view>
     <view class="tab-item {{currentTab === 'exercise' ? 'active' : ''}}" 
           bindtap="switchTab" data-tab="exercise">
       <image class="tab-icon" src="/images/icons/exercise.png"></image>
-      <text>运动</text>
+      <text>{{texts.data.categories.exercise}}</text>
     </view>
   </view>
 
@@ -81,15 +81,15 @@
     <view class="range-tabs">
       <view class="range-tab {{currentRange === 'day' ? 'active' : ''}}" 
             bindtap="switchRange" data-range="day">
-        <text>日</text>
+        <text>{{texts.data.ranges.day}}</text>
       </view>
       <view class="range-tab {{currentRange === 'week' ? 'active' : ''}}" 
             bindtap="switchRange" data-range="week">
-        <text>周</text>
+        <text>{{texts.data.ranges.week}}</text>
       </view>
       <view class="range-tab {{currentRange === 'month' ? 'active' : ''}}" 
             bindtap="switchRange" data-range="month">
-        <text>月</text>
+        <text>{{texts.data.ranges.month}}</text>
       </view>
     </view>
   </view>
@@ -101,7 +101,7 @@
       <view class="card-header">
         <text class="card-title">步数统计</text>
         <view class="card-target">
-          <text>目标: {{stepsTarget}}步</text>
+          <text>目标: {{displayStepsTarget}}步</text>
         </view>
       </view>
       
@@ -117,7 +117,7 @@
         </view>
         <view class="progress-info">
           <text class="completion-rate">完成度: {{Math.round(stepsProgress)}}%</text>
-          <text class="remaining">还需: {{stepsTarget - todayData.steps}}步</text>
+          <text class="remaining">还需: {{stepsRemaining}}步</text>
         </view>
       </view>
       
@@ -136,7 +136,7 @@
       <view class="card-header">
         <text class="card-title">饮水记录</text>
         <view class="card-target">
-          <text>目标: {{waterTarget}}ml</text>
+          <text>目标: {{displayWaterTarget}}ml</text>
         </view>
       </view>
       
@@ -145,13 +145,13 @@
           <view class="water-level" style="height: {{waterProgress}}%"></view>
           <view class="water-marks">
             <view class="mark" wx:for="{{waterMarks}}" wx:key="index" style="bottom: {{item}}%">
-              <text>{{waterTarget * item / 100}}ml</text>
+              <text>{{waterMarkTarget * item / 100}}ml</text>
             </view>
           </view>
         </view>
         <view class="water-info">
-          <text class="water-current">{{todayData.water}}ml</text>
-          <text class="water-remaining">还需: {{waterTarget - todayData.water}}ml</text>
+          <text class="water-current editable" bindtap="editWater">{{todayData.water}}ml</text>
+          <text class="water-remaining">还需: {{waterRemaining}}ml</text>
         </view>
       </view>
       
@@ -181,7 +181,7 @@
       <view class="card-header">
         <text class="card-title">睡眠分析</text>
         <view class="card-target">
-          <text>目标: {{sleepTarget}}小时</text>
+          <text>目标: {{displaySleepTarget}}小时</text>
         </view>
       </view>
       
@@ -197,7 +197,7 @@
           </view>
           <view class="time-item">
             <text class="time-label">睡眠时长</text>
-            <text class="time-value">{{sleepData.duration || 0}}小时</text>
+            <text class="time-value editable" bindtap="editSleep">{{sleepData.duration || 0}}小时</text>
           </view>
         </view>
       </view>
@@ -232,13 +232,13 @@
       <view class="card-header">
         <text class="card-title">运动统计</text>
         <view class="card-target">
-          <text>目标: {{exerciseTarget}}分钟</text>
+          <text>目标: {{displayExerciseTarget}}分钟</text>
         </view>
       </view>
       
       <view class="exercise-summary">
         <view class="summary-item">
-          <text class="summary-value">{{todayData.exercise}}</text>
+          <text class="summary-value editable" bindtap="editExercise">{{todayData.exercise}}</text>
           <text class="summary-label">运动时长(分钟)</text>
         </view>
         <view class="summary-item">
@@ -311,6 +311,30 @@
       <view class="modal-footer">
         <button class="modal-btn cancel" bindtap="hideCustomWaterInput">取消</button>
         <button class="modal-btn confirm" bindtap="confirmCustomWater">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑数据弹窗 -->
+  <view class="edit-data-modal" wx:if="{{showEditModal}}">
+    <view class="modal-mask" bindtap="hideEditModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">编辑{{editDataType === 'water' ? '饮水量' : editDataType === 'sleep' ? '睡眠时长' : '运动时长'}}</text>
+        <button class="modal-close" bindtap="hideEditModal">
+          <image src="/images/icons/close.png"></image>
+        </button>
+      </view>
+      <view class="modal-body">
+        <view class="input-group">
+          <input class="data-input" type="number" placeholder="请输入{{editDataType === 'water' ? '饮水量' : editDataType === 'sleep' ? '睡眠时长' : '运动时长'}}" 
+                 value="{{editValue}}" bindinput="onEditValueInput" />
+          <text class="input-unit">{{editDataType === 'water' ? 'ml' : editDataType === 'sleep' ? '小时' : '分钟'}}</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="hideEditModal">取消</button>
+        <button class="modal-btn confirm" bindtap="confirmEdit">确定</button>
       </view>
     </view>
   </view>

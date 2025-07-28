@@ -20,7 +20,7 @@ class ErrorHandler {
       function_name: context.function || '',
       user_agent: this.getUserAgent(),
       additional_info: {
-        ...context,
+        context: context,
         timestamp: new Date().toISOString()
       }
     });
@@ -104,9 +104,10 @@ class ErrorHandler {
    * @param {Object} context - 错误上下文
    */
   static wrapAsync(asyncFn, context = {}) {
-    return async (...args) => {
+    return async function() {
+    const args = Array.prototype.slice.call(arguments);
       try {
-        return await asyncFn(...args);
+        return await asyncFn.apply(this, args);
       } catch (error) {
         this.handleError(error, context);
         throw error;
@@ -137,7 +138,7 @@ class ErrorHandler {
         type: 'cloud_function',
         function: functionName,
         data: data,
-        ...options.context
+        context: options.context
       });
       throw error;
     }
@@ -151,7 +152,7 @@ class ErrorHandler {
   static handleNetworkError(error, context = {}) {
     this.handleError(error, {
       type: 'network',
-      ...context
+      context: context
     });
   }
   
@@ -164,7 +165,7 @@ class ErrorHandler {
     const error = new Error(message);
     this.handleError(error, {
       type: 'validation',
-      ...context
+      context: context
     });
   }
 }

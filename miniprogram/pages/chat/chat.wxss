@@ -629,3 +629,114 @@
   width: 30rpx;
   height: 30rpx;
 }
+
+/* 深色主题样式 */
+.dark-theme .chat-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.dark-theme .pet-status-bar {
+  background: rgba(45, 45, 45, 0.95);
+  border-bottom-color: #555555;
+}
+
+.dark-theme .pet-name {
+  color: #ffffff;
+}
+
+.dark-theme .pet-mood {
+  color: #cccccc;
+}
+
+.dark-theme .welcome-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .welcome-text {
+  color: #ffffff;
+}
+
+.dark-theme .topics-title {
+  color: #cccccc;
+}
+
+.dark-theme .topic-tag {
+  background: #34495e;
+  color: #ffffff;
+}
+
+.dark-theme .topic-tag:active {
+  background: #2c3e50;
+}
+
+.dark-theme .user-message .message-content {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .pet-message .message-content {
+  background: rgba(45, 45, 45, 0.95);
+  color: #ffffff;
+}
+
+.dark-theme .pet-message .message-time {
+  color: #cccccc;
+}
+
+.dark-theme .system-text {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+}
+
+.dark-theme .typing-content {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .quick-replies {
+  background: rgba(45, 45, 45, 0.9);
+  border-top-color: #555555;
+}
+
+.dark-theme .reply-item {
+  background: #34495e;
+  color: #ffffff;
+}
+
+.dark-theme .reply-item:active {
+  background: #2c3e50;
+}
+
+.dark-theme .input-area {
+  background: rgba(45, 45, 45, 0.98);
+  border-top-color: #555555;
+}
+
+.dark-theme .input-box {
+  background: rgba(60, 60, 60, 0.8);
+  border-color: #666666;
+}
+
+.dark-theme .message-input {
+  color: #ffffff;
+}
+
+.dark-theme .emoji-panel {
+  background: rgba(45, 45, 45, 0.95);
+  border-top-color: #555555;
+}
+
+.dark-theme .settings-content {
+  background: #2c3e50;
+}
+
+.dark-theme .settings-title {
+  color: #ffffff;
+}
+
+.dark-theme .option-label {
+  color: #ffffff;
+}
+
+.dark-theme .option-label.danger {
+  color: #e74c3c;
+}

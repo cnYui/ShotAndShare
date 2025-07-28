@@ -276,8 +276,112 @@
   border: none;
 }
 
-/* 加载状态 */
-.loading-state {
+/* 深色主题样式 */
+.dark-theme .tasks-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #e67e22 100%);
+}
+
+.dark-theme .stats-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .stat-number {
+  color: #e67e22;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .stat-divider {
+  background: #555555;
+}
+
+.dark-theme .category-tabs {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .tab-item {
+  color: #cccccc;
+}
+
+.dark-theme .tab-item.active {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .task-group {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .group-title {
+  color: #ffffff;
+}
+
+.dark-theme .group-progress {
+  color: #e67e22;
+}
+
+.dark-theme .task-item {
+  border-bottom-color: #555555;
+}
+
+.dark-theme .task-checkbox {
+  border-color: #666666;
+}
+
+.dark-theme .task-checkbox.checked {
+  background: #7fb069;
+  border-color: #7fb069;
+}
+
+.dark-theme .task-title {
+  color: #ffffff;
+}
+
+.dark-theme .task-description {
+  color: #cccccc;
+}
+
+.dark-theme .task-progress {
+  color: #cccccc;
+}
+
+.dark-theme .progress-bar {
+  background: #404040;
+}
+
+.dark-theme .task-reward {
+  color: #e67e22;
+}
+
+.dark-theme .reward-icon {
+  filter: brightness(1.2);
+}
+
+.dark-theme .reward-text {
+  color: #e67e22;
+}
+
+/* 深色主题空状态样式 */
+.dark-theme .empty-state {
+  color: #cccccc;
+}
+
+.dark-theme .empty-icon {
+  filter: brightness(0.8);
+}
+
+.dark-theme .empty-text {
+  color: #cccccc;
+}
+
+.dark-theme .empty-tip {
+  color: #999999;
+}
+
+/* 空状态样式 */
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;

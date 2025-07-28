@@ -272,18 +272,30 @@ async function initDailyTasks(userId) {
     is_active: true
   }).get();
   
-  // 为每个任务创建今日记录
+  // 为每个任务创建今日记录，但要检查是否已存在
   for (const task of tasksQuery.data) {
-    await db.collection('task_records').add({
-      data: {
+    // 检查是否已存在该任务的今日记录
+    const existingRecord = await db.collection('task_records')
+      .where({
         user_id: userId,
         date: today,
-        task_id: task._id,
-        status: 'pending',
-        progress: 0,
-        target_value: task.target_value
-      }
-    });
+        task_id: task._id
+      })
+      .get();
+    
+    // 只有不存在时才创建新记录
+    if (existingRecord.data.length === 0) {
+      await db.collection('task_records').add({
+        data: {
+          user_id: userId,
+          date: today,
+          task_id: task._id,
+          status: 'pending',
+          progress: 0,
+          target_value: task.target_value
+        }
+      });
+    }
   }
 }
 

@@ -26,6 +26,10 @@ exports.main = async (event, context) => {
       return await feedPet(openid);
     case 'playWithPet':
       return await playWithPet(openid);
+    case 'walkWithPet':
+      return await walkWithPet(openid);
+    case 'playGame':
+      return await playGame(openid);
     case 'petLevelUp':
       return await petLevelUp(openid);
     case 'getPetHistory':
@@ -590,16 +594,140 @@ async function calculateTotalExp(userId) {
     let totalExp = 0;
     
     // 累计所有任务的经验值
-    taskRecords.data.forEach(record => {
-      if (record.task_info && record.task_info.reward_exp) {
-        totalExp += record.task_info.reward_exp;
+    for (const record of taskRecords.data) {
+      try {
+        // 通过task_id查询任务详情获取经验值
+        const taskQuery = await db.collection('tasks').doc(record.task_id).get();
+        if (taskQuery.data && taskQuery.data.reward_exp) {
+          totalExp += taskQuery.data.reward_exp;
+        }
+      } catch (taskError) {
+        console.warn('查询任务详情失败:', taskError);
       }
-    });
+    }
     
     return totalExp;
     
   } catch (error) {
     console.error('计算总经验值失败:', error);
     return 0;
+  }
+}
+
+/**
+ * 带宠物散步
+ */
+async function walkWithPet(userId) {
+  try {
+    const petQuery = await db.collection('pets').where({
+      user_id: userId
+    }).get();
+    
+    if (petQuery.data.length === 0) {
+      return {
+        success: false,
+        error: '宠物不存在'
+      };
+    }
+    
+    const pet = petQuery.data[0];
+    const now = new Date();
+    
+    // 散步增加健康值、活力值和亲密度
+    const newHealth = Math.min(pet.health + 5, 100);
+    const newVitality = Math.min(pet.vitality + 8, 100);
+    const newIntimacy = Math.min(pet.intimacy + 3, 100);
+    
+    await db.collection('pets').doc(pet._id).update({
+      data: {
+        health: newHealth,
+        vitality: newVitality,
+        intimacy: newIntimacy,
+        last_walk_time: now,
+        last_active: now
+      }
+    });
+    
+    return {
+      success: true,
+      data: {
+        message: '散步完成！宠物感觉更健康了~',
+        health: newHealth,
+        vitality: newVitality,
+        intimacy: newIntimacy,
+        healthIncrease: 5,
+        vitalityIncrease: 8,
+        intimacyIncrease: 3
+      }
+    };
+    
+  } catch (error) {
+    console.error('散步失败:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * 和宠物玩游戏
+ */
+async function playGame(userId) {
+  try {
+    const petQuery = await db.collection('pets').where({
+      user_id: userId
+    }).get();
+    
+    if (petQuery.data.length === 0) {
+      return {
+        success: false,
+        error: '宠物不存在'
+      };
+    }
+    
+    const pet = petQuery.data[0];
+    const now = new Date();
+    
+    // 随机游戏类型和奖励
+    const games = [
+      { name: '捉迷藏', message: '找到我了！好开心！', intimacy: 10, vitality: 5 },
+      { name: '飞盘游戏', message: '接住了！我好厉害！', intimacy: 8, vitality: 12 },
+      { name: '智力游戏', message: '我变聪明了！', intimacy: 12, vitality: 3 },
+      { name: '追逐游戏', message: '跑步真快乐！', intimacy: 9, vitality: 10 }
+    ];
+    
+    const randomGame = games[Math.floor(Math.random() * games.length)];
+    
+    const newIntimacy = Math.min(pet.intimacy + randomGame.intimacy, 100);
+    const newVitality = Math.min(pet.vitality + randomGame.vitality, 100);
+    
+    await db.collection('pets').doc(pet._id).update({
+      data: {
+        intimacy: newIntimacy,
+        vitality: newVitality,
+        last_game_time: now,
+        last_active: now
+      }
+    });
+    
+    return {
+      success: true,
+      data: {
+        message: `${randomGame.name}完成！${randomGame.message}`,
+        gameName: randomGame.name,
+        intimacy: newIntimacy,
+        vitality: newVitality,
+        intimacyIncrease: randomGame.intimacy,
+        vitalityIncrease: randomGame.vitality
+      }
+    };
+    
+  } catch (error) {
+    console.error('游戏失败:', error);
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }

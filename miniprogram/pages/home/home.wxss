@@ -452,6 +452,85 @@
   border-color: #27ae60;
 }
 
+/* 深色主题样式 */
+.dark-theme .home-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.dark-theme .pet-avatar {
+  border-color: #7fb069;
+}
+
+.dark-theme .pet-level {
+  background: #e67e22;
+}
+
+.dark-theme .pet-name {
+  color: #ffffff;
+}
+
+.dark-theme .pet-status {
+  color: #cccccc;
+}
+
+.dark-theme .status-card {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .status-label {
+  color: #ffffff;
+}
+
+.dark-theme .progress-bar {
+  background: #404040;
+}
+
+.dark-theme .status-value {
+  color: #cccccc;
+}
+
+.dark-theme .exp-container {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .exp-label {
+  color: #ffffff;
+}
+
+.dark-theme .exp-bar {
+  background: #404040;
+}
+
+.dark-theme .exp-text {
+  color: #cccccc;
+}
+
+.dark-theme .stat-value {
+  color: #e67e22;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .action-button {
+  background: rgba(45, 45, 45, 0.9);
+  color: #ffffff;
+  border: 1rpx solid #555555;
+}
+
+.dark-theme .action-button:active {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.dark-theme .action-icon {
+  filter: brightness(1.2);
+}
+
+.dark-theme .action-text {
+  color: #ffffff;
+}
+
 .dark-theme .pet-message .message-bubble {
   background: rgba(52, 73, 94, 0.9);
   color: #ecf0f1;

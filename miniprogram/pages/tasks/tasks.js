@@ -9,13 +9,7 @@ Page({
     weeklyCompleted: 0,
     totalExp: 0,
     
-    categoryNames: {
-      all: '全部',
-      daily: '日常',
-      exercise: '运动',
-      diet: '饮食',
-      sleep: '睡眠'
-    },
+    categoryNames: {},
     
     todayTasks: [],
     weeklyTasks: [],
@@ -52,7 +46,14 @@ Page({
   // 加载文本
   loadTexts() {
     const texts = i18n.getTexts();
-    this.setData({ texts });
+    const categoryNames = {
+      all: texts.tasks.categories.all,
+      daily: texts.tasks.categories.daily,
+      exercise: texts.tasks.categories.exercise,
+      diet: texts.tasks.categories.diet,
+      sleep: texts.tasks.categories.sleep
+    };
+    this.setData({ texts, categoryNames });
   },
   
   // 应用当前主题
@@ -151,8 +152,12 @@ Page({
         deadline: this.formatDeadline(record.task_info.deadline)
       };
       
-      // 所有任务都作为今日任务显示
-      todayTasks.push(task);
+      // 根据任务类型分类，避免重复
+      if (record.task_info.frequency === 'weekly') {
+        weeklyTasks.push(task);
+      } else {
+        todayTasks.push(task);
+      }
     });
     
     console.log('✅ 处理完成 - 今日任务:', todayTasks.length, '周任务:', weeklyTasks.length);
@@ -169,6 +174,11 @@ Page({
 
   // 获取分类文本
   getCategoryText(category) {
+    const texts = this.data.texts;
+    if (texts && texts.tasks && texts.tasks.categories) {
+      return texts.tasks.categories[category] || texts.tasks.categories.daily;
+    }
+    // 备用硬编码文本
     const categoryMap = {
       daily: '日常',
       exercise: '运动',
@@ -258,19 +268,33 @@ Page({
   // 过滤任务
   filterTasks() {
     const { currentCategory, todayTasks, weeklyTasks } = this.data;
-    let allTasks = [...todayTasks, ...weeklyTasks];
+    let allTasks = [];
     
-    if (currentCategory !== 'all') {
-      allTasks = allTasks.filter(task => task.category === currentCategory);
+    // 根据分类选择任务，避免重复
+    if (currentCategory === 'all') {
+      allTasks = todayTasks.concat(weeklyTasks);
+    } else {
+      allTasks = todayTasks.concat(weeklyTasks).filter(task => task.category === currentCategory);
     }
     
+    // 去重处理，基于任务ID
+    const uniqueTasks = [];
+    const seenIds = new Set();
+    
+    allTasks.forEach(task => {
+      if (!seenIds.has(task.id)) {
+        seenIds.add(task.id);
+        uniqueTasks.push(task);
+      }
+    });
+    
     // 计算完成的任务数量
-    const completedCount = allTasks.filter(task => task.completed).length;
+    const completedCount = uniqueTasks.filter(task => task.completed).length;
     
     this.setData({
-      filteredTasks: allTasks,
+      filteredTasks: uniqueTasks,
       filteredCompletedCount: completedCount,
-      filteredTotalCount: allTasks.length
+      filteredTotalCount: uniqueTasks.length
     });
   },
 
@@ -423,14 +447,14 @@ Page({
   updateLocalTaskStatus(taskId, completed) {
     const todayTasks = this.data.todayTasks.map(task => {
       if (task.id === taskId) {
-        return { ...task, completed };
+        return Object.assign({}, task, { completed: completed });
       }
       return task;
     });
     
     const weeklyTasks = this.data.weeklyTasks.map(task => {
       if (task.id === taskId) {
-        return { ...task, completed };
+        return Object.assign({}, task, { completed: completed });
       }
       return task;
     });
@@ -448,7 +472,7 @@ Page({
     const taskId = e.currentTarget.dataset.id;
     const { todayTasks, weeklyTasks } = this.data;
     
-    const task = [...todayTasks, ...weeklyTasks].find(t => t.id === taskId);
+    const task = todayTasks.concat(weeklyTasks).find(t => t.id === taskId);
     
     if (task.type === 'timer') {
       // 跳转到计时器页面
