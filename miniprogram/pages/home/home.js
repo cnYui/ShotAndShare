@@ -187,55 +187,82 @@ Page({
 
   // 更新宠物显示信息
   updatePetDisplay(petData) {
-    // 修复升级逻辑：下一级所需经验应该是(当前等级+1) * 100
-    const nextLevelExp = (petData.level + 1) * 100;
-    // 修复经验值进度条计算：应该是当前等级内的经验进度
-    const currentLevelBaseExp = petData.level * 100;
-    const currentLevelExp = petData.exp - currentLevelBaseExp;
-    const expForThisLevel = nextLevelExp - currentLevelBaseExp;
+    console.log('🔍 原始宠物数据:', petData);
+    
+    // 使用数据库中的实际经验值，而不是计算值
+    const currentExp = petData.exp || 0;
+    const currentLevel = petData.level || 1;
+    
+    // 计算下一级所需经验值 - 修复计算逻辑
+    const nextLevelExp = (currentLevel + 1) * 100; // 下一级所需的总经验值
+    
+    // 计算当前等级的经验进度
+    const currentLevelBaseExp = currentLevel * 100; // 当前等级的起始经验值
+    const currentLevelExp = Math.max(0, currentExp - (currentLevel - 1) * 100); // 当前等级内的经验值
+    const expForThisLevel = currentLevel * 100; // 当前等级需要的总经验值
     const expProgress = expForThisLevel > 0 ? Math.round((currentLevelExp / expForThisLevel) * 100) : 0;
     
-    console.log('📊 宠物数据更新:', {
-      level: petData.level,
-      exp: petData.exp,
-      nextLevelExp: nextLevelExp,
-      expProgress: expProgress,
-      companionDays: petData.companionDays,
-      totalExp: petData.totalExp,
-      shouldLevelUp: petData.exp >= nextLevelExp
+    console.log('📊 经验值计算详情:', {
+      '数据库经验值': currentExp,
+      '当前等级': currentLevel,
+      '当前等级基础经验': currentLevelBaseExp,
+      '当前等级内经验': currentLevelExp,
+      '升级所需经验': expForThisLevel,
+      '进度百分比': expProgress,
+      '下一级总经验': nextLevelExp,
+      '总经验值': petData.totalExp,
+      '是否应该升级': currentExp >= nextLevelExp
     });
     
-    // 检查是否应该升级
-    if (petData.exp >= nextLevelExp) {
-      console.log('🎊 检测到应该升级，触发升级逻辑...');
+    // 检查是否应该升级 - 修复升级判断逻辑
+    const requiredExpForNextLevel = (currentLevel + 1) * 100;
+    if (currentExp >= requiredExpForNextLevel) {
+      console.log('🎊 检测到应该升级，触发升级逻辑...', {
+        '当前经验': currentExp,
+        '升级所需': requiredExpForNextLevel,
+        '当前等级': currentLevel
+      });
       this.triggerLevelUp(petData);
       return;
     }
     
+    // 确保经验值显示与数据库同步
     this.setData({
       petInfo: {
         name: petData.pet_name || '小绿',
-        level: petData.level,
-        stage: petData.stage || 'baby', // 添加stage属性
-        mood: petData.mood || 'happy', // 添加mood属性
-        action: petData.action || 'idle', // 添加action属性
-        health: petData.health,
-        vitality: petData.vitality,
-        intimacy: petData.intimacy,
-        exp: petData.exp,
+        level: currentLevel,
+        stage: petData.stage || 'baby',
+        mood: petData.mood || 'happy',
+        action: petData.action || 'idle',
+        health: petData.health || 100,
+        vitality: petData.vitality || 100,
+        intimacy: petData.intimacy || 50,
+        exp: currentExp, // 使用数据库中的实际经验值
         nextLevelExp: nextLevelExp,
         avatar: petData.avatar || '/images/pets/default-pet.png',
         statusText: this.getPetStatusText(petData),
         companionDays: petData.companionDays !== undefined ? petData.companionDays : 0,
-        totalExp: petData.totalExp !== undefined ? petData.totalExp : 0
+        totalExp: petData.totalExp !== undefined ? petData.totalExp : currentExp // 如果没有totalExp，使用当前经验值
       },
-      expProgress: expProgress
+      expProgress: Math.max(0, Math.min(100, expProgress)) // 确保进度在0-100之间
+    });
+    
+    console.log('✅ 更新后的界面数据:', {
+      '显示经验值': currentExp,
+      '显示等级': currentLevel,
+      '显示进度': expProgress,
+      '总经验值': petData.totalExp !== undefined ? petData.totalExp : currentExp
     });
   },
 
   // 触发升级
   triggerLevelUp(petData) {
-    console.log('🚀 开始升级流程...');
+    console.log('🚀 开始升级流程...', {
+      '当前等级': petData.level,
+      '当前经验': petData.exp,
+      '总经验': petData.totalExp
+    });
+    
     wx.showLoading({ title: '升级中...' });
     
     wx.cloud.callFunction({
@@ -246,19 +273,36 @@ Page({
       success: (res) => {
         console.log('✅ 升级结果:', res.result);
         if (res.result.success) {
-          // 重新加载宠物数据
-          this.loadPetData();
-          
-          // 显示升级动画
-          setTimeout(() => {
-            this.showLevelUpAnimation();
-          }, 1000);
+          // 显示升级成功提示
+          wx.showModal({
+            title: '🎉 升级成功！',
+            content: res.result.data.message,
+            showCancel: false,
+            confirmText: '太棒了！',
+            success: () => {
+              // 重新加载宠物数据
+              this.loadPetData();
+              
+              // 显示升级动画
+              setTimeout(() => {
+                this.showLevelUpAnimation();
+              }, 500);
+            }
+          });
         } else {
           console.error('❌ 升级失败:', res.result.error);
+          wx.showToast({
+            title: res.result.error || '升级失败',
+            icon: 'none'
+          });
         }
       },
       fail: (err) => {
         console.error('❌ 升级调用失败:', err);
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'none'
+        });
       },
       complete: () => {
         wx.hideLoading();
@@ -507,12 +551,61 @@ Page({
     
     this.setData({ isFeeding: true });
     
-    // 触发宠物喂食动画
+    // 检查当前宠物状态，判断是否过度喂食
+    const currentPetInfo = this.data.petInfo;
+    const isOverfed = currentPetInfo.health >= 100 && currentPetInfo.vitality >= 100;
+    
+    // 先触发宠物喂食动画
     const petComponent = this.selectComponent('#mainPet');
     if (petComponent) {
-      petComponent.feed();
+      petComponent.feed(isOverfed);
     }
     
+    // 临时本地模拟方案（解决云函数网络问题）
+    const useLocalSimulation = true; // 云函数修复后设置为 false
+    
+    if (useLocalSimulation) {
+      console.log('🔧 使用本地模拟喂食（临时方案）');
+      
+      wx.showLoading({ title: '喂食中...' });
+      
+      // 模拟网络延迟
+      setTimeout(() => {
+        const newHealth = Math.min(currentPetInfo.health + 15, 100);
+        const newVitality = Math.min(currentPetInfo.vitality + 10, 100);
+        
+        // 更新本地状态
+        this.setData({
+          'petInfo.health': newHealth,
+          'petInfo.vitality': newVitality,
+          'petInfo.statusText': this.getPetStatusText({ 
+            health: newHealth, 
+            vitality: newVitality, 
+            intimacy: currentPetInfo.intimacy 
+          })
+        });
+        
+        // 根据是否过度喂食显示不同消息
+        const message = isOverfed ? '我已经吃饱了，不能再吃了...' : '谢谢主人！好好吃！';
+        this.setData({ petMessage: message });
+        
+        wx.showToast({
+          title: isOverfed ? '宠物已经吃饱了' : '喂食成功！',
+          icon: isOverfed ? 'none' : 'success'
+        });
+        
+        setTimeout(() => {
+          this.setData({ petMessage: '' });
+        }, 3000);
+        
+        wx.hideLoading();
+        this.setData({ isFeeding: false });
+      }, 800);
+      
+      return;
+    }
+    
+    // 原有的云函数调用逻辑
     wx.showLoading({ title: '喂食中...' });
     
     wx.cloud.callFunction({
@@ -524,14 +617,16 @@ Page({
         if (res.result.success) {
           wx.showToast({
             title: res.result.data.message || '喂食成功！',
-            icon: 'success'
+            icon: isOverfed ? 'none' : 'success'
           });
           
           // 更新本地宠物状态
           this.updatePetStatusFromFeed(res.result.data);
           
+          // 根据是否过度喂食显示不同消息
+          const message = isOverfed ? '我已经吃饱了，不能再吃了...' : '谢谢主人！好好吃！';
           this.setData({
-            petMessage: '谢谢主人！好好吃！'
+            petMessage: message
           });
           
           // 延迟刷新宠物数据以获取最新经验值
@@ -541,7 +636,7 @@ Page({
           
           setTimeout(() => {
             this.setData({ petMessage: '' });
-          }, 2000);
+          }, 3000);
         } else {
           wx.showToast({
             title: res.result.error,
@@ -664,12 +759,6 @@ Page({
 
   // 带宠物散步
   walkWithPet() {
-    // 触发宠物散步动画
-    const petComponent = this.selectComponent('#mainPet');
-    if (petComponent) {
-      petComponent.walk();
-    }
-    
     wx.showLoading({ title: '散步中...' });
     
     wx.cloud.callFunction({
@@ -679,6 +768,12 @@ Page({
       },
       success: (res) => {
         if (res.result.success) {
+          // 触发宠物散步动画
+          const petComponent = this.selectComponent('#mainPet');
+          if (petComponent) {
+            petComponent.walkWithPet();
+          }
+          
           wx.showToast({
             title: res.result.data.message || '散步完成！',
             icon: 'success'
@@ -721,12 +816,6 @@ Page({
 
   // 和宠物玩游戏
   playGame() {
-    // 触发宠物游戏动画
-    const petComponent = this.selectComponent('#mainPet');
-    if (petComponent) {
-      petComponent.playGame();
-    }
-    
     wx.showLoading({ title: '游戏中...' });
     
     wx.cloud.callFunction({
@@ -736,6 +825,12 @@ Page({
       },
       success: (res) => {
         if (res.result.success) {
+          // 触发宠物游戏动画
+          const petComponent = this.selectComponent('#mainPet');
+          if (petComponent) {
+            petComponent.playGame();
+          }
+          
           wx.showToast({
             title: res.result.data.message || '游戏完成！',
             icon: 'success'

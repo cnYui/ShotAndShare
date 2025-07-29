@@ -15,11 +15,23 @@ package-lock.json
 # 微信小程序相关
 project.private.config.json
 .cloudbase/
+miniprogram_npm/
+*.wxapkg
 
-# 云函数构建产物
-cloudfunctions/**/node_modules/
+# 小程序开发工具生成的文件
+.tea/
+.vscode/settings.json
+
+# 小程序云开发
+.tcb_cache/
 cloudfunctions/**/.tcb_cache/
+cloudfunctions/**/node_modules/
 cloudfunctions/**/package-lock.json
+
+# 图片资源（已迁移到云存储）
+# pet_images/ - 已删除，图片已上传到云存储
+
+# 云函数构建产物（已在上面微信小程序相关部分包含）
 
 # 日志文件
 logs/
@@ -63,3 +75,29 @@ build/
 *.pid
 *.seed
 *.pid.lock
+
+# 小程序特有文件
+sitemap.json.bak
+app.json.bak
+project.config.json.bak
+
+# 微信开发者工具缓存
+.wechat_devtools/
+
+# 性能分析文件
+*.cpuprofile
+*.heapprofile
+
+# 调试文件
+debug.log
+console.log
+
+# 压缩包
+*.zip
+*.tar.gz
+*.rar
+
+# 文档临时文件
+~$*.docx
+~$*.xlsx
+~$*.pptx

@@ -1,9 +1,15 @@
 /* 动态宠物组件样式 */
+.pet-wrapper {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  margin: 0 auto;
+}
+
 .pet-container {
   position: relative;
-  width: 200rpx;
-  height: 200rpx;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,11 +77,11 @@
   50% { transform: rotate(10deg); }
 }
 
-/* 行走动画 */
+/* 行走动画 - 减小弹跳幅度保持一致性 */
 @keyframes walkBounce {
   0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-5rpx); }
-  75% { transform: translateY(-5rpx); }
+  25% { transform: translateY(-3rpx); }
+  75% { transform: translateY(-3rpx); }
 }
 
 /* 修复行走时的位移问题 - 移除transform冲突 */
@@ -89,14 +95,14 @@
 
 @keyframes walkBodyBounce {
   0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-5rpx); }
-  75% { transform: translateY(-5rpx); }
+  25% { transform: translateY(-3rpx); }
+  75% { transform: translateY(-3rpx); }
 }
 
 /* 跳跃动画 */
 @keyframes jumpBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20rpx); }
+  50% { transform: translateY(-12rpx); }
 }
 
 /* 进食动画 */
@@ -109,6 +115,41 @@
 @keyframes blinkAnimation {
   0%, 90%, 100% { opacity: 1; }
   95% { opacity: 0.1; }
+}
+
+/* 眨眼状态 */
+.pet-eyes.blinking {
+  transition: opacity 0.1s ease;
+}
+
+/* 过度喂食表情动画 */
+.pet-container.mood-overfed {
+  animation: overfedShake 0.5s ease-in-out 3;
+}
+
+@keyframes overfedShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2rpx); }
+  75% { transform: translateX(2rpx); }
+}
+
+/* 修复laydown时的眼睛和表情位置 */
+.pet-container.laydown .pet-eyes {
+  transform: translateY(-3rpx);
+}
+
+.pet-container.laydown .pet-cheeks {
+  transform: translateY(-2rpx);
+}
+
+.pet-container.laydown .pet-mouth {
+  transform: translateY(-2rpx);
+}
+
+/* 修复laydown时尾巴的朝向问题 */
+.pet-container.laydown .pet-tail {
+  /* 移除强制翻转，让尾巴跟随宠物整体方向 */
+  transform: scaleX(-1);
 }
 
 /* 互动效果层 */
@@ -276,8 +317,8 @@
   }
 }
 
-/* 等级徽章 */
-.pet-level-badge {
+/* 等级徽章 - 现在相对于wrapper定位，不会受到container翻转影响 */
+.pet-wrapper .pet-level-badge {
   position: absolute;
   top: -20rpx;
   right: -20rpx;
@@ -289,8 +330,15 @@
   font-weight: bold;
   box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
   z-index: 20;
-  /* 确保等级牌子不会跟着宠物翻转 */
-  transform: scaleX(1) !important;
+  /* 等级牌子始终保持正向，不受宠物翻转影响 */
+  transform: none !important;
+  transition: none !important;
+}
+
+.pet-wrapper .pet-level-badge .level-text {
+  display: inline-block;
+  /* 文字始终保持正向 */
+  transform: none !important;
 }
 
 .level-text {
@@ -298,30 +346,30 @@
   font-weight: bold;
 }
 
-/* 宠物生命阶段样式 - 统一为默认大小 */
-.pet-container.stage-egg {
-  width: 200rpx;
-  height: 200rpx;
+/* 宠物生命阶段样式 - 统一为较小的尺寸 */
+.pet-wrapper.stage-egg {
+  width: 160rpx;
+  height: 160rpx;
 }
 
-.pet-container.stage-baby {
-  width: 200rpx;
-  height: 200rpx;
+.pet-wrapper.stage-baby {
+  width: 160rpx;
+  height: 160rpx;
 }
 
-.pet-container.stage-child {
-  width: 200rpx;
-  height: 200rpx;
+.pet-wrapper.stage-child {
+  width: 160rpx;
+  height: 160rpx;
 }
 
-.pet-container.stage-adult {
-  width: 200rpx;
-  height: 200rpx;
+.pet-wrapper.stage-adult {
+  width: 160rpx;
+  height: 160rpx;
 }
 
-.pet-container.stage-elder {
-  width: 200rpx;
-  height: 200rpx;
+.pet-wrapper.stage-elder {
+  width: 160rpx;
+  height: 160rpx;
 }
 
 /* 所有阶段眼睛位置调整 */
@@ -361,12 +409,12 @@
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
-  .pet-container {
+  .pet-wrapper {
     width: 160rpx;
     height: 160rpx;
   }
   
-  .pet-container.stage-adult {
+  .pet-wrapper.stage-adult {
     width: 160rpx;
     height: 160rpx;
   }

@@ -5,9 +5,7 @@
     "pages/tasks/tasks",
     "pages/chat/chat",
     "pages/data/data",
-    "pages/profile/profile",
-    "pages/test/test",
-    "pages/test-egg/test-egg"
+    "pages/profile/profile"
   ],
   "window": {
     "backgroundColor": "#A3D39C",

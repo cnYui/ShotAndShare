@@ -131,12 +131,12 @@ Component({
     setDefaultPet() {
       this.setData({
         level: 1,
-        stage: 'egg',
+        stage: 'baby', // 默认从baby阶段开始，避免child图片问题
         mood: 'happy',
-        action: 'idle',
-        containerStyle: 'transform: translateX(0rpx) scaleX(1);'
+        action: 'idle'
       });
       this.updateImages();
+      this.updateStyles();
     },
     
     // 宠物数据变化监听
@@ -191,9 +191,9 @@ Component({
     // 更新图片资源
     updateImages() {
       const { stage, mood, action } = this.data;
-      const basePath = '/pet_images';
+      const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
       
-      // 身体图片
+      // 身体图片 - 优先处理特殊动作，避免默认图片覆盖
       let bodyImage;
       if (stage === 'egg') {
         bodyImage = `${basePath}/egg1_Normal@2x.png`;
@@ -212,12 +212,18 @@ Component({
         // 只有adult阶段支持laydown动作
         if (stage === 'adult') {
           bodyImage = `${basePath}/layDownAdult1_Normal@2x.png`;
+        } else {
+          // 其他阶段在laydown或sleeping状态下使用默认身体图片
+          if (stage === 'baby') {
+            bodyImage = `${basePath}/babyBody_Normal@2x.png`;
+          } else if (stage === 'child') {
+            bodyImage = `${basePath}/childBody_Normal@2x.png`;
+          } else if (stage === 'elder') {
+            bodyImage = `${basePath}/elderBody_Normal@2x.png`;
+          }
         }
-        // 其他阶段在laydown或sleeping状态下使用默认身体图片
-      }
-      
-      // 处理各阶段的默认身体图片
-      if (!bodyImage) {
+      } else {
+        // 处理各阶段的默认身体图片
         if (stage === 'baby') {
           bodyImage = `${basePath}/babyBody_Normal@2x.png`;
         } else if (stage === 'child') {
@@ -229,7 +235,7 @@ Component({
         }
       }
       
-      // 脸颊图片
+      // 脸颊图片 - 增加更多表情状态
       let cheeksImage = '';
       if (stage !== 'egg') {
         if (mood === 'sick') {
@@ -242,17 +248,33 @@ Component({
           } else if (stage === 'elder') {
             cheeksImage = `${basePath}/elderCheeksUnhealthy_Normal@2x.png`;
           }
-        } else if (mood === 'excited') {
+        } else if (mood === 'excited' || mood === 'happy') {
+          // 开心时使用粉色脸颊
           if (stage === 'baby') {
             cheeksImage = `${basePath}/babyCheeksPink_Normal@2x.png`;
           } else if (stage === 'child') {
             cheeksImage = `${basePath}/childCheeksPink_Normal@2x.png`;
           } else if (stage === 'adult') {
-            cheeksImage = `${basePath}/cheeksPink_Normal@2x.png`;
+            cheeksImage = `${basePath}/cheeksFlush_Normal@2x.png`; // 使用开心表情
           } else if (stage === 'elder') {
             cheeksImage = `${basePath}/elderCheeksPink_Normal@2x.png`;
           }
+        } else if (mood === 'overfed') {
+          // 喂食过多时的表情
+          if (stage === 'adult') {
+            cheeksImage = `${basePath}/cheeksOvereat_Normal@2x.png`;
+          } else if (stage === 'child') {
+            cheeksImage = `${basePath}/childCheeksPink_Normal@2x.png`;
+          } else if (stage === 'baby') {
+            cheeksImage = `${basePath}/babyCheeksPink_Normal@2x.png`;
+          } else if (stage === 'elder') {
+            cheeksImage = `${basePath}/elderCheeksPink_Normal@2x.png`;
+          }
+        } else if (action === 'laydown' && stage === 'adult') {
+          // laydown动作时使用相应的表情
+          cheeksImage = `${basePath}/cheeksNeutral_Normal@2x.png`;
         } else {
+          // 默认表情
           if (stage === 'baby') {
             cheeksImage = `${basePath}/babyCheeks_Normal@2x.png`;
           } else if (stage === 'child') {
@@ -265,36 +287,39 @@ Component({
         }
       }
       
-      // 眼睛图片
+      // 眼睛图片 - 支持眨眼动画
       let eyesImage = '';
       if (stage !== 'egg') {
-        if (mood === 'sleeping') {
+        if (mood === 'sleeping' || action === 'laydown') {
+          // 睡觉或趴下时闭眼
           if (stage === 'baby') {
             eyesImage = `${basePath}/babyEyesBlink_Normal@2x.png`;
           } else if (stage === 'child') {
             eyesImage = `${basePath}/childEyesBlink_Normal@2x.png`;
           } else if (stage === 'adult') {
-            eyesImage = `${basePath}/eyesClosed_Normal@2x.png`;
+            eyesImage = `${basePath}/childEyesBlink_Normal@2x.png`; // 使用child的眼睛图片
           } else if (stage === 'elder') {
             eyesImage = `${basePath}/elderEyesClosed_Normal@2x.png`;
           }
         } else if (mood === 'sick') {
+          // 生病时的眼睛
           if (stage === 'baby') {
             eyesImage = `${basePath}/babyEyes_Normal@2x.png`;
           } else if (stage === 'child') {
             eyesImage = `${basePath}/childEyesDead_Normal@2x.png`;
           } else if (stage === 'adult') {
-            eyesImage = `${basePath}/eyesDead_Normal@2x.png`;
+            eyesImage = `${basePath}/childEyesDead_Normal@2x.png`; // 使用child的眼睛图片
           } else if (stage === 'elder') {
             eyesImage = `${basePath}/elderEyesOpen_Normal@2x.png`;
           }
         } else {
+          // 正常睁眼状态
           if (stage === 'baby') {
             eyesImage = `${basePath}/babyEyes_Normal@2x.png`;
           } else if (stage === 'child') {
             eyesImage = `${basePath}/childEyes_Normal@2x.png`;
           } else if (stage === 'adult') {
-            eyesImage = `${basePath}/eyesOpen_Normal@2x.png`;
+            eyesImage = `${basePath}/childEyes_Normal@2x.png`; // 使用child的眼睛图片
           } else if (stage === 'elder') {
             eyesImage = `${basePath}/elderEyesOpen_Normal@2x.png`;
           }
@@ -347,22 +372,34 @@ Component({
         }
       }
       
-      // 尾巴图片
+      // 尾巴图片 - 支持laydown状态的专门图片
       let tailImage = '';
       if (stage !== 'egg') {
-        if (mood === 'excited' || mood === 'happy') {
-          tailImage = `${basePath}/wag1_Normal@2x.png`;
-        } else if (mood === 'sad') {
+        if (action === 'laydown' || action === 'sleeping') {
+          // laydown时使用专门的TailDown图片
           if (stage === 'baby') {
-            tailImage = `${basePath}/babyTail1_Normal@2x.png`;
+            tailImage = `${basePath}/babyTailDown_Normal@2x.png`;
           } else if (stage === 'child') {
             tailImage = `${basePath}/childTailDown_Normal@2x.png`;
           } else if (stage === 'adult') {
-            tailImage = `${basePath}/tailNeutral_Normal@2x.png`;
+            tailImage = `${basePath}/tailNeutral_Normal@2x.png`; // adult没有tailDown，使用neutral
+          } else if (stage === 'elder') {
+            tailImage = `${basePath}/elderTailDown_Normal@2x.png`;
+          }
+        } else if (mood === 'excited' || mood === 'happy') {
+          tailImage = `${basePath}/wag1_Normal@2x.png`;
+        } else if (mood === 'sad') {
+          if (stage === 'baby') {
+            tailImage = `${basePath}/babyTailDown_Normal@2x.png`;
+          } else if (stage === 'child') {
+            tailImage = `${basePath}/childTailDown_Normal@2x.png`;
+          } else if (stage === 'adult') {
+            tailImage = `${basePath}/tailNeutral_Normal@2x.png`; // adult没有tailDown，使用neutral
           } else if (stage === 'elder') {
             tailImage = `${basePath}/elderTailDown_Normal@2x.png`;
           }
         } else {
+          // 默认状态的尾巴
           if (stage === 'baby') {
             tailImage = `${basePath}/babyTail1_Normal@2x.png`;
           } else if (stage === 'child') {
@@ -417,20 +454,29 @@ Component({
         petClass += ` ${action}`;
       }
       
+      // 添加尺寸类
+      let sizeClass = '';
+      if (size === 'small') {
+        sizeClass = 'size-small';
+      } else if (size === 'large') {
+        sizeClass = 'size-large';
+      }
+      
+      if (sizeClass) {
+        petClass += ` ${sizeClass}`;
+      }
+      
       // 容器尺寸样式 - 保留walkPosition的transform
       let containerStyle = '';
       
       // 构建transform样式，保留位移和方向
       const translateX = walkPosition || 0;
       const scaleX = walkDirection === 'right' ? 'scaleX(-1)' : 'scaleX(1)';
-      let scaleY = 'scaleY(1)';
       
       // 处理尺寸缩放
       if (size === 'small') {
-        scaleY = 'scaleY(0.8)';
         containerStyle = `transform: translateX(${translateX}rpx) ${scaleX} scale(0.8);`;
       } else if (size === 'large') {
-        scaleY = 'scaleY(1.2)';
         containerStyle = `transform: translateX(${translateX}rpx) ${scaleX} scale(1.2);`;
       } else {
         containerStyle = `transform: translateX(${translateX}rpx) ${scaleX};`;
@@ -438,6 +484,7 @@ Component({
       
       this.setData({
         petClass,
+        wrapperClass: `stage-${stage}`, // 新增wrapper的class
         containerStyle
       });
     },
@@ -470,23 +517,51 @@ Component({
       }
     },
     
-    // 眨眼动画
+    // 眨眼动画 - 通过切换图片实现
     startBlinkAnimation() {
       const blinkTimer = setInterval(() => {
-        if (this.data.mood !== 'sleeping' && this.data.stage !== 'egg') {
-          this.setData({
-            eyesClass: 'blinking'
-          });
-          
-          setTimeout(() => {
-            this.setData({
-              eyesClass: ''
-            });
-          }, 200);
+        if (this.data.mood !== 'sleeping' && this.data.stage !== 'egg' && this.data.action !== 'laydown') {
+          this.performBlink();
         }
       }, 3000 + Math.random() * 2000); // 3-5秒随机眨眼
       
       this.setData({ blinkTimer });
+    },
+
+    // 执行眨眼动作
+    performBlink() {
+      const { stage } = this.data;
+      const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
+      
+      // 保存当前眼睛图片
+      const originalEyesImage = this.data.eyesImage;
+      
+      // 切换到闭眼图片
+      let blinkEyesImage = '';
+      if (stage === 'baby') {
+        blinkEyesImage = `${basePath}/babyEyesBlink_Normal@2x.png`;
+      } else if (stage === 'child') {
+        blinkEyesImage = `${basePath}/childEyesBlink_Normal@2x.png`;
+      } else if (stage === 'adult') {
+        blinkEyesImage = `${basePath}/eyesClosed_Normal@2x.png`;
+      } else if (stage === 'elder') {
+        blinkEyesImage = `${basePath}/elderEyesClosed_Normal@2x.png`;
+      }
+      
+      if (blinkEyesImage) {
+        this.setData({
+          eyesImage: blinkEyesImage,
+          eyesClass: 'blinking'
+        });
+        
+        // 200ms后恢复睁眼
+        setTimeout(() => {
+          this.setData({
+            eyesImage: originalEyesImage,
+            eyesClass: ''
+          });
+        }, 200);
+      }
     },
     
     // 随机动作
@@ -553,20 +628,61 @@ Component({
       }, duration);
     },
     
-    // 喂食动画
-    feed() {
-      this.performAction('eating', 3000);
+    // 喂食动画 - 不打断行走，支持过度喂食表情
+    feed(isOverfed = false) {
+      // 如果过度喂食，设置特殊表情
+      if (isOverfed) {
+        this.setData({ mood: 'overfed' });
+        this.updateImages();
+        
+        // 开始监听宠物状态变化，当健康值或活力值不再是100时恢复表情
+        this.startOverfedMonitoring();
+      }
+      
+      // 直接设置eating动作和更新图片，不调用performAction避免干扰走路
+      this.setData({ action: 'eating' });
+      this.updateImages();
+      
       this.showEffect('food', 1500);
       
-      // 显示爱心效果
-      setTimeout(() => {
-        this.showEffect('heart', 2000);
-      }, 1000);
+      // 显示爱心效果（如果不是过度喂食）
+      if (!isOverfed) {
+        setTimeout(() => {
+          this.showEffect('heart', 2000);
+        }, 1000);
+      }
+      
+      // 3秒后恢复idle状态
+      const feedTimer = setTimeout(() => {
+        this.setData({ action: 'idle' });
+        this.updateImages();
+      }, 3000);
+      
+      this.setData({ animationTimer: feedTimer });
+    },
+
+    // 开始监听过度喂食状态
+    startOverfedMonitoring() {
+      // 每5秒检查一次宠物状态
+      const checkOverfedStatus = () => {
+        const petData = this.data.petData;
+        if (petData && (petData.health < 100 || petData.vitality < 100)) {
+          // 健康值或活力值不再是100，恢复正常表情
+          this.setData({ mood: 'happy' });
+          this.updateImages();
+          return; // 停止监听
+        }
+        
+        // 继续监听
+        setTimeout(checkOverfedStatus, 5000);
+      };
+      
+      // 开始监听
+      setTimeout(checkOverfedStatus, 5000);
     },
     
-    // 互动动画
+    // 互动动画 - 不打断行走
     play() {
-      this.performAction('happy', 3000);
       this.showEffect('heart', 2000);
       
       // 摇尾巴效果
@@ -581,6 +697,8 @@ Component({
           });
         }, 3000);
       }
+      
+      // 不需要暂停和恢复走动，让宠物继续行走
     },
     
     // 行走动画（手动触发）
@@ -602,7 +720,7 @@ Component({
       let frameIndex = 1;
       let walkDirection = 1; // 1为向右，-1为向左
       let currentPosition = 0; // 当前位置
-      const basePath = '/pet_images';
+      const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
       const { stage } = this.data;
       const maxDistance = 100; // 最大移动距离(rpx)
       
@@ -673,9 +791,28 @@ Component({
       }, 5000);
     },
     
-    // 跳跃动画
+    // 跳跃动画 - 保持当前方向并重置位置
     jump() {
+      // 暂停自动走动
+      this.pauseAutoWalk();
+      
+      // 保存当前方向，跳跃后不改变方向
+      const currentDirection = this.data.walkDirection;
       this.performAction('jumping', 2000);
+      
+      // 确保跳跃后保持原来的方向并重置位置到中心
+      setTimeout(() => {
+        this.setData({ 
+          walkDirection: currentDirection,
+          walkPosition: 0  // 重置位置到中心
+        });
+        this.updateStyles();
+        
+        // 恢复自动走动
+        setTimeout(() => {
+          this.resumeAutoWalk();
+        }, 500);
+      }, 2100);
     },
     
     // 趴下动画 - 只有adult阶段支持
@@ -691,7 +828,7 @@ Component({
       this.setData({ action: 'laydown' });
       
       let frameIndex = 1;
-      const basePath = '/pet_images';
+      const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
       
       const animateLayDown = () => {
         this.setData({
@@ -726,10 +863,17 @@ Component({
       }, 4000);
     },
     
-    // 游戏动画
+    // 游戏动画 - 不打断行走
     playGame() {
       this.showEffect('laser', 3000);
-      this.performAction('jumping', 3000); // 游戏时跳跃
+      // 不需要暂停和恢复走动，让宠物继续行走
+    },
+
+    // 散步动画 - 不打断行走
+    walkWithPet() {
+      // 散步时不需要特殊处理，让宠物继续正常行走即可
+      // 可以显示一些特效表示在散步
+      this.showEffect('heart', 2000);
     },
     
     // 便便动画
@@ -766,7 +910,7 @@ Component({
       
       const animateEggCrack = () => {
         const { eggCrackFrame } = this.data;
-        const basePath = '/pet_images';
+        const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
         
         if (eggCrackFrame <= 13) {
           // 更新蛋的图片
@@ -867,11 +1011,46 @@ Component({
       this.setData({
         walkPosition: 0,
         walkDirection: 'right',
-        action: 'idle',
-        containerStyle: 'transform: translateX(0rpx) scaleX(1);'
+        action: 'idle'
       });
+      // 更新样式以应用重置的位置
+      this.updateStyles();
       this.updateImages();
       this.updateStyles();
+    },
+
+    // 暂停自动走动（保持当前位置）
+    pauseAutoWalk() {
+      if (!this.data.isAutoWalking) return;
+      
+      // 清除定时器但保持状态
+      if (this.data.autoWalkTimer) {
+        clearTimeout(this.data.autoWalkTimer);
+      }
+      if (this.data.behaviorTimer) {
+        clearTimeout(this.data.behaviorTimer);
+      }
+      if (this.data.layDownTimer) {
+        clearTimeout(this.data.layDownTimer);
+      }
+      
+      // 设置为idle状态但保持位置
+      this.setData({ 
+        action: 'idle',
+        autoWalkTimer: null,
+        behaviorTimer: null,
+        layDownTimer: null
+      });
+      this.updateImages();
+    },
+
+    // 恢复自动走动
+    resumeAutoWalk() {
+      if (!this.data.isAutoWalking) return;
+      
+      // 恢复自动走动
+      this.performAutoWalk();
+      this.scheduleRandomLayDown();
     },
     
     // 执行自动走动
@@ -887,7 +1066,7 @@ Component({
       let walkDirection = this.data.walkDirection === 'right' ? 1 : -1;
       let currentPosition = this.data.walkPosition;
       const { stage } = this.data;
-      const basePath = '/pet_images';
+      const basePath = 'cloud://cloud1-6g4qsd2kcddd1be0.636c-cloud1-6g4qsd2kcddd1be0-1370408816/pet_images';
       const maxDistance = 150; // 最大移动距离(rpx)
       const walkSpeed = 8; // 移动速度
       
@@ -934,7 +1113,17 @@ Component({
         
         const direction = walkDirection > 0 ? 'right' : 'left';
         const scaleX = direction === 'right' ? 'scaleX(-1)' : 'scaleX(1)';
-        const transformStyle = `translateX(${currentPosition}rpx) ${scaleX}`;
+        
+        // 保持尺寸缩放设置
+        const { size } = this.data;
+        let transformStyle;
+        if (size === 'small') {
+          transformStyle = `translateX(${currentPosition}rpx) ${scaleX} scale(0.8)`;
+        } else if (size === 'large') {
+          transformStyle = `translateX(${currentPosition}rpx) ${scaleX} scale(1.2)`;
+        } else {
+          transformStyle = `translateX(${currentPosition}rpx) ${scaleX}`;
+        }
         
         const updateData = {
           bodyImage: walkImagePath,

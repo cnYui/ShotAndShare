@@ -1,4 +1,10 @@
 <!--动态宠物组件-->
+<view class="pet-wrapper {{wrapperClass}}">
+  <!-- 宠物等级显示 - 移到容器外部避免翻转 -->
+  <view class="pet-level-badge" wx:if="{{showLevel}}">
+    <text class="level-text">Lv.{{level}}</text>
+  </view>
+  
 <view class="pet-container {{petClass}}" style="{{containerStyle}}">
   <!-- 宠物身体 -->
   <view class="pet-body-layer">
@@ -99,8 +105,5 @@
     ></image>
   </view>
   
-  <!-- 宠物等级显示 -->
-  <view class="pet-level-badge" wx:if="{{showLevel}}">
-    <text class="level-text">Lv.{{level}}</text>
-  </view>
+</view>
 </view>

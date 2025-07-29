@@ -331,7 +331,7 @@ async function updatePetStatus(userId, expReward) {
       const newExp = pet.exp + expReward;
       
       // 计算升级所需经验值
-      const expForNextLevel = pet.level * 100;
+      const expForNextLevel = (pet.level + 1) * 100;
       
       // 更新宠物经验值
       await db.collection('pets').doc(pet._id).update({

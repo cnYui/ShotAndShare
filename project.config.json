@@ -74,7 +74,21 @@
   "compileType": "miniprogram",
   "srcMiniprogramRoot": "miniprogram/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {"type": "glob", "value": "node_modules/**/*"},
+      {"type": "glob", "value": "cloudfunctions/**/*"},
+      {"type": "glob", "value": ".DS_Store"},
+      {"type": "glob", "value": "**/.DS_Store"},
+      {"type": "glob", "value": "*.log"},
+      {"type": "glob", "value": "**/*.log"},
+      {"type": "glob", "value": "doc/**/*"},
+      {"type": "glob", "value": "*.md"},
+      {"type": "glob", "value": "**/*.md"},
+      {"type": "glob", "value": ".git/**/*"},
+      {"type": "glob", "value": ".gitignore"},
+      {"type": "glob", "value": "*.sh"},
+      {"type": "glob", "value": "rules/**/*"}
+    ],
     "include": []
   },
   "editorSetting": {

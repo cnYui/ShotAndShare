@@ -93,16 +93,62 @@ async function getPetStatus(userId) {
     // 计算总经验值（从任务完成记录中统计）
     const totalExp = await calculateTotalExp(userId);
     
+    // 同步经验值到宠物表中
+    let needUpdate = false;
+    const updateData = {};
+    
+    // 如果总经验值与宠物表中的经验值不一致，需要更新
+    if (totalExp !== pet.exp) {
+      updateData.exp = totalExp;
+      needUpdate = true;
+      console.log('🔄 同步经验值:', { 
+        '数据库中的经验值': pet.exp, 
+        '计算出的总经验值': totalExp 
+      });
+    }
+    
+    // 检查是否需要自动升级
+    const currentLevel = pet.level || 1;
+    const requiredExpForNextLevel = (currentLevel + 1) * 100;
+    
+    if (totalExp >= requiredExpForNextLevel) {
+      // 计算新等级
+      let newLevel = currentLevel;
+      
+      // 计算应该达到的等级
+      while (totalExp >= (newLevel + 1) * 100) {
+        newLevel++;
+      }
+      
+      if (newLevel > currentLevel) {
+        updateData.level = newLevel;
+        updateData.exp = totalExp; // 保持总经验值
+        needUpdate = true;
+        console.log('🎊 自动升级:', { 
+          '原等级': currentLevel, 
+          '新等级': newLevel,
+          '总经验值': totalExp
+        });
+      }
+    }
+    
     // 如果状态值有变化，更新数据库
     if (realTimeStatus.health !== pet.health || 
         realTimeStatus.vitality !== pet.vitality) {
+      updateData.health = realTimeStatus.health;
+      updateData.vitality = realTimeStatus.vitality;
+      updateData.last_active = new Date();
+      needUpdate = true;
+    }
+    
+    // 执行数据库更新
+    if (needUpdate) {
       await db.collection('pets').doc(pet._id).update({
-        data: {
-          health: realTimeStatus.health,
-          vitality: realTimeStatus.vitality,
-          last_active: new Date()
-        }
+        data: updateData
       });
+      
+      // 更新pet对象以反映最新数据
+      Object.assign(pet, updateData);
     }
     
     return {
@@ -110,8 +156,9 @@ async function getPetStatus(userId) {
       data: {
         ...pet,
         ...realTimeStatus,
+        exp: totalExp, // 确保返回正确的经验值
         mood: calculateMood(realTimeStatus),
-        nextLevelExp: (pet.level * 100) - pet.exp,
+        nextLevelExp: ((pet.level || 1) + 1) * 100,
         companionDays: companionDays,
         totalExp: totalExp
       }
@@ -325,17 +372,26 @@ async function petLevelUp(userId) {
     }
     
     const pet = petQuery.data[0];
-    const requiredExp = pet.level * 100;
     
-    if (pet.exp < requiredExp) {
+    // 重新计算总经验值确保准确性
+    const totalExp = await calculateTotalExp(userId);
+    const currentLevel = pet.level || 1;
+    const requiredExpForNextLevel = (currentLevel + 1) * 100;
+    
+    console.log('🎯 升级检查:', {
+      '当前等级': currentLevel,
+      '总经验值': totalExp,
+      '升级所需经验': requiredExpForNextLevel
+    });
+    
+    if (totalExp < requiredExpForNextLevel) {
       return {
         success: false,
-        error: `经验不足，还需要 ${requiredExp - pet.exp} 经验值`
+        error: `经验不足，还需要 ${requiredExpForNextLevel - totalExp} 经验值`
       };
     }
     
-    const newLevel = pet.level + 1;
-    const remainingExp = pet.exp - requiredExp;
+    const newLevel = currentLevel + 1;
     
     // 升级奖励
     const levelUpRewards = {
@@ -347,7 +403,7 @@ async function petLevelUp(userId) {
     await db.collection('pets').doc(pet._id).update({
       data: {
         level: newLevel,
-        exp: remainingExp,
+        exp: totalExp, // 保持总经验值不变
         health: levelUpRewards.health,
         vitality: levelUpRewards.vitality,
         intimacy: levelUpRewards.intimacy,
@@ -355,12 +411,18 @@ async function petLevelUp(userId) {
       }
     });
     
+    console.log('🎊 升级成功:', {
+      '新等级': newLevel,
+      '总经验值': totalExp,
+      '奖励': levelUpRewards
+    });
+    
     return {
       success: true,
       data: {
         message: `恭喜！宠物升级到 ${newLevel} 级！`,
         newLevel: newLevel,
-        remainingExp: remainingExp,
+        totalExp: totalExp,
         rewards: levelUpRewards
       }
     };
