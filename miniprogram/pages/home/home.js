@@ -28,7 +28,9 @@ Page({
     loading: true,
     isDarkMode: false,
     themeClass: '',
-    texts: {}
+    texts: {},
+    showEditNameModal: false,
+    editPetName: ''
   },
 
   onLoad() {
@@ -189,44 +191,50 @@ Page({
   updatePetDisplay(petData) {
     console.log('🔍 原始宠物数据:', petData);
     
-    // 使用数据库中的实际经验值，而不是计算值
-    const currentExp = petData.exp || 0;
-    const currentLevel = petData.level || 1;
+    // 确保经验值为非负整数
+    const rawExp = petData.exp || 0;
+    const currentExp = Math.max(0, Math.floor(Number(rawExp) || 0));
+    const currentLevel = Math.max(1, Math.floor(Number(petData.level) || 1));
     
-    // 计算下一级所需经验值 - 修复计算逻辑
+    // 计算下一级所需经验值
+    const expForThisLevel = 100; // 每个等级需要100经验值
     const nextLevelExp = (currentLevel + 1) * 100; // 下一级所需的总经验值
     
     // 计算当前等级的经验进度
-    const currentLevelBaseExp = currentLevel * 100; // 当前等级的起始经验值
-    const currentLevelExp = Math.max(0, currentExp - (currentLevel - 1) * 100); // 当前等级内的经验值
-    const expForThisLevel = currentLevel * 100; // 当前等级需要的总经验值
-    const expProgress = expForThisLevel > 0 ? Math.round((currentLevelExp / expForThisLevel) * 100) : 0;
+    // 升级后，exp字段存储的是当前等级内的经验值（溢出经验）
+    const currentLevelExp = currentExp; // 直接使用exp字段作为当前等级内的经验
+    const expProgress = Math.max(0, Math.min(100, Math.round((currentLevelExp / expForThisLevel) * 100))); // 确保进度在0-100之间
     
     console.log('📊 经验值计算详情:', {
       '数据库经验值': currentExp,
       '当前等级': currentLevel,
-      '当前等级基础经验': currentLevelBaseExp,
       '当前等级内经验': currentLevelExp,
       '升级所需经验': expForThisLevel,
       '进度百分比': expProgress,
       '下一级总经验': nextLevelExp,
       '总经验值': petData.totalExp,
-      '是否应该升级': currentExp >= nextLevelExp
+      '是否应该升级': currentLevelExp >= expForThisLevel
     });
     
     // 检查是否应该升级 - 修复升级判断逻辑
-    const requiredExpForNextLevel = (currentLevel + 1) * 100;
-    if (currentExp >= requiredExpForNextLevel) {
+    // 当前等级内的经验值达到100时触发升级
+    if (currentLevelExp >= expForThisLevel) {
       console.log('🎊 检测到应该升级，触发升级逻辑...', {
-        '当前经验': currentExp,
-        '升级所需': requiredExpForNextLevel,
+        '当前等级内经验': currentLevelExp,
+        '升级所需': expForThisLevel,
         '当前等级': currentLevel
       });
       this.triggerLevelUp(petData);
       return;
     }
     
-    // 确保经验值显示与数据库同步
+    // 确保经验值显示与数据库同步，所有数值都为合法值
+    const safeHealth = Math.max(0, Math.min(100, Math.floor(Number(petData.health) || 100)));
+    const safeVitality = Math.max(0, Math.min(100, Math.floor(Number(petData.vitality) || 100)));
+    const safeIntimacy = Math.max(0, Math.min(100, Math.floor(Number(petData.intimacy) || 50)));
+    const safeCompanionDays = Math.max(0, Math.floor(Number(petData.companionDays) || 0));
+    const safeTotalExp = Math.max(0, Math.floor(Number(petData.totalExp) || currentExp));
+    
     this.setData({
       petInfo: {
         name: petData.pet_name || '小绿',
@@ -234,17 +242,17 @@ Page({
         stage: petData.stage || 'baby',
         mood: petData.mood || 'happy',
         action: petData.action || 'idle',
-        health: petData.health || 100,
-        vitality: petData.vitality || 100,
-        intimacy: petData.intimacy || 50,
-        exp: currentExp, // 使用数据库中的实际经验值
+        health: safeHealth,
+        vitality: safeVitality,
+        intimacy: safeIntimacy,
+        exp: currentExp, // 使用处理后的安全经验值
         nextLevelExp: nextLevelExp,
         avatar: petData.avatar || '/images/pets/default-pet.png',
         statusText: this.getPetStatusText(petData),
-        companionDays: petData.companionDays !== undefined ? petData.companionDays : 0,
-        totalExp: petData.totalExp !== undefined ? petData.totalExp : currentExp // 如果没有totalExp，使用当前经验值
+        companionDays: safeCompanionDays,
+        totalExp: safeTotalExp
       },
-      expProgress: Math.max(0, Math.min(100, expProgress)) // 确保进度在0-100之间
+      expProgress: expProgress // 已经在上面确保了0-100范围
     });
     
     console.log('✅ 更新后的界面数据:', {
@@ -588,6 +596,24 @@ Page({
         // 根据是否过度喂食显示不同消息
         const message = isOverfed ? '我已经吃饱了，不能再吃了...' : '谢谢主人！好好吃！';
         this.setData({ petMessage: message });
+        
+        // 如果过度喂食，触发宠物生病状态
+        if (isOverfed) {
+          // 更新宠物状态为生病
+          this.setData({
+            'petInfo.mood': 'overfed',
+            'petInfo.statusText': '吃撑了，感觉不舒服...'
+          });
+          
+          // 通知宠物组件更新外观
+          const petComponent = this.selectComponent('#mainPet');
+          if (petComponent) {
+            petComponent.updatePetAppearance({
+              ...this.data.petInfo,
+              mood: 'overfed'
+            });
+          }
+        }
         
         wx.showToast({
           title: isOverfed ? '宠物已经吃饱了' : '喂食成功！',
@@ -991,6 +1017,23 @@ Page({
     });
   },
 
+  // 处理宠物状态变化事件
+  onPetStatusChange(e) {
+    console.log('🐾 宠物状态变化:', e.detail);
+    const { mood, statusText } = e.detail;
+    
+    this.setData({
+      'petInfo.mood': mood,
+      'petInfo.statusText': statusText
+    });
+    
+    // 显示状态变化消息
+    this.setData({ petMessage: statusText });
+    setTimeout(() => {
+      this.setData({ petMessage: '' });
+    }, 3000);
+  },
+
   // 处理孵化事件
   onPetHatch(e) {
     console.log('🥚 宠物孵化事件:', e.detail);
@@ -1012,6 +1055,74 @@ Page({
   },
 
 
+
+  // 编辑宠物名字
+  editPetName() {
+    this.setData({
+      showEditNameModal: true,
+      editPetName: this.data.petInfo.name || ''
+    });
+  },
+
+  // 取消编辑
+  cancelEditName() {
+    this.setData({
+      showEditNameModal: false,
+      editPetName: ''
+    });
+  },
+
+  // 输入宠物名字
+  onPetNameInput(e) {
+    this.setData({
+      editPetName: e.detail.value
+    });
+  },
+
+  // 保存宠物名字
+  async savePetName() {
+    const newName = this.data.editPetName.trim();
+    if (!newName) {
+      wx.showToast({
+        title: '请输入宠物名字',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({ title: '保存中...' });
+      
+      const result = await wx.cloud.callFunction({
+        name: 'updatePetName',
+        data: {
+          petName: newName
+        }
+      });
+
+      if (result.result.success) {
+        this.setData({
+          'petInfo.name': newName,
+          showEditNameModal: false,
+          editPetName: ''
+        });
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+      } else {
+        throw new Error(result.result.error || '保存失败');
+      }
+    } catch (error) {
+      console.error('保存宠物名字失败:', error);
+      wx.showToast({
+        title: '保存失败',
+        icon: 'none'
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
 
   // 页面分享
   onShareAppMessage() {

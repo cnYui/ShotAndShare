@@ -866,3 +866,154 @@
   background: rgba(52, 73, 94, 0.9);
   color: #ecf0f1;
 }
+
+/* 主题切换按钮 */
+.theme-toggle {
+  position: fixed;
+  top: 20rpx;
+  right: 20rpx;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  font-size: 32rpx;
+}
+
+/* 编辑宠物名字模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  width: 600rpx;
+  max-width: 90%;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 40rpx 40rpx 20rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  padding: 40rpx;
+}
+
+.name-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 32rpx;
+  color: #333;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.name-input:focus {
+  border-color: #4CAF50;
+  background: white;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  height: 100rpx;
+  border: none;
+  font-size: 32rpx;
+  background: none;
+  border-radius: 0;
+}
+
+.cancel-btn {
+  color: #666;
+  border-right: 1rpx solid #f0f0f0;
+}
+
+.confirm-btn {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.cancel-btn:active {
+  background: #f5f5f5;
+}
+
+.confirm-btn:active {
+  background: #f0f8f0;
+}
+
+/* 暗色主题下的模态框样式 */
+.dark .modal-content {
+  background: #2d2d2d;
+}
+
+.dark .modal-title {
+  color: #fff;
+}
+
+.dark .modal-header,
+.dark .modal-footer {
+  border-color: #404040;
+}
+
+.dark .name-input {
+  background: #404040;
+  border-color: #555;
+  color: #fff;
+}
+
+.dark .name-input:focus {
+  background: #4a4a4a;
+  border-color: #4CAF50;
+}
+
+.dark .cancel-btn {
+  color: #ccc;
+  border-color: #404040;
+}
+
+.dark .cancel-btn:active {
+  background: #404040;
+}
+
+.dark .confirm-btn:active {
+  background: #2d4a2d;
+}

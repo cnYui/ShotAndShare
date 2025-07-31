@@ -104,7 +104,7 @@ async function initTasksData() {
     },
     {
       name: '早睡早起',
-      category: 'lifestyle',
+      category: 'sleep',
       target_value: 1,
       unit: '次',
       reward_exp: 25,
@@ -161,18 +161,66 @@ async function initTasksData() {
       reward_item: null,
       is_active: true,
       description: '每天阅读30分钟'
+    },
+    {
+      name: '晨间伸展',
+      category: 'daily',
+      target_value: 10,
+      unit: '分钟',
+      reward_exp: 15,
+      reward_item: null,
+      is_active: true,
+      description: '每天早晨进行10分钟伸展运动'
+    },
+    {
+      name: '睡前放松',
+      category: 'sleep',
+      target_value: 15,
+      unit: '分钟',
+      reward_exp: 20,
+      reward_item: null,
+      is_active: true,
+      description: '睡前15分钟放松活动，如听音乐或深呼吸'
+    },
+    {
+      name: '日常清洁',
+      category: 'daily',
+      target_value: 1,
+      unit: '次',
+      reward_exp: 10,
+      reward_item: null,
+      is_active: true,
+      description: '完成个人卫生清洁，如刷牙洗脸'
+    },
+    {
+      name: '充足睡眠',
+      category: 'sleep',
+      target_value: 8,
+      unit: '小时',
+      reward_exp: 30,
+      reward_item: null,
+      is_active: true,
+      description: '保证每天8小时充足睡眠'
     }
   ];
   
-  // 检查是否已有任务数据
-  const existingTasks = await db.collection('tasks').get();
-  
-  if (existingTasks.data.length === 0) {
-    // 批量插入任务数据
-    for (const task of defaultTasks) {
-      await db.collection('tasks').add({
-        data: task
-      });
+  // 清理现有任务数据，重新初始化
+  try {
+    // 删除所有现有任务
+    const existingTasks = await db.collection('tasks').get();
+    for (const task of existingTasks.data) {
+      await db.collection('tasks').doc(task._id).remove();
     }
+    console.log('已清理现有任务数据');
+  } catch (error) {
+    console.log('清理任务数据时出错:', error);
   }
+  
+  // 插入新的任务数据
+  for (const task of defaultTasks) {
+    await db.collection('tasks').add({
+      data: task
+    });
+  }
+  console.log('已初始化12个健康任务');
 }

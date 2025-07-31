@@ -163,10 +163,23 @@ Component({
       
       // 根据状态确定情绪
       let mood = 'happy';
-      if (health < 30) mood = 'sick';
-      else if (vitality < 20) mood = 'sad';
-      else if (intimacy > 80) mood = 'excited';
-      else if (vitality < 40) mood = 'sleeping';
+      
+      // 检查是否生病：两种情况
+      // 1. 健康值或活力值过低（小于50）
+      // 2. 喂食过量（健康值和活力值都为100时继续喂食）
+      const isOverfed = petData.isOverfed || false; // 从宠物数据中获取喂食过量状态
+      
+      if (health < 50 || vitality < 50) {
+        mood = 'sick'; // 健康值或活力值过低导致生病
+      } else if (isOverfed || (health >= 100 && vitality >= 100 && petData.lastFeedTime && Date.now() - petData.lastFeedTime < 300000)) {
+        mood = 'overfed'; // 喂食过量导致生病（5分钟内）
+      } else if (vitality < 20) {
+        mood = 'sad';
+      } else if (intimacy > 80) {
+        mood = 'excited';
+      } else if (vitality < 40) {
+        mood = 'sleeping';
+      }
       
       const oldStage = this.data.stage;
       
@@ -197,6 +210,17 @@ Component({
       let bodyImage;
       if (stage === 'egg') {
         bodyImage = `${basePath}/egg1_Normal@2x.png`;
+      } else if (mood === 'sick' || mood === 'overfed') {
+        // 生病状态（包括健康值过低和喂食过量）使用绿色身体图标
+        if (stage === 'baby') {
+          bodyImage = `${basePath}/babyBodySick_Normal@2x.png`;
+        } else if (stage === 'child') {
+          bodyImage = `${basePath}/childBodySick_Normal@2x.png`;
+        } else if (stage === 'adult') {
+          bodyImage = `${basePath}/bodySick_Normal@2x.png`;
+        } else if (stage === 'elder') {
+          bodyImage = `${basePath}/elderBodySick_Normal@2x.png`;
+        }
       } else if (action === 'walking') {
         // 使用对应阶段的walk图片
         if (stage === 'baby') {
@@ -238,7 +262,8 @@ Component({
       // 脸颊图片 - 增加更多表情状态
       let cheeksImage = '';
       if (stage !== 'egg') {
-        if (mood === 'sick') {
+        if (mood === 'sick' || mood === 'overfed') {
+          // 生病状态（包括健康值过低和喂食过量）使用生病表情
           if (stage === 'baby') {
             cheeksImage = `${basePath}/babyCheeksUnhealthy_Normal@2x.png`;
           } else if (stage === 'child') {
@@ -256,17 +281,6 @@ Component({
             cheeksImage = `${basePath}/childCheeksPink_Normal@2x.png`;
           } else if (stage === 'adult') {
             cheeksImage = `${basePath}/cheeksFlush_Normal@2x.png`; // 使用开心表情
-          } else if (stage === 'elder') {
-            cheeksImage = `${basePath}/elderCheeksPink_Normal@2x.png`;
-          }
-        } else if (mood === 'overfed') {
-          // 喂食过多时的表情
-          if (stage === 'adult') {
-            cheeksImage = `${basePath}/cheeksOvereat_Normal@2x.png`;
-          } else if (stage === 'child') {
-            cheeksImage = `${basePath}/childCheeksPink_Normal@2x.png`;
-          } else if (stage === 'baby') {
-            cheeksImage = `${basePath}/babyCheeksPink_Normal@2x.png`;
           } else if (stage === 'elder') {
             cheeksImage = `${basePath}/elderCheeksPink_Normal@2x.png`;
           }
@@ -667,9 +681,21 @@ Component({
       const checkOverfedStatus = () => {
         const petData = this.data.petData;
         if (petData && (petData.health < 100 || petData.vitality < 100)) {
-          // 健康值或活力值不再是100，恢复正常表情
-          this.setData({ mood: 'happy' });
+          // 健康值或活力值不再是100，重新评估宠物状态
+          // 检查是否仍然生病（健康值或活力值低于50）
+          if (petData.health < 50 || petData.vitality < 50) {
+            this.setData({ mood: 'sick' });
+          } else {
+            this.setData({ mood: 'happy' });
+          }
           this.updateImages();
+          
+          // 通知父组件更新状态
+          this.triggerEvent('petStatusChange', {
+            mood: this.data.mood,
+            statusText: this.data.mood === 'sick' ? '生病了，需要照顾...' : '感觉好多了！'
+          });
+          
           return; // 停止监听
         }
         
@@ -796,15 +822,16 @@ Component({
       // 暂停自动走动
       this.pauseAutoWalk();
       
-      // 保存当前方向，跳跃后不改变方向
+      // 保存当前位置和方向，跳跃后保持不变
       const currentDirection = this.data.walkDirection;
+      const currentPosition = this.data.walkPosition;
       this.performAction('jumping', 2000);
       
-      // 确保跳跃后保持原来的方向并重置位置到中心
+      // 确保跳跃后保持原来的方向和位置
       setTimeout(() => {
         this.setData({ 
           walkDirection: currentDirection,
-          walkPosition: 0  // 重置位置到中心
+          walkPosition: currentPosition  // 保持当前位置
         });
         this.updateStyles();
         
@@ -849,7 +876,7 @@ Component({
       
       animateLayDown();
       
-      // 4秒后停止动画并恢复idle状态
+      // 5秒后停止动画并恢复idle状态
       setTimeout(() => {
         if (this.data.layDownTimer) {
           clearTimeout(this.data.layDownTimer);
@@ -860,7 +887,7 @@ Component({
         });
         this.updateImages();
         this.updateStyles();
-      }, 4000);
+      }, 5000);
     },
     
     // 游戏动画 - 不打断行走
@@ -1196,10 +1223,10 @@ Component({
       if (this.data.stage === 'adult') {
         this.performAdultLayDownAnimation();
       } else {
-        this.performAction('laydown', 15000); // 趴下15秒
+        this.performAction('laydown', 5000); // 趴下5秒
       }
       
-      // 15秒后恢复走动
+      // 5秒后恢复走动
       const layDownTimer = setTimeout(() => {
         if (this.data.isAutoWalking) {
           this.setData({ action: 'idle' });
@@ -1208,7 +1235,7 @@ Component({
           this.performAutoWalk();
           this.scheduleRandomLayDown(); // 安排下一次随机趴下
         }
-      }, 15000);
+      }, 5000);
       
       this.setData({ layDownTimer });
     }

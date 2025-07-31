@@ -66,9 +66,10 @@ exports.main = async (event, context) => {
           species: 'cat', // 默认猫咪
           level: 1,
           exp: 0,
-          health: 0,
-          vitality: 0,
-          intimacy: 0,
+          health: 50,
+          vitality: 50,
+          intimacy: 50,
+          companion_days: 1, // 陪伴天数默认为1
           last_active: now,
           // 添加互动数据
           feed_count: 0,

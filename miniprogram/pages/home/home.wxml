@@ -12,11 +12,12 @@
           animation-speed="{{1}}"
           id="mainPet"
           bind:hatch="onPetHatch"
+          bind:petStatusChange="onPetStatusChange"
         ></dynamic-pet>
       </view>
     </view>
     <view class="pet-info">
-      <text class="pet-name">{{petInfo.name || texts.home.petName}}</text>
+      <text class="pet-name" bindtap="editPetName">{{petInfo.name || texts.home.petName}}</text>
       <text class="pet-status">{{petInfo.statusText || texts.home.petMood.happy}}</text>
     </view>
   </view>
@@ -57,7 +58,7 @@
       <view class="exp-bar">
         <view class="exp-fill" style="width: {{expProgress}}%"></view>
       </view>
-      <text class="exp-text">{{petInfo.exp || 150}}/{{petInfo.nextLevelExp || 200}}</text>
+      <text class="exp-text">{{petInfo.exp || 0}}/{{petInfo.nextLevelExp || 100}}</text>
     </view>
     
     <!-- 陪伴统计 -->
@@ -132,6 +133,22 @@
   <view class="pet-message" wx:if="{{petMessage}}">
     <view class="message-bubble">
       <text>{{petMessage}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑宠物名字模态框 -->
+<view class="modal-overlay" wx:if="{{showEditNameModal}}" bindtap="cancelEditName">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">编辑宠物名字</text>
+    </view>
+    <view class="modal-body">
+      <input class="name-input" placeholder="请输入宠物名字" value="{{editPetName}}" bindinput="onPetNameInput" maxlength="10" />
+    </view>
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="cancelEditName">取消</button>
+      <button class="confirm-btn" bindtap="savePetName">保存</button>
     </view>
   </view>
 </view>

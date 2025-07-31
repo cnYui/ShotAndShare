@@ -373,25 +373,28 @@ async function petLevelUp(userId) {
     
     const pet = petQuery.data[0];
     
-    // 重新计算总经验值确保准确性
-    const totalExp = await calculateTotalExp(userId);
+    // 使用宠物当前的经验值（升级后这个值代表当前等级内的经验）
+    const currentLevelExp = pet.exp || 0;
     const currentLevel = pet.level || 1;
-    const requiredExpForNextLevel = (currentLevel + 1) * 100;
+    const requiredExpForThisLevel = 100; // 每级需要100经验
     
     console.log('🎯 升级检查:', {
       '当前等级': currentLevel,
-      '总经验值': totalExp,
-      '升级所需经验': requiredExpForNextLevel
+      '当前等级内经验': currentLevelExp,
+      '升级所需经验': requiredExpForThisLevel
     });
     
-    if (totalExp < requiredExpForNextLevel) {
+    if (currentLevelExp < requiredExpForThisLevel) {
       return {
         success: false,
-        error: `经验不足，还需要 ${requiredExpForNextLevel - totalExp} 经验值`
+        error: `经验不足，还需要 ${requiredExpForThisLevel - currentLevelExp} 经验值`
       };
     }
     
     const newLevel = currentLevel + 1;
+    
+    // 计算溢出经验：当前等级内经验值减去升级所需的经验值
+    const overflowExp = currentLevelExp - requiredExpForThisLevel;
     
     // 升级奖励
     const levelUpRewards = {
@@ -403,7 +406,7 @@ async function petLevelUp(userId) {
     await db.collection('pets').doc(pet._id).update({
       data: {
         level: newLevel,
-        exp: totalExp, // 保持总经验值不变
+        exp: overflowExp, // 设置为溢出的经验值，作为下一级的初始经验
         health: levelUpRewards.health,
         vitality: levelUpRewards.vitality,
         intimacy: levelUpRewards.intimacy,
@@ -413,7 +416,9 @@ async function petLevelUp(userId) {
     
     console.log('🎊 升级成功:', {
       '新等级': newLevel,
-      '总经验值': totalExp,
+      '升级前等级内经验': currentLevelExp,
+      '升级所需经验': requiredExpForThisLevel,
+      '溢出经验值': overflowExp,
       '奖励': levelUpRewards
     });
     
@@ -422,7 +427,9 @@ async function petLevelUp(userId) {
       data: {
         message: `恭喜！宠物升级到 ${newLevel} 级！`,
         newLevel: newLevel,
-        totalExp: totalExp,
+        newExp: overflowExp,
+        levelExpUsed: currentLevelExp,
+        overflowExp: overflowExp,
         rewards: levelUpRewards
       }
     };

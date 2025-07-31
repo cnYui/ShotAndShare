@@ -234,9 +234,11 @@ Page({
     
     this.setData({
       messages: messages
+    }, () => {
+      // 确保数据更新后再滚动
+      this.scrollToBottom();
     });
     
-    this.scrollToBottom();
     this.saveChatHistory();
   },
 
@@ -277,6 +279,11 @@ Page({
           if (petStatus) {
             wx.setStorageSync('petInfo', petStatus);
           }
+          
+          // 确保宠物回复后滚动到底部
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 200);
         } else {
           // 显示详细的错误信息
           const errorDetail = res.result ? 
@@ -456,15 +463,29 @@ Page({
 
   // 滚动到底部
   scrollToBottom() {
-    setTimeout(() => {
-      const messages = this.data.messages;
-      if (messages.length > 0) {
-        const lastMessage = messages[messages.length - 1];
+    const messages = this.data.messages;
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      
+      // 使用双重滚动机制确保滚动到底部
+      this.setData({
+        scrollIntoView: `msg-${lastMessage.id}`
+      });
+      
+      // 备用滚动方案：使用scrollTop
+      setTimeout(() => {
         this.setData({
-          scrollIntoView: `msg-${lastMessage.id}`
+          scrollTop: 999999
         });
-      }
-    }, 100);
+      }, 100);
+      
+      // 清除scrollIntoView，避免影响后续滚动
+      setTimeout(() => {
+        this.setData({
+          scrollIntoView: ''
+        });
+      }, 300);
+    }
   },
 
   // 保存聊天记录（已禁用，确保每次进入都是新对话）
