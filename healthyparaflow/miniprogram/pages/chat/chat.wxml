@@ -1,0 +1,112 @@
+<!--pages/chat/chat.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title-section">
+      <text class="page-title text-primary">智能对话</text>
+      <text class="subtitle text-secondary">与{{petName}}聊天互动</text>
+    </view>
+    <view class="pet-avatar">
+      <image class="avatar-image" src="{{petInfo.imageUrl}}" mode="aspectFill"></image>
+      <view class="pet-status {{petInfo.mood}}">
+        <text class="status-text">{{petInfo.moodText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 聊天内容 -->
+  <scroll-view class="chat-content" scroll-y="true" scroll-into-view="{{scrollToMessage}}" scroll-with-animation="true">
+    <view class="chat-date">
+      <text class="date-text">{{currentDate}}</text>
+    </view>
+    
+    <view class="message-list">
+      <view class="message-item {{item.sender === 'pet' ? 'pet' : 'user'}}" 
+            wx:for="{{messages}}" 
+            wx:key="id"
+            id="msg-{{item.id}}">
+        <view class="message-avatar" wx:if="{{item.sender === 'pet'}}">
+          <image class="avatar-image" src="{{petInfo.imageUrl}}" mode="aspectFill"></image>
+        </view>
+        
+        <view class="message-content">
+          <view class="chat-bubble {{item.sender === 'pet' ? 'chat-bubble-pet' : 'chat-bubble-user'}}">
+            <text class="message-text">{{item.content}}</text>
+          </view>
+          <text class="message-time">{{item.time}}</text>
+        </view>
+        
+        <view class="message-avatar" wx:if="{{item.sender === 'user'}}">
+          <image class="avatar-image" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 正在输入提示 -->
+    <view class="typing-indicator" wx:if="{{isTyping}}">
+      <view class="typing-avatar">
+        <image class="avatar-image" src="{{petInfo.imageUrl}}" mode="aspectFill"></image>
+      </view>
+      <view class="typing-bubble">
+        <view class="typing-dots">
+          <view class="dot"></view>
+          <view class="dot"></view>
+          <view class="dot"></view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <view class="input-actions">
+      <view class="action-btn" bindtap="toggleVoiceInput">
+        <text class="iconfont {{isVoiceInput ? 'icon-keyboard' : 'icon-voice'}}"></text>
+      </view>
+    </view>
+    
+    <view class="input-box" wx:if="{{!isVoiceInput}}">
+      <input class="text-input" 
+             type="text" 
+             value="{{inputMessage}}" 
+             bindinput="onInputChange" 
+             placeholder="输入消息..." 
+             confirm-type="send" 
+             bindconfirm="sendMessage" />
+    </view>
+    
+    <view class="voice-input-box" wx:else>
+      <button class="voice-btn" 
+              bindtouchstart="startVoiceRecord" 
+              bindtouchend="endVoiceRecord"
+              bindtouchmove="cancelVoiceRecord">
+        <text>{{isRecording ? '松开发送' : '按住说话'}}</text>
+      </button>
+    </view>
+    
+    <view class="send-btn {{inputMessage ? 'active' : ''}}" bindtap="sendMessage">
+      <text class="iconfont icon-send"></text>
+    </view>
+  </view>
+
+  <!-- 快捷回复 -->
+  <view class="quick-replies" wx:if="{{showQuickReplies}}">
+    <view class="quick-reply-item" 
+          wx:for="{{quickReplies}}" 
+          wx:key="id" 
+          bindtap="selectQuickReply" 
+          data-reply="{{item.content}}">
+      <text>{{item.content}}</text>
+    </view>
+  </view>
+
+  <!-- 录音动画 -->
+  <view class="recording-indicator" wx:if="{{isRecording}}">
+    <view class="recording-inner">
+      <view class="recording-icon">
+        <text class="iconfont icon-voice"></text>
+      </view>
+      <text class="recording-text">{{recordingTip}}</text>
+    </view>
+  </view>
+</view>

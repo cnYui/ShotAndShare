@@ -1,0 +1,27 @@
+{
+  "name": "健康养宠小程序前端",
+  "created_at": "2025-07-25T14:27:46.976318+00:00",
+  "paraflow_version": "1.0",
+  "screens": [
+    {
+      "id": "11:0",
+      "title": "首页（宠物主页）",
+      "filename": "11:0.html"
+    },
+    {
+      "id": "12:0",
+      "title": "智能对话页",
+      "filename": "12:0.html"
+    },
+    {
+      "id": "13:0",
+      "title": "宠物成长档案页",
+      "filename": "13:0.html"
+    },
+    {
+      "id": "14:0",
+      "title": "健康任务页",
+      "filename": "14:0.html"
+    }
+  ]
+}

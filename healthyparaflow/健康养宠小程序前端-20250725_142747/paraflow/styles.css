@@ -1,0 +1,16 @@
+.pet-status-progress {overflow-x: hidden; overflow-y: hidden; background-color: rgba(172, 172, 172, 0.2); height: 8px; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px}
+.__paraflow-fa-fas {font-family: "Font Awesome 6 Free"; display: inline-block; line-height: 1; font-weight: 900; font-style: normal}
+.pet-exp-fill {background-color: rgba(254, 89, 51, 1); height: 100%}
+.energy-fill {background-color: rgba(218, 189, 255, 1); height: 100%}
+.health-fill {background-color: rgba(189, 231, 255, 1); height: 100%}
+.pet-exp-progress {overflow-x: hidden; overflow-y: hidden; background-color: rgba(255, 192, 178, 1); height: 6px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px}
+.typing-indicator {display: inline-block; margin-right: 4px}
+.typing-indicator span {background-color: rgba(125, 125, 123, 1); display: inline-block; width: 6px; height: 6px; margin-right: 2px; border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-bottom-left-radius: 50%}
+.chat-bubble-pet {background-color: rgba(255, 255, 255, 1); border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 4px}
+.chat-bubble-user {background-color: rgba(222, 243, 255, 1); border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 4px; border-bottom-left-radius: 24px}
+.timeline-dot {background-color: rgba(254, 89, 51, 1); position: relative; width: 12px; height: 12px; z-index: 1; border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-bottom-left-radius: 50%}
+.achievement-badge {background-color: rgba(236, 222, 255, 1); display: flex; justify-content: center; align-items: center; width: 60px; height: 60px; border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-bottom-left-radius: 50%}
+.timeline-line {background-color: rgba(222, 243, 255, 1); position: absolute; top: 30px; bottom: 0; left: 24px; width: 2px}
+.task-complete-badge {background-color: rgba(254, 89, 51, 1); display: flex; position: absolute; top: -6px; right: -6px; justify-content: center; align-items: center; width: 20px; height: 20px; color: rgba(255, 255, 255, 1); border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-bottom-left-radius: 50%; font-size: 10px}
+.task-progress-fill {background-color: rgba(254, 89, 51, 1); height: 100%}
+.task-progress {overflow-x: hidden; overflow-y: hidden; background-color: rgba(172, 172, 172, 0.2); height: 6px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px}

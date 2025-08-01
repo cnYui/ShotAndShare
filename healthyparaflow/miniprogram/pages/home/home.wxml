@@ -1,0 +1,116 @@
+<!--pages/home/home.wxml-->
+<view class="container">
+  <!-- 状态栏 -->
+  <view class="status-bar">
+    <view class="time">{{currentTime}}</view>
+    <view class="status-icons">
+      <text class="iconfont icon-signal"></text>
+      <text class="iconfont icon-wifi"></text>
+      <text class="iconfont icon-battery"></text>
+    </view>
+  </view>
+
+  <!-- 头部信息 -->
+  <view class="header">
+    <view class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <text class="username">{{userInfo.nickName || '小明'}}</text>
+        <view class="pet-info">
+          <text class="pet-name">宠物：{{petInfo.name}}</text>
+          <text class="pet-mood bg-yellow">{{petInfo.mood}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主要内容 -->
+  <scroll-view class="main-content" scroll-y="true" refresher-enabled="true" bindrefresherrefresh="onRefresh" refresher-triggered="{{refreshing}}">
+    <!-- 宠物展示卡片 -->
+    <view class="pet-card card">
+      <view class="pet-display bg-blue">
+        <image class="pet-image" src="{{petInfo.imageUrl}}" mode="aspectFit"></image>
+      </view>
+      <view class="pet-status">
+        <view class="pet-header">
+          <text class="pet-name-large text-primary">{{petInfo.name}}</text>
+          <text class="pet-stage bg-purple">{{petInfo.stage}}</text>
+        </view>
+        
+        <!-- 经验值 -->
+        <view class="exp-section">
+          <view class="exp-info">
+            <text class="exp-label text-secondary">经验值</text>
+            <text class="exp-value text-secondary">Lv.{{petInfo.level}} {{petInfo.exp}}/{{petInfo.maxExp}}</text>
+          </view>
+          <view class="pet-exp-progress">
+            <view class="pet-exp-fill" style="width: {{petInfo.expPercent}}%;"></view>
+          </view>
+        </view>
+
+        <!-- 状态值 -->
+        <view class="status-bars">
+          <view class="status-item">
+            <view class="status-info">
+              <text class="status-label text-secondary">健康值</text>
+              <text class="status-value text-secondary">{{petInfo.health}}%</text>
+            </view>
+            <view class="pet-status-progress">
+              <view class="health-fill" style="width: {{petInfo.health}}%;"></view>
+            </view>
+          </view>
+          <view class="status-item">
+            <view class="status-info">
+              <text class="status-label text-secondary">活力值</text>
+              <text class="status-value text-secondary">{{petInfo.energy}}%</text>
+            </view>
+            <view class="pet-status-progress">
+              <view class="energy-fill" style="width: {{petInfo.energy}}%;"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 今日健康任务 -->
+    <view class="task-overview bg-yellow">
+      <view class="task-header">
+        <view class="task-title">
+          <text class="title text-primary">今日健康任务</text>
+          <text class="task-progress text-secondary">{{completedTasks}}/{{totalTasks}}已完成</text>
+        </view>
+      </view>
+      
+      <view class="task-icons">
+        <view class="task-icon" wx:for="{{taskCategories}}" wx:key="id">
+          <view class="icon-wrapper" style="background-color: {{item.completed ? '#FFDA6E' : '#FFFFFF'}}">
+            <text class="iconfont {{item.icon}}" style="color: {{item.completed ? '#FE5933' : '#302E2D'}}"></text>
+          </view>
+          <text class="icon-label text-primary">{{item.name}}</text>
+        </view>
+      </view>
+      
+      <button class="view-all-btn btn-secondary" bindtap="goToTasks">
+        <text class="btn-text text-primary">查看所有任务</text>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </button>
+    </view>
+
+    <!-- 和宠物聊天 -->
+    <view class="chat-section bg-blue">
+      <view class="chat-header">
+        <text class="title text-primary">和{{petInfo.name}}聊天</text>
+      </view>
+      
+      <view class="chat-preview bg-white">
+        <text class="chat-label text-secondary">{{petInfo.name}}想对你说</text>
+        <text class="chat-message text-primary">{{petInfo.message}}</text>
+      </view>
+      
+      <button class="chat-btn btn-primary" bindtap="goToChat">
+        <text class="iconfont icon-message"></text>
+        <text class="btn-text text-white">开始聊天</text>
+      </button>
+    </view>
+  </scroll-view>
+</view>

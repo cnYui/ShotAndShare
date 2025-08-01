@@ -1,0 +1,161 @@
+<!--pages/tasks/tasks.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title-section">
+      <text class="page-title text-primary">健康任务</text>
+      <text class="subtitle text-secondary">完成任务，让{{petName}}更健康</text>
+    </view>
+    <view class="progress-overview">
+      <view class="progress-circle">
+        <view class="progress-text">
+          <text class="progress-number text-primary">{{completedTasks}}</text>
+          <text class="progress-total text-secondary">/{{totalTasks}}</text>
+        </view>
+      </view>
+      <text class="progress-label text-secondary">今日完成</text>
+    </view>
+  </view>
+
+  <!-- 任务分类标签 -->
+  <view class="category-tabs">
+    <view class="tab-item {{currentCategory === item.id ? 'active' : ''}}" 
+          wx:for="{{categories}}" 
+          wx:key="id" 
+          bindtap="switchCategory" 
+          data-category="{{item.id}}">
+      <text class="tab-text">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 任务列表 -->
+  <scroll-view class="task-list" scroll-y="true" refresher-enabled="true" bindrefresherrefresh="onRefresh" refresher-triggered="{{refreshing}}">
+    <!-- 今日任务 -->
+    <view class="task-section" wx:if="{{todayTasks.length > 0}}">
+      <view class="section-header">
+        <text class="section-title text-primary">今日任务</text>
+        <text class="section-count text-secondary">{{todayCompletedCount}}/{{todayTasks.length}}</text>
+      </view>
+      
+      <view class="task-card card" wx:for="{{todayTasks}}" wx:key="id">
+        <view class="task-content">
+          <view class="task-icon {{item.completed ? 'completed' : ''}}" bindtap="toggleTask" data-id="{{item.id}}">
+            <text class="iconfont {{item.completed ? 'icon-check' : item.icon}}"></text>
+          </view>
+          
+          <view class="task-info">
+            <view class="task-header">
+              <text class="task-title {{item.completed ? 'completed' : ''}} text-primary">{{item.title}}</text>
+              <view class="task-reward bg-yellow">
+                <text class="reward-text text-primary">+{{item.reward}}经验</text>
+              </view>
+            </view>
+            
+            <text class="task-description text-secondary">{{item.description}}</text>
+            
+            <!-- 任务进度 -->
+            <view class="task-progress-section" wx:if="{{item.progress !== undefined}}">
+              <view class="progress-info">
+                <text class="progress-text text-secondary">进度：{{item.current}}/{{item.target}}</text>
+                <text class="progress-percent text-secondary">{{item.progress}}%</text>
+              </view>
+              <view class="task-progress">
+                <view class="task-progress-fill" style="width: {{item.progress}}%;"></view>
+              </view>
+            </view>
+            
+            <!-- 任务时间 -->
+            <view class="task-time" wx:if="{{item.deadline}}">
+              <text class="iconfont icon-clock text-secondary"></text>
+              <text class="time-text text-secondary">{{item.deadline}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 任务操作按钮 -->
+        <view class="task-actions" wx:if="{{!item.completed}}">
+          <button class="action-btn btn-secondary" wx:if="{{item.canStart}}" bindtap="startTask" data-id="{{item.id}}">
+            <text class="btn-text text-primary">开始</text>
+          </button>
+          <button class="action-btn btn-primary" wx:if="{{item.canComplete}}" bindtap="completeTask" data-id="{{item.id}}">
+            <text class="btn-text text-white">完成</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 本周任务 -->
+    <view class="task-section" wx:if="{{weeklyTasks.length > 0}}">
+      <view class="section-header">
+        <text class="section-title text-primary">本周任务</text>
+        <text class="section-count text-secondary">{{weeklyCompletedCount}}/{{weeklyTasks.length}}</text>
+      </view>
+      
+      <view class="task-card card" wx:for="{{weeklyTasks}}" wx:key="id">
+        <view class="task-content">
+          <view class="task-icon {{item.completed ? 'completed' : ''}}" bindtap="toggleTask" data-id="{{item.id}}">
+            <text class="iconfont {{item.completed ? 'icon-check' : item.icon}}"></text>
+          </view>
+          
+          <view class="task-info">
+            <view class="task-header">
+              <text class="task-title {{item.completed ? 'completed' : ''}} text-primary">{{item.title}}</text>
+              <view class="task-reward bg-purple">
+                <text class="reward-text text-white">+{{item.reward}}经验</text>
+              </view>
+            </view>
+            
+            <text class="task-description text-secondary">{{item.description}}</text>
+            
+            <!-- 任务进度 -->
+            <view class="task-progress-section" wx:if="{{item.progress !== undefined}}">
+              <view class="progress-info">
+                <text class="progress-text text-secondary">进度：{{item.current}}/{{item.target}}</text>
+                <text class="progress-percent text-secondary">{{item.progress}}%</text>
+              </view>
+              <view class="task-progress">
+                <view class="task-progress-fill" style="width: {{item.progress}}%;"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成就任务 -->
+    <view class="task-section" wx:if="{{achievementTasks.length > 0}}">
+      <view class="section-header">
+        <text class="section-title text-primary">成就任务</text>
+        <text class="section-count text-secondary">{{achievementCompletedCount}}/{{achievementTasks.length}}</text>
+      </view>
+      
+      <view class="achievement-card card" wx:for="{{achievementTasks}}" wx:key="id">
+        <view class="achievement-content">
+          <view class="achievement-badge {{item.completed ? 'completed' : ''}}">
+            <text class="iconfont {{item.icon}}"></text>
+          </view>
+          
+          <view class="achievement-info">
+            <text class="achievement-title {{item.completed ? 'completed' : ''}} text-primary">{{item.title}}</text>
+            <text class="achievement-description text-secondary">{{item.description}}</text>
+            
+            <!-- 成就进度 -->
+            <view class="achievement-progress-section" wx:if="{{item.progress !== undefined}}">
+              <view class="progress-info">
+                <text class="progress-text text-secondary">{{item.current}}/{{item.target}}</text>
+                <text class="progress-percent text-secondary">{{item.progress}}%</text>
+              </view>
+              <view class="task-progress">
+                <view class="task-progress-fill" style="width: {{item.progress}}%;"></view>
+              </view>
+            </view>
+          </view>
+          
+          <view class="achievement-reward bg-blue" wx:if="{{item.completed}}">
+            <text class="reward-text text-white">已获得</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

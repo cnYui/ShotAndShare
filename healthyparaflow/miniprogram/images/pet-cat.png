@@ -1,0 +1,41 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆 -->
+  <circle cx="100" cy="100" r="100" fill="#FFF5E6"/>
+  
+  <!-- 猫身体 -->
+  <ellipse cx="100" cy="110" rx="60" ry="50" fill="#FF9800"/>
+  
+  <!-- 猫头 -->
+  <circle cx="100" cy="70" r="40" fill="#FF9800"/>
+  
+  <!-- 猫耳朵 -->
+  <path d="M70 45L60 15C60 15 75 25 85 35L70 45Z" fill="#FF9800"/>
+  <path d="M130 45L140 15C140 15 125 25 115 35L130 45Z" fill="#FF9800"/>
+  
+  <!-- 猫眼睛 -->
+  <ellipse cx="85" cy="65" rx="5" ry="10" fill="white"/>
+  <ellipse cx="115" cy="65" rx="5" ry="10" fill="white"/>
+  <ellipse cx="85" cy="65" rx="2" ry="5" fill="black"/>
+  <ellipse cx="115" cy="65" rx="2" ry="5" fill="black"/>
+  
+  <!-- 猫鼻子 -->
+  <path d="M100 75L95 80H105L100 75Z" fill="#FF5722"/>
+  
+  <!-- 猫嘴 -->
+  <path d="M95 80C95 85 105 85 105 80" stroke="#FF5722" stroke-width="1"/>
+  
+  <!-- 猫胡须 -->
+  <line x1="95" y1="80" x2="75" y2="75" stroke="#FF5722" stroke-width="1"/>
+  <line x1="95" y1="80" x2="75" y2="80" stroke="#FF5722" stroke-width="1"/>
+  <line x1="95" y1="80" x2="75" y2="85" stroke="#FF5722" stroke-width="1"/>
+  <line x1="105" y1="80" x2="125" y2="75" stroke="#FF5722" stroke-width="1"/>
+  <line x1="105" y1="80" x2="125" y2="80" stroke="#FF5722" stroke-width="1"/>
+  <line x1="105" y1="80" x2="125" y2="85" stroke="#FF5722" stroke-width="1"/>
+  
+  <!-- 猫爪子 -->
+  <circle cx="70" cy="150" r="10" fill="#FF9800"/>
+  <circle cx="130" cy="150" r="10" fill="#FF9800"/>
+  
+  <!-- 猫尾巴 -->
+  <path d="M160 110C180 90 170 70 160 60" stroke="#FF9800" stroke-width="10" stroke-linecap="round"/>
+</svg>

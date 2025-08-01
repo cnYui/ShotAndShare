@@ -1,0 +1,329 @@
+/* pages/tasks/tasks.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #F7F7F5;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 头部 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  background-color: #FFFFFF;
+  border-radius: 0 0 48rpx 48rpx;
+  margin-bottom: 32rpx;
+  box-sizing: border-box;
+}
+
+.title-section {
+  flex: 1;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 24rpx;
+}
+
+.progress-overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120rpx;
+  height: 120rpx;
+  border: 8rpx solid #FFDA6E;
+  border-radius: 50%;
+  margin-bottom: 8rpx;
+}
+
+.progress-text {
+  text-align: center;
+}
+
+.progress-number {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.progress-total {
+  font-size: 20rpx;
+}
+
+.progress-label {
+  font-size: 20rpx;
+}
+
+/* 分类标签 */
+.category-tabs {
+  display: flex;
+  padding: 0 32rpx;
+  margin-bottom: 32rpx;
+  box-sizing: border-box;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  margin-right: 16rpx;
+  border-radius: 48rpx;
+  background-color: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+.tab-item:last-child {
+  margin-right: 0;
+}
+
+.tab-item.active {
+  background-color: #FE5933;
+}
+
+.tab-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #302E2D;
+}
+
+.tab-item.active .tab-text {
+  color: #FFFFFF;
+}
+
+/* 任务列表 */
+.task-list {
+  flex: 1;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+}
+
+/* 任务分组 */
+.task-section {
+  margin-bottom: 48rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.section-count {
+  font-size: 24rpx;
+}
+
+/* 任务卡片 */
+.task-card {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+}
+
+.task-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.task-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-right: 24rpx;
+  border-radius: 50%;
+  background-color: #F7F7F5;
+  font-size: 32rpx;
+  color: #7D7D7B;
+  transition: all 0.3s ease;
+}
+
+.task-icon.completed {
+  background-color: #4CAF50;
+  color: #FFFFFF;
+}
+
+.task-info {
+  flex: 1;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.task-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-reward {
+  padding: 4rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.reward-text {
+  font-size: 20rpx;
+}
+
+.task-description {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+}
+
+/* 任务进度 */
+.task-progress-section {
+  margin-bottom: 16rpx;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.progress-text,
+.progress-percent {
+  font-size: 20rpx;
+}
+
+/* 任务时间 */
+.task-time {
+  display: flex;
+  align-items: center;
+}
+
+.task-time .iconfont {
+  margin-right: 8rpx;
+  font-size: 20rpx;
+}
+
+.time-text {
+  font-size: 20rpx;
+}
+
+/* 任务操作 */
+.task-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  padding-left: 88rpx;
+}
+
+.action-btn {
+  padding: 12rpx 32rpx;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* 成就卡片 */
+.achievement-card {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+}
+
+.achievement-content {
+  display: flex;
+  align-items: center;
+}
+
+.achievement-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 24rpx;
+  border-radius: 50%;
+  background-color: #F7F7F5;
+  font-size: 40rpx;
+  color: #7D7D7B;
+}
+
+.achievement-badge.completed {
+  background-color: #FFD700;
+  color: #FFFFFF;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.achievement-title.completed {
+  color: #FFD700;
+}
+
+.achievement-description {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+}
+
+.achievement-progress-section {
+  margin-top: 16rpx;
+}
+
+.achievement-reward {
+  padding: 8rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+/* 图标字体 */
+.iconfont {
+  font-family: 'iconfont';
+}
+
+.icon-check::before { content: '✓'; }
+.icon-walking::before { content: '🚶'; }
+.icon-apple::before { content: '🍎'; }
+.icon-moon::before { content: '🌙'; }
+.icon-heart::before { content: '❤️'; }
+.icon-trophy::before { content: '🏆'; }
+.icon-star::before { content: '⭐'; }
+.icon-clock::before { content: '🕐'; }
+.icon-target::before { content: '🎯'; }

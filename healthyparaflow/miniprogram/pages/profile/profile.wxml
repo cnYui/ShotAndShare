@@ -1,0 +1,140 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card card">
+    <view class="user-header">
+      <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" bindtap="changeAvatar"></image>
+      <view class="user-info">
+        <text class="user-name text-primary">{{userInfo.nickName || '点击设置昵称'}}</text>
+        <text class="user-id text-secondary">ID: {{userInfo.id || '未设置'}}</text>
+        <view class="user-level">
+          <text class="level-text bg-yellow text-primary">Lv.{{userInfo.level || 1}}</text>
+          <text class="exp-text text-secondary">经验值: {{userInfo.exp || 0}}</text>
+        </view>
+      </view>
+      <view class="edit-btn" bindtap="editProfile">
+        <text class="iconfont icon-edit text-secondary"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 宠物信息 -->
+  <view class="pet-section">
+    <view class="section-header">
+      <text class="section-title text-primary">我的宠物</text>
+      <text class="add-pet text-secondary" bindtap="addPet">+ 添加宠物</text>
+    </view>
+    
+    <view class="pet-list">
+      <view class="pet-item card" wx:for="{{petList}}" wx:key="id" bindtap="selectPet" data-pet="{{item}}">
+        <image class="pet-avatar" src="{{item.imageUrl}}" mode="aspectFill"></image>
+        <view class="pet-info">
+          <text class="pet-name text-primary">{{item.name}}</text>
+          <text class="pet-type text-secondary">{{item.type}} · {{item.stage}}</text>
+          <view class="pet-stats">
+            <text class="stat-item text-secondary">Lv.{{item.level}}</text>
+            <text class="stat-item text-secondary">健康值: {{item.health}}%</text>
+          </view>
+        </view>
+        <view class="pet-status {{item.isActive ? 'active' : ''}}">
+          <text class="status-text">{{item.isActive ? '当前' : '切换'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="goToDataAnalysis">
+        <view class="menu-icon bg-blue">
+          <text class="iconfont icon-chart"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">数据分析</text>
+          <text class="menu-desc text-secondary">查看详细的健康数据报告</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToAchievements">
+        <view class="menu-icon bg-yellow">
+          <text class="iconfont icon-trophy"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">成就中心</text>
+          <text class="menu-desc text-secondary">查看获得的成就和徽章</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToReminders">
+        <view class="menu-icon bg-green">
+          <text class="iconfont icon-bell"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">提醒设置</text>
+          <text class="menu-desc text-secondary">设置健康任务提醒时间</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item" bindtap="goToSettings">
+        <view class="menu-icon bg-purple">
+          <text class="iconfont icon-settings"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">应用设置</text>
+          <text class="menu-desc text-secondary">个性化设置和偏好配置</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToHelp">
+        <view class="menu-icon bg-orange">
+          <text class="iconfont icon-help"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">帮助中心</text>
+          <text class="menu-desc text-secondary">使用指南和常见问题</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToFeedback">
+        <view class="menu-icon bg-red">
+          <text class="iconfont icon-feedback"></text>
+        </view>
+        <view class="menu-content">
+          <text class="menu-title text-primary">意见反馈</text>
+          <text class="menu-desc text-secondary">告诉我们您的建议和想法</text>
+        </view>
+        <text class="iconfont icon-arrow-right text-secondary"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section">
+    <view class="section-header">
+      <text class="section-title text-primary">我的统计</text>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stat-card card" wx:for="{{statsData}}" wx:key="id">
+        <view class="stat-icon bg-{{item.color}}">
+          <text class="iconfont {{item.icon}}"></text>
+        </view>
+        <text class="stat-value text-primary">{{item.value}}</text>
+        <text class="stat-label text-secondary">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text text-secondary">健康养宠小程序 v{{version}}</text>
+  </view>
+</view>

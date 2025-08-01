@@ -1,0 +1,77 @@
+# CNB 云原生构建配置文件
+version: "1.0"
+
+# 构建环境配置
+environment:
+  # 基础镜像
+  image: "node:18-alpine"
+  
+  # 工作目录
+  workdir: "/workspace"
+  
+  # 环境变量
+  env:
+    NODE_ENV: "production"
+    NPM_CONFIG_REGISTRY: "https://registry.npmmirror.com"
+
+# 构建阶段
+stages:
+  # 依赖安装阶段
+  - name: "install"
+    commands:
+      - "npm install"
+    cache:
+      paths:
+        - "node_modules"
+        - "~/.npm"
+  
+  # 构建阶段
+  - name: "build"
+    commands:
+      - "npm run build"
+    depends_on:
+      - "install"
+  
+  # 测试阶段
+  - name: "test"
+    commands:
+      - "npm test"
+    depends_on:
+      - "install"
+
+# 资源配置
+runner:
+  cpus: 2
+  memory: "4Gi"
+  disk: "10Gi"
+
+# 缓存配置
+cache:
+  mode: "copy-on-write"
+  ttl: "7d"
+
+# 插件配置
+plugins:
+  - name: "node-build"
+    version: "latest"
+  - name: "docker-build"
+    version: "latest"
+    config:
+      dockerfile: "Dockerfile"
+      context: "."
+
+# 触发器配置
+triggers:
+  - type: "push"
+    branches:
+      - "main"
+      - "develop"
+  - type: "pull_request"
+    branches:
+      - "main"
+
+# 通知配置
+notifications:
+  - type: "email"
+    on_success: true
+    on_failure: true

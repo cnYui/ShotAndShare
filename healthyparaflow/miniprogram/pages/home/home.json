@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "健康养宠",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F7F7F5",
+  "backgroundTextStyle": "dark"
+}

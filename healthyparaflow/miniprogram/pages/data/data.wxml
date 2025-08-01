@@ -1,0 +1,152 @@
+<!--pages/data/data.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="title-section">
+      <text class="page-title text-primary">健康数据</text>
+      <text class="subtitle text-secondary">{{petName}}的成长记录</text>
+    </view>
+    <view class="date-selector" bindtap="showDatePicker">
+      <text class="date-text text-primary">{{selectedDate}}</text>
+      <text class="iconfont icon-calendar text-secondary"></text>
+    </view>
+  </view>
+
+  <!-- 数据概览 -->
+  <view class="data-overview">
+    <view class="overview-card card" wx:for="{{overviewData}}" wx:key="id">
+      <view class="card-icon bg-{{item.color}}">
+        <text class="iconfont {{item.icon}}"></text>
+      </view>
+      <view class="card-content">
+        <text class="card-value text-primary">{{item.value}}</text>
+        <text class="card-label text-secondary">{{item.label}}</text>
+      </view>
+      <view class="card-trend {{item.trend > 0 ? 'up' : item.trend < 0 ? 'down' : 'stable'}}">
+        <text class="iconfont {{item.trend > 0 ? 'icon-arrow-up' : item.trend < 0 ? 'icon-arrow-down' : 'icon-minus'}}"></text>
+        <text class="trend-text">{{item.trendText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主要内容 -->
+  <scroll-view class="main-content" scroll-y="true" refresher-enabled="true" bindrefresherrefresh="onRefresh" refresher-triggered="{{refreshing}}">
+    <!-- 宠物成长数据 -->
+    <view class="data-section">
+      <view class="section-header">
+        <text class="section-title text-primary">成长数据</text>
+        <view class="time-filter">
+          <text class="filter-item {{timeFilter === 'week' ? 'active' : ''}}" bindtap="switchTimeFilter" data-filter="week">周</text>
+          <text class="filter-item {{timeFilter === 'month' ? 'active' : ''}}" bindtap="switchTimeFilter" data-filter="month">月</text>
+          <text class="filter-item {{timeFilter === 'year' ? 'active' : ''}}" bindtap="switchTimeFilter" data-filter="year">年</text>
+        </view>
+      </view>
+      
+      <!-- 成长图表 -->
+      <view class="chart-container card">
+        <view class="chart-header">
+          <text class="chart-title text-primary">经验值变化</text>
+          <text class="chart-period text-secondary">最近{{timeFilter === 'week' ? '7天' : timeFilter === 'month' ? '30天' : '12个月'}}</text>
+        </view>
+        <view class="chart-area">
+          <!-- 简单的图表展示 -->
+          <view class="chart-bars">
+            <view class="chart-bar" wx:for="{{chartData}}" wx:key="index">
+              <view class="bar-fill" style="height: {{item.percentage}}%; background-color: {{item.color}};"></view>
+              <text class="bar-label text-secondary">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康指标 -->
+    <view class="data-section">
+      <view class="section-header">
+        <text class="section-title text-primary">健康指标</text>
+      </view>
+      
+      <view class="health-metrics">
+        <view class="metric-card card" wx:for="{{healthMetrics}}" wx:key="id">
+          <view class="metric-header">
+            <view class="metric-info">
+              <text class="metric-name text-primary">{{item.name}}</text>
+              <text class="metric-value text-primary">{{item.value}}{{item.unit}}</text>
+            </view>
+            <view class="metric-status bg-{{item.status}}">
+              <text class="status-text text-white">{{item.statusText}}</text>
+            </view>
+          </view>
+          
+          <view class="metric-progress">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{item.percentage}}%; background-color: var(--color-{{item.status}});"></view>
+            </view>
+            <view class="progress-labels">
+              <text class="progress-min text-secondary">{{item.min}}</text>
+              <text class="progress-max text-secondary">{{item.max}}</text>
+            </view>
+          </view>
+          
+          <text class="metric-description text-secondary">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 活动记录 -->
+    <view class="data-section">
+      <view class="section-header">
+        <text class="section-title text-primary">活动记录</text>
+        <text class="view-all text-secondary" bindtap="viewAllActivities">查看全部</text>
+      </view>
+      
+      <view class="activity-timeline">
+        <view class="timeline-item" wx:for="{{activityRecords}}" wx:key="id">
+          <view class="timeline-dot bg-{{item.type}}"></view>
+          <view class="timeline-line" wx:if="{{index < activityRecords.length - 1}}"></view>
+          <view class="timeline-content">
+            <view class="activity-header">
+              <text class="activity-title text-primary">{{item.title}}</text>
+              <text class="activity-time text-secondary">{{item.time}}</text>
+            </view>
+            <text class="activity-description text-secondary">{{item.description}}</text>
+            <view class="activity-data" wx:if="{{item.data}}">
+              <text class="data-item text-secondary" wx:for="{{item.data}}" wx:key="key" wx:for-item="dataItem">
+                {{dataItem.key}}: {{dataItem.value}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成就展示 -->
+    <view class="data-section">
+      <view class="section-header">
+        <text class="section-title text-primary">最近成就</text>
+      </view>
+      
+      <view class="achievements">
+        <view class="achievement-item" wx:for="{{recentAchievements}}" wx:key="id">
+          <view class="achievement-badge bg-{{item.level}}">
+            <text class="iconfont {{item.icon}}"></text>
+          </view>
+          <view class="achievement-info">
+            <text class="achievement-name text-primary">{{item.name}}</text>
+            <text class="achievement-date text-secondary">{{item.date}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 添加数据按钮 -->
+  <view class="fab" bindtap="addData">
+    <text class="iconfont icon-plus"></text>
+  </view>
+</view>
+
+<!-- 日期选择器 -->
+<picker mode="date" value="{{selectedDate}}" bindchange="onDateChange" wx:if="{{showDatePicker}}">
+  <view class="picker-mask" bindtap="hideDatePicker"></view>
+</picker>

@@ -1,0 +1,66 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/tasks/tasks",
+    "pages/data/data",
+    "pages/chat/chat",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom",
+    "backgroundColor": "#F7F7F5"
+  },
+  "tabBar": {
+    "color": "#7D7D7B",
+    "selectedColor": "#302E2D",
+    "backgroundColor": "#DFDFDF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/tasks/tasks",
+        "text": "健康任务",
+        "iconPath": "images/tabbar/tasks.png",
+        "selectedIconPath": "images/tabbar/tasks-active.png"
+      },
+      {
+        "pagePath": "pages/data/data",
+        "text": "健康数据",
+        "iconPath": "images/tabbar/data.png",
+        "selectedIconPath": "images/tabbar/data-active.png"
+      },
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "智能对话",
+        "iconPath": "images/tabbar/chat.png",
+        "selectedIconPath": "images/tabbar/chat-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tabbar/profile.png",
+        "selectedIconPath": "images/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "defaultContentBox": true,
+      "tagNameStyleIsolation": "legacy",
+      "disableABTest": true,
+      "sdkVersionBegin": "3.0.0",
+      "sdkVersionEnd": "15.255.255"
+    }
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
