@@ -28,6 +28,8 @@ exports.main = async (event, context) => {
       return await playWithPet(openid);
     case 'walkWithPet':
       return await walkWithPet(openid);
+    case 'restPet':
+      return await restPet(openid);
     case 'playGame':
       return await playGame(openid);
     case 'petLevelUp':
@@ -93,44 +95,16 @@ async function getPetStatus(userId) {
     // 计算总经验值（从任务完成记录中统计）
     const totalExp = await calculateTotalExp(userId);
     
-    // 同步经验值到宠物表中
+    // 移除自动升级逻辑，升级由taskManager统一处理
+    // 这样避免了多个云函数同时处理升级导致的冲突
     let needUpdate = false;
     const updateData = {};
     
-    // 如果总经验值与宠物表中的经验值不一致，需要更新
-    if (totalExp !== pet.exp) {
-      updateData.exp = totalExp;
-      needUpdate = true;
-      console.log('🔄 同步经验值:', { 
-        '数据库中的经验值': pet.exp, 
-        '计算出的总经验值': totalExp 
-      });
-    }
-    
-    // 检查是否需要自动升级
-    const currentLevel = pet.level || 1;
-    const requiredExpForNextLevel = (currentLevel + 1) * 100;
-    
-    if (totalExp >= requiredExpForNextLevel) {
-      // 计算新等级
-      let newLevel = currentLevel;
-      
-      // 计算应该达到的等级
-      while (totalExp >= (newLevel + 1) * 100) {
-        newLevel++;
-      }
-      
-      if (newLevel > currentLevel) {
-        updateData.level = newLevel;
-        updateData.exp = totalExp; // 保持总经验值
-        needUpdate = true;
-        console.log('🎊 自动升级:', { 
-          '原等级': currentLevel, 
-          '新等级': newLevel,
-          '总经验值': totalExp
-        });
-      }
-    }
+    console.log('📊 petManager获取状态:', { 
+      '数据库中的等级': pet.level,
+      '数据库中的经验值': pet.exp, 
+      '计算出的总经验值': totalExp 
+    });
     
     // 如果状态值有变化，更新数据库
     if (realTimeStatus.health !== pet.health || 
@@ -156,7 +130,7 @@ async function getPetStatus(userId) {
       data: {
         ...pet,
         ...realTimeStatus,
-        exp: totalExp, // 确保返回正确的经验值
+        exp: pet.exp, // 返回数据库中的经验值（当前等级内的经验值）
         mood: calculateMood(realTimeStatus),
         nextLevelExp: ((pet.level || 1) + 1) * 100,
         companionDays: companionDays,
@@ -732,6 +706,58 @@ async function walkWithPet(userId) {
     
   } catch (error) {
     console.error('散步失败:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * 宠物休息
+ */
+async function restPet(userId) {
+  try {
+    const petQuery = await db.collection('pets').where({
+      user_id: userId
+    }).get();
+    
+    if (petQuery.data.length === 0) {
+      return {
+        success: false,
+        error: '宠物不存在'
+      };
+    }
+    
+    const pet = petQuery.data[0];
+    const now = new Date();
+    
+    // 休息恢复活力值和健康值
+    const newVitality = Math.min(pet.vitality + 20, 100);
+    const newHealth = Math.min(pet.health + 10, 100);
+    
+    await db.collection('pets').doc(pet._id).update({
+      data: {
+        vitality: newVitality,
+        health: newHealth,
+        last_rest_time: now,
+        last_active: now
+      }
+    });
+    
+    return {
+      success: true,
+      data: {
+        message: '休息完成！宠物精神饱满~',
+        vitality: newVitality,
+        health: newHealth,
+        vitalityIncrease: 20,
+        healthIncrease: 10
+      }
+    };
+    
+  } catch (error) {
+    console.error('宠物休息失败:', error);
     return {
       success: false,
       error: error.message

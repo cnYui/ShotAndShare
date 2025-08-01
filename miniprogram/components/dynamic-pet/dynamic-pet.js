@@ -902,6 +902,37 @@ Component({
       // 可以显示一些特效表示在散步
       this.showEffect('heart', 2000);
     },
+
+    // 休息动画
+    restPet() {
+      // 暂停自动走动
+      this.pauseAutoWalk();
+      
+      // 设置为睡觉状态
+      this.setData({
+        mood: 'sleeping',
+        action: 'sleeping'
+      });
+      
+      this.updateImages();
+      this.updateStyles();
+      
+      // 显示休息特效
+      this.showEffect('heart', 3000);
+      
+      // 3秒后恢复正常状态
+      setTimeout(() => {
+        this.setData({
+          mood: 'happy',
+          action: 'idle'
+        });
+        this.updateImages();
+        this.updateStyles();
+        
+        // 恢复自动走动
+        this.resumeAutoWalk();
+      }, 3000);
+    },
     
     // 便便动画
     poop() {

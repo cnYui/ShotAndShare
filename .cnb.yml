@@ -1,0 +1,123 @@
+# CNB 云原生构建配置文件 - 健康宠物伴侣小程序
+version: "1.0"
+
+# 项目信息
+project:
+  name: "健康宠物伴侣小程序"
+  description: "基于微信小程序的虚拟宠物养成与健康管理应用"
+  type: "miniprogram"
+
+# 构建环境配置
+environment:
+  # 基础镜像
+  image: "node:18-alpine"
+  
+  # 工作目录
+  workdir: "/workspace"
+  
+  # 环境变量
+  env:
+    NODE_ENV: "production"
+    NPM_CONFIG_REGISTRY: "https://registry.npmmirror.com"
+    MINIPROGRAM_ENV: "cloud"
+
+# 构建阶段
+stages:
+  # 依赖安装阶段
+  - name: "install"
+    commands:
+      - "npm install"
+    cache:
+      paths:
+        - "node_modules"
+        - "~/.npm"
+  
+  # 云函数构建阶段
+  - name: "build-cloudfunctions"
+    commands:
+      - "cd cloudfunctions && find . -name 'package.json' -not -path './node_modules/*' -execdir npm install \;"
+    depends_on:
+      - "install"
+    cache:
+      paths:
+        - "cloudfunctions/*/node_modules"
+  
+  # 小程序构建阶段
+  - name: "build-miniprogram"
+    commands:
+      - "echo 'Building miniprogram...'"
+      - "npm run build || echo 'No build script found'"
+    depends_on:
+      - "install"
+  
+  # 代码检查阶段
+  - name: "lint"
+    commands:
+      - "npm run lint || echo 'No lint script found'"
+    depends_on:
+      - "install"
+    allow_failure: true
+
+# 资源配置
+runner:
+  cpus: 2
+  memory: "4Gi"
+  disk: "10Gi"
+
+# 缓存配置
+cache:
+  mode: "copy-on-write"
+  ttl: "7d"
+
+# 插件配置
+plugins:
+  - name: "node-build"
+    version: "latest"
+  - name: "miniprogram-build"
+    version: "latest"
+    config:
+      project_config: "project.config.json"
+      miniprogram_root: "miniprogram"
+      cloudfunctions_root: "cloudfunctions"
+
+# 触发器配置
+triggers:
+  - type: "push"
+    branches:
+      - "main"
+      - "develop"
+  - type: "pull_request"
+    branches:
+      - "main"
+
+# 部署配置
+deploy:
+  - name: "miniprogram"
+    type: "wechat-miniprogram"
+    config:
+      app_id: "${WECHAT_APP_ID}"
+      private_key: "${WECHAT_PRIVATE_KEY}"
+      version: "${BUILD_VERSION}"
+      description: "自动部署 - ${BUILD_COMMIT_MESSAGE}"
+
+# 通知配置
+notifications:
+  - type: "email"
+    on_success: true
+    on_failure: true
+  - type: "webhook"
+    url: "${WEBHOOK_URL}"
+    on_failure: true
+
+# 环境变量配置
+variables:
+  - name: "WECHAT_APP_ID"
+    description: "微信小程序AppID"
+    required: true
+  - name: "WECHAT_PRIVATE_KEY"
+    description: "微信小程序私钥"
+    required: true
+    secret: true
+  - name: "WEBHOOK_URL"
+    description: "通知Webhook地址"
+    required: false

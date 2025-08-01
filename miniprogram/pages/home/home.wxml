@@ -96,6 +96,11 @@
         <image class="btn-icon" src="/images/icons/game.svg"></image>
         <text>游戏</text>
       </button>
+      
+      <button class="action-btn rest-btn" bindtap="restPet">
+        <image class="btn-icon" src="/images/icons/rest.svg"></image>
+        <text>休息</text>
+      </button>
     </view>
   </view>
   

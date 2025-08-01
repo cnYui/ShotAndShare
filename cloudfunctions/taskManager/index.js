@@ -328,27 +328,51 @@ async function updatePetStatus(userId, expReward) {
     
     if (petQuery.data.length > 0) {
       const pet = petQuery.data[0];
-      const newExp = pet.exp + expReward;
+      const currentLevel = pet.level || 1;
+      const currentLevelExp = pet.exp || 0;
+      const newLevelExp = currentLevelExp + expReward;
       
-      // 计算升级所需经验值
-      const expForNextLevel = (pet.level + 1) * 100;
-      
-      // 更新宠物经验值
-      await db.collection('pets').doc(pet._id).update({
-        data: {
-          exp: newExp,
-          last_active: new Date()
-        }
+      console.log('🎯 taskManager更新宠物状态:', {
+        '当前等级': currentLevel,
+        '当前等级内经验': currentLevelExp,
+        '经验奖励': expReward,
+        '更新后等级内经验': newLevelExp
       });
       
       // 检查是否需要升级
-      if (newExp >= expForNextLevel) {
-        // 调用petManager的升级功能
-        await cloud.callFunction({
-          name: 'petManager',
+      const expForThisLevel = 100; // 每级需要100经验
+      
+      if (newLevelExp >= expForThisLevel) {
+        // 需要升级，计算升级后的经验值
+        let finalLevel = currentLevel;
+        let finalExp = newLevelExp;
+        
+        // 计算应该达到的等级和剩余经验
+        while (finalExp >= expForThisLevel) {
+          finalLevel++;
+          finalExp -= expForThisLevel;
+        }
+        
+        // 更新宠物等级和经验值
+        await db.collection('pets').doc(pet._id).update({
           data: {
-            action: 'petLevelUp',
-            userId: userId
+            level: finalLevel,
+            exp: finalExp, // 升级后当前等级内的经验值
+            last_active: new Date()
+          }
+        });
+        
+        console.log('🎊 taskManager自动升级:', {
+          '原等级': currentLevel,
+          '新等级': finalLevel,
+          '升级后当前等级内经验': finalExp
+        });
+      } else {
+        // 不需要升级，直接更新经验值
+        await db.collection('pets').doc(pet._id).update({
+          data: {
+            exp: newLevelExp,
+            last_active: new Date()
           }
         });
       }

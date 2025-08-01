@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修复宠物经验值数据</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>修复宠物经验值数据</h1>
+    <p>请在微信开发者工具中打开此页面，然后点击下面的按钮来修复数据库中的宠物经验值数据。</p>
+    
+    <h2>使用说明：</h2>
+    <ol>
+        <li>首先需要在微信开发者工具中部署 fixPetExp 云函数</li>
+        <li>右键点击 cloudfunctions/fixPetExp 文件夹</li>
+        <li>选择"上传并部署：云端安装依赖"</li>
+        <li>部署完成后，在小程序中调用以下代码：</li>
+    </ol>
+    
+    <h2>调用代码：</h2>
+    <pre><code>
+wx.cloud.callFunction({
+  name: 'fixPetExp',
+  data: {},
+  success: (res) => {
+    console.log('修复结果:', res.result);
+    if (res.result.success) {
+      wx.showToast({
+        title: `修复完成！共修复了${res.result.fixedCount}只宠物`,
+        icon: 'success',
+        duration: 3000
+      });
+    } else {
+      wx.showToast({
+        title: '修复失败: ' + res.result.error,
+        icon: 'error'
+      });
+    }
+  },
+  fail: (err) => {
+    console.error('调用失败:', err);
+    wx.showToast({
+      title: '调用失败',
+      icon: 'error'
+    });
+  }
+});
+    </code></pre>
+    
+    <h2>或者在控制台直接运行：</h2>
+    <p>在微信开发者工具的控制台中直接粘贴上面的代码并执行。</p>
+</body>
+</html>

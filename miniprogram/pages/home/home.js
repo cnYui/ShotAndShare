@@ -25,6 +25,7 @@ Page({
     petMessage: '',
     isFeeding: false,
     isPlaying: false,
+    isLevelingUp: false,
     loading: true,
     isDarkMode: false,
     themeClass: '',
@@ -218,7 +219,8 @@ Page({
     
     // 检查是否应该升级 - 修复升级判断逻辑
     // 当前等级内的经验值达到100时触发升级
-    if (currentLevelExp >= expForThisLevel) {
+    // 添加防重复升级机制：检查是否正在升级中
+    if (currentLevelExp >= expForThisLevel && !this.data.isLevelingUp) {
       console.log('🎊 检测到应该升级，触发升级逻辑...', {
         '当前等级内经验': currentLevelExp,
         '升级所需': expForThisLevel,
@@ -271,6 +273,9 @@ Page({
       '总经验': petData.totalExp
     });
     
+    // 设置升级中标志，防止重复升级
+    this.setData({ isLevelingUp: true });
+    
     wx.showLoading({ title: '升级中...' });
     
     wx.cloud.callFunction({
@@ -314,6 +319,8 @@ Page({
       },
       complete: () => {
         wx.hideLoading();
+        // 清除升级中标志
+        this.setData({ isLevelingUp: false });
       }
     });
   },
@@ -812,11 +819,6 @@ Page({
             petMessage: '散步真舒服！我感觉更健康了！'
           });
           
-          // 延迟刷新宠物数据以获取最新状态
-          setTimeout(() => {
-            this.loadPetData();
-          }, 500);
-          
           setTimeout(() => {
             this.setData({ petMessage: '' });
           }, 3000);
@@ -868,11 +870,6 @@ Page({
           this.setData({
             petMessage: res.result.data.message || '和主人一起玩真开心！'
           });
-          
-          // 延迟刷新宠物数据以获取最新状态
-          setTimeout(() => {
-            this.loadPetData();
-          }, 500);
           
           setTimeout(() => {
             this.setData({ petMessage: '' });
@@ -938,6 +935,79 @@ Page({
     if (app.globalData.petInfo) {
       app.globalData.petInfo.intimacy = newIntimacy;
       app.globalData.petInfo.vitality = newVitality;
+      wx.setStorageSync('petInfo', app.globalData.petInfo);
+    }
+  },
+
+  // 宠物休息
+  restPet() {
+    wx.showLoading({ title: '休息中...' });
+    
+    wx.cloud.callFunction({
+      name: 'petManager',
+      data: {
+        action: 'restPet'
+      },
+      success: (res) => {
+        if (res.result.success) {
+          // 触发宠物休息动画
+          const petComponent = this.selectComponent('#mainPet');
+          if (petComponent) {
+            petComponent.restPet();
+          }
+          
+          wx.showToast({
+            title: res.result.data.message || '休息完成！',
+            icon: 'success'
+          });
+          
+          // 更新本地宠物状态
+          this.updatePetStatusFromRest(res.result.data);
+          
+          this.setData({
+            petMessage: '休息真舒服！我精神饱满了！'
+          });
+          
+          setTimeout(() => {
+            this.setData({ petMessage: '' });
+          }, 3000);
+        } else {
+          wx.showToast({
+            title: res.result.error,
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('休息失败:', err);
+        wx.showToast({
+          title: '操作失败',
+          icon: 'none'
+        });
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
+  },
+
+  // 从休息结果更新宠物状态
+  updatePetStatusFromRest(restResult) {
+    const currentPetInfo = this.data.petInfo;
+    const newVitality = restResult.vitality;
+    const newHealth = restResult.health;
+    
+    this.setData({
+      'petInfo.vitality': newVitality,
+      'petInfo.health': newHealth,
+      'petInfo.statusText': this.getPetStatusText({ health: newHealth, vitality: newVitality, intimacy: currentPetInfo.intimacy })
+    });
+    
+    // 更新全局宠物信息
+    const app = getApp();
+    if (app.globalData.petInfo) {
+      app.globalData.petInfo.vitality = newVitality;
+      app.globalData.petInfo.health = newHealth;
       wx.setStorageSync('petInfo', app.globalData.petInfo);
     }
   },

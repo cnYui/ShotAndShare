@@ -463,12 +463,14 @@
 
 .action-buttons {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   gap: 20rpx;
 }
 
 .action-btn {
-  flex: 1;
+  flex: 0 0 calc(33.33% - 14rpx);
+  min-width: 140rpx;
   background: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 20rpx;
@@ -478,6 +480,7 @@
   align-items: center;
   box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  margin-bottom: 20rpx;
 }
 
 .action-btn::after {
@@ -502,6 +505,10 @@
 
 .game-btn:active {
   background: rgba(255, 105, 180, 0.2);
+}
+
+.rest-btn:active {
+  background: rgba(147, 112, 219, 0.2);
 }
 
 .test-btn:active {
