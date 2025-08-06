@@ -1,0 +1,431 @@
+/* 动态宠物组件样式 */
+.pet-wrapper {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  margin: 0 auto;
+}
+
+.pet-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 宠物各层级样式 */
+.pet-body-layer,
+.pet-cheeks-layer,
+.pet-eyes-layer,
+.pet-mouth-layer,
+.pet-tail-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-body,
+.pet-cheeks,
+.pet-eyes,
+.pet-mouth,
+.pet-tail {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+/* 宠物动画状态 */
+.pet-container.walking {
+  animation: walkBounce 0.8s infinite;
+}
+
+.pet-container.jumping {
+  animation: jumpBounce 0.6s infinite;
+}
+
+.pet-container.eating .pet-mouth {
+  animation: eatAnimation 0.6s infinite;
+}
+
+.pet-container.sleeping .pet-eyes {
+  opacity: 0.3;
+}
+
+.pet-container.laydown .pet-body {
+  transform: scaleY(0.7);
+  transition: transform 0.3s ease;
+}
+
+.pet-container.happy .pet-tail {
+  animation: wagTail 1s infinite;
+}
+
+.pet-container.blinking .pet-eyes {
+  animation: blinkAnimation 3s infinite;
+}
+
+/* 尾巴摇摆动画 */
+@keyframes wagTail {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* 行走动画 - 减小弹跳幅度保持一致性 */
+@keyframes walkBounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3rpx); }
+  75% { transform: translateY(-3rpx); }
+}
+
+/* 修复行走时的位移问题 - 移除transform冲突 */
+.pet-container.walking {
+  animation: none;
+}
+
+.pet-container.walking .pet-body {
+  animation: walkBodyBounce 0.8s infinite;
+}
+
+@keyframes walkBodyBounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3rpx); }
+  75% { transform: translateY(-3rpx); }
+}
+
+/* 跳跃动画 */
+@keyframes jumpBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12rpx); }
+}
+
+/* 进食动画 */
+@keyframes eatAnimation {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* 眨眼动画 */
+@keyframes blinkAnimation {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0.1; }
+}
+
+/* 眨眼状态 */
+.pet-eyes.blinking {
+  transition: opacity 0.1s ease;
+}
+
+/* 过度喂食表情动画 */
+.pet-container.mood-overfed {
+  animation: overfedShake 0.5s ease-in-out 3;
+}
+
+@keyframes overfedShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2rpx); }
+  75% { transform: translateX(2rpx); }
+}
+
+/* 修复laydown时的眼睛和表情位置 */
+.pet-container.laydown .pet-eyes {
+  transform: translateY(-3rpx);
+}
+
+.pet-container.laydown .pet-cheeks {
+  transform: translateY(-2rpx);
+}
+
+.pet-container.laydown .pet-mouth {
+  transform: translateY(-2rpx);
+}
+
+/* 修复laydown时尾巴的朝向问题 */
+.pet-container.laydown .pet-tail {
+  /* 移除强制翻转，让尾巴跟随宠物整体方向 */
+  transform: scaleX(-1);
+}
+
+/* 互动效果层 */
+.pet-effects-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 食物效果 */
+.effect-food {
+  position: absolute;
+  width: 60rpx;
+  height: 60rpx;
+  top: -80rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.effect-food.show {
+  animation: foodDrop 1.5s ease-out;
+}
+
+@keyframes foodDrop {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-40rpx);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(60rpx);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(80rpx);
+  }
+}
+
+/* 爱心效果 */
+.effect-heart {
+  position: absolute;
+  width: 40rpx;
+  height: 40rpx;
+  top: -60rpx;
+  right: -20rpx;
+  opacity: 0;
+}
+
+.effect-heart.show {
+  animation: heartFloat 2s ease-out;
+}
+
+@keyframes heartFloat {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-40rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80rpx) scale(0.8);
+  }
+}
+
+/* 便便效果 */
+.effect-poop-container {
+  position: absolute;
+  bottom: -40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.effect-poop {
+  width: 50rpx;
+  height: 50rpx;
+  opacity: 0;
+}
+
+.effect-poop.show {
+  animation: poopAppear 0.5s ease-out forwards;
+}
+
+@keyframes poopAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 便便臭气线 */
+.poop-stink {
+  position: absolute;
+  width: 30rpx;
+  height: 40rpx;
+  top: -30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.poop-stink.show {
+  animation: stinkWave 2s infinite;
+}
+
+@keyframes stinkWave {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(-10rpx);
+  }
+}
+
+/* 激光笔效果 */
+.effect-laser {
+  position: absolute;
+  width: 30rpx;
+  height: 30rpx;
+  opacity: 0;
+}
+
+.effect-laser.show {
+  animation: laserMove 3s infinite;
+}
+
+@keyframes laserMove {
+  0% {
+    opacity: 1;
+    top: 20%;
+    left: 20%;
+  }
+  25% {
+    opacity: 1;
+    top: 20%;
+    right: 20%;
+  }
+  50% {
+    opacity: 1;
+    bottom: 20%;
+    right: 20%;
+  }
+  75% {
+    opacity: 1;
+    bottom: 20%;
+    left: 20%;
+  }
+  100% {
+    opacity: 1;
+    top: 20%;
+    left: 20%;
+  }
+}
+
+/* 等级徽章 - 现在相对于wrapper定位，不会受到container翻转影响 */
+.pet-wrapper .pet-level-badge {
+  position: absolute;
+  top: -20rpx;
+  right: -20rpx;
+  background: linear-gradient(135deg, #ff6b6b, #ffa726);
+  color: white;
+  border-radius: 20rpx;
+  padding: 8rpx 16rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.3);
+  z-index: 20;
+  /* 等级牌子始终保持正向，不受宠物翻转影响 */
+  transform: none !important;
+  transition: none !important;
+}
+
+.pet-wrapper .pet-level-badge .level-text {
+  display: inline-block;
+  /* 文字始终保持正向 */
+  transform: none !important;
+}
+
+.level-text {
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+/* 宠物生命阶段样式 - 统一为较小的尺寸 */
+.pet-wrapper.stage-egg {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.pet-wrapper.stage-baby {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.pet-wrapper.stage-child {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.pet-wrapper.stage-adult {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.pet-wrapper.stage-elder {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+/* 所有阶段眼睛位置调整 */
+.pet-container.stage-baby .pet-eyes {
+  transform: translateY(-5rpx);
+}
+
+.pet-container.stage-child .pet-eyes {
+  transform: translateY(-6rpx);
+}
+
+.pet-container.stage-adult .pet-eyes {
+  transform: translateY(-8rpx);
+}
+
+.pet-container.stage-elder .pet-eyes {
+  transform: translateY(-7rpx);
+}
+
+/* 宠物情绪状态 */
+.pet-container.mood-happy {
+  filter: brightness(1.1) saturate(1.2);
+}
+
+.pet-container.mood-sad {
+  filter: brightness(0.8) saturate(0.7);
+}
+
+.pet-container.mood-sick {
+  filter: brightness(0.7) saturate(0.5) hue-rotate(60deg);
+}
+
+.pet-container.mood-excited {
+  /* 移除不停放大缩小的动画效果 */
+  filter: brightness(1.1) saturate(1.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .pet-wrapper {
+    width: 160rpx;
+    height: 160rpx;
+  }
+  
+  .pet-wrapper.stage-adult {
+    width: 160rpx;
+    height: 160rpx;
+  }
+}
+
+/* 暗色主题适配 */
+.dark-theme .pet-level-badge {
+  background: linear-gradient(135deg, #4a90e2, #7b68ee);
+  box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.3);
+}
+
+.dark-theme .pet-container {
+  filter: brightness(1.1);
+}

@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "dynamic-pet": "../../components/dynamic-pet/dynamic-pet"
+  },
+  "navigationBarTitleText": "我的宠物",
+  "navigationBarBackgroundColor": "#A3D39C",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#A3D39C",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50
+}

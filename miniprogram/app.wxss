@@ -1,0 +1,95 @@
+/**app.wxss**/
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+} 
+
+button {
+  background: initial;
+}
+
+button:focus{
+  outline: 0;
+}
+
+button::after{
+  border: none;
+}
+
+/* 通用按钮样式 */
+.btn {
+  width: 200rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  background-color: #007aff;
+  color: white;
+  font-size: 32rpx;
+}
+
+page {
+  background: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: background-color 0.3s ease;
+}
+
+/* 深色主题全局样式 */
+page.dark-theme {
+  background-color: #1a1a1a;
+}
+
+/* 深色主题通用样式 */
+.dark-theme .container {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.dark-theme .btn {
+  background-color: #7fb069;
+  color: #ffffff;
+}
+
+/* 深色主题文本颜色 */
+.dark-theme text {
+  color: #ffffff;
+}
+
+.dark-theme view {
+  color: #ffffff;
+}
+
+/* 深色主题输入框 */
+.dark-theme input {
+  background-color: #404040;
+  color: #ffffff;
+  border: 1rpx solid #555555;
+}
+
+.dark-theme textarea {
+  background-color: #404040;
+  color: #ffffff;
+  border: 1rpx solid #555555;
+}
+
+/* 深色主题卡片样式 */
+.dark-theme .card {
+  background-color: #2d2d2d;
+  border: 1rpx solid #404040;
+}
+
+/* 深色主题导航栏 */
+.dark-theme .nav-bar {
+  background-color: #2d2d2d;
+  border-bottom: 1rpx solid #404040;
+}
+
+/* 深色主题底部导航 */
+.dark-theme .tab-bar {
+  background-color: #2d2d2d;
+  border-top: 1rpx solid #404040;
+}

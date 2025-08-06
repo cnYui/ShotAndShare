@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "宠物聊天",
+  "navigationBarBackgroundColor": "#F6D03A",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F6D03A",
+  "enablePullDownRefresh": false,
+  "onReachBottomDistance": 50
+}

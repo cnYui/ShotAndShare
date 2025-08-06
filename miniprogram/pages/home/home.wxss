@@ -1,0 +1,1026 @@
+/* 宠物主页面样式 */
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 100%);
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+/* 宠物展示区域 */
+.pet-display-area {
+  background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
+  border-radius: 30rpx;
+  padding: 40rpx 30rpx;
+  margin: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(168, 230, 207, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 宠物舞台区域 */
+.pet-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30rpx;
+  position: relative;
+  min-height: 240rpx;
+  width: 100%;
+  height: 400rpx;
+  overflow: hidden;
+  background: 
+    /* 像素草地 */
+    repeating-linear-gradient(
+      0deg,
+      #7CB342 0rpx,
+      #7CB342 8rpx,
+      #8BC34A 8rpx,
+      #8BC34A 16rpx
+    ),
+    /* 像素天空 */
+    linear-gradient(
+      180deg,
+      #87CEEB 0%,
+      #98D8E8 50%,
+      #A8E6CF 100%
+    );
+  background-size: 100% 80rpx, 100% 100%;
+  background-position: 0 320rpx, 0 0;
+  border-radius: 20rpx;
+  /* 添加像素化效果 */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* 像素云朵装饰 */
+.pet-stage::before {
+  content: '';
+  position: absolute;
+  top: 40rpx;
+  left: 100rpx;
+  width: 80rpx;
+  height: 40rpx;
+  background: 
+    radial-gradient(circle at 20rpx 20rpx, #FFF 0, #FFF 16rpx, transparent 16rpx),
+    radial-gradient(circle at 40rpx 15rpx, #FFF 0, #FFF 20rpx, transparent 20rpx),
+    radial-gradient(circle at 60rpx 20rpx, #FFF 0, #FFF 16rpx, transparent 16rpx);
+  opacity: 0.8;
+  animation: cloudFloat 8s ease-in-out infinite;
+}
+
+/* 第二朵云 */
+.pet-stage::after {
+  content: '';
+  position: absolute;
+  top: 80rpx;
+  right: 120rpx;
+  width: 60rpx;
+  height: 30rpx;
+  background: 
+    radial-gradient(circle at 15rpx 15rpx, #FFF 0, #FFF 12rpx, transparent 12rpx),
+    radial-gradient(circle at 30rpx 12rpx, #FFF 0, #FFF 15rpx, transparent 15rpx),
+    radial-gradient(circle at 45rpx 15rpx, #FFF 0, #FFF 12rpx, transparent 12rpx);
+  opacity: 0.6;
+  animation: cloudFloat 10s ease-in-out infinite reverse;
+}
+
+@keyframes cloudFloat {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20rpx);
+  }
+}
+
+.pet-avatar-container {
+  position: relative;
+  width: 240rpx;
+  height: 240rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+/* 像素宠物容器 */
+.pixel-pet-container {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: petWalk 30s linear infinite;
+}
+
+.pixel-pet {
+  width: 120rpx;
+  height: 96rpx;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2));
+  position: absolute;
+  opacity: 0;
+}
+
+/* 正面小猫 - 静止状态 */
+.cat-front {
+  animation: showFront 30s linear infinite;
+}
+
+/* 右侧面小猫动画 */
+.cat-right {
+  animation: showRightStatic 30s linear infinite;
+}
+
+.cat-right-walk1 {
+  animation: showRightWalk1 30s linear infinite;
+}
+
+.cat-right-walk2 {
+  animation: showRightWalk2 30s linear infinite;
+}
+
+/* 左侧面小猫动画 */
+.cat-left {
+  animation: showLeftStatic 30s linear infinite;
+}
+
+.cat-left-walk1 {
+  animation: showLeftWalk1 30s linear infinite;
+}
+
+.cat-left-walk2 {
+  animation: showLeftWalk2 30s linear infinite;
+}
+
+/* 睡觉小猫动画 */
+.cat-sleep {
+  animation: showSleep 30s linear infinite;
+}
+
+/* 正面显示时机 (开始和结束时) */
+@keyframes showFront {
+  0%, 3% { opacity: 1; }
+  3.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 97% { opacity: 0; }
+  97.01%, 100% { opacity: 1; }
+}
+
+/* 右侧面静态显示 */
+@keyframes showRightStatic {
+  3%, 8% { opacity: 1; }
+  8.01%, 15% { opacity: 0; }
+  15.01%, 20% { opacity: 1; }
+  20.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 63% { opacity: 1; }
+  63.01%, 68% { opacity: 0; }
+  68.01%, 73% { opacity: 1; }
+  73.01%, 78% { opacity: 0; }
+  78.01%, 83% { opacity: 1; }
+  83.01%, 100% { opacity: 0; }
+}
+
+/* 右侧面走路动画1 - 抬前腿 */
+@keyframes showRightWalk1 {
+  0%, 8% { opacity: 0; }
+  8.01%, 15% { opacity: 1; }
+  15.01%, 20% { opacity: 0; }
+  20.01%, 25% { opacity: 1; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 63% { opacity: 0; }
+  63.01%, 68% { opacity: 1; }
+  68.01%, 73% { opacity: 0; }
+  73.01%, 78% { opacity: 1; }
+  78.01%, 100% { opacity: 0; }
+}
+
+/* 右侧面走路动画2 - 抬后腿 */
+@keyframes showRightWalk2 {
+  0%, 15% { opacity: 0; }
+  15.01%, 20% { opacity: 1; }
+  20.01%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 68% { opacity: 0; }
+  68.01%, 73% { opacity: 1; }
+  73.01%, 78% { opacity: 0; }
+  78.01%, 83% { opacity: 1; }
+  83.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面静态显示 */
+@keyframes showLeftStatic {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 88% { opacity: 1; }
+  88.01%, 93% { opacity: 0; }
+  93.01%, 97% { opacity: 1; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面走路动画1 - 抬前腿 */
+@keyframes showLeftWalk1 {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 88% { opacity: 0; }
+  88.01%, 93% { opacity: 1; }
+  93.01%, 97% { opacity: 0; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 左侧面走路动画2 - 抬后腿 */
+@keyframes showLeftWalk2 {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 0; }
+  58.01%, 83% { opacity: 0; }
+  83.01%, 93% { opacity: 0; }
+  93.01%, 97% { opacity: 1; }
+  97.01%, 100% { opacity: 0; }
+}
+
+/* 睡觉动画 - 随机在动画中间出现 */
+@keyframes showSleep {
+  0%, 25% { opacity: 0; }
+  25.01%, 58% { opacity: 1; }
+  58.01%, 100% { opacity: 0; }
+}
+
+/* 左右移动动画 - 睡觉时停止移动 */
+@keyframes petWalk {
+  0% {
+    left: 20rpx;
+    transform: translateY(-50%);
+  }
+  25% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  25.01% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  58% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  58.01% {
+    left: calc(50% - 60rpx);
+    transform: translateY(-50%);
+  }
+  83% {
+    left: calc(100% - 140rpx);
+    transform: translateY(-50%);
+  }
+  100% {
+    left: 20rpx;
+    transform: translateY(-50%);
+  }
+}
+
+.pet-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  border: 6rpx solid #ffffff;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.pet-level {
+  position: absolute;
+  top: -15rpx;
+  right: -15rpx;
+  background: #FF9F55;
+  color: white;
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 8rpx rgba(255, 159, 85, 0.3);
+  z-index: 10;
+}
+
+.pet-info {
+  text-align: center;
+}
+
+.pet-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.pet-status {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 状态值区域 */
+.status-section {
+  margin-bottom: 30rpx;
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.status-item:last-child {
+  margin-bottom: 0;
+}
+
+.status-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  margin: 0 20rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.health {
+  background: linear-gradient(90deg, #A3D39C, #7BC97B);
+}
+
+.progress-fill.vitality {
+  background: linear-gradient(90deg, #F6D03A, #F4C430);
+}
+
+.progress-fill.intimacy {
+  background: linear-gradient(90deg, #FF9F55, #FF8C42);
+}
+
+.status-value {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 80rpx;
+  text-align: right;
+}
+
+/* 成长区域 */
+.growth-section {
+  margin-bottom: 30rpx;
+}
+
+.exp-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 25rpx 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.exp-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.exp-bar {
+  height: 20rpx;
+  background: #f0f0f0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.exp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF9F55, #F6D03A);
+  border-radius: 10rpx;
+  transition: width 0.3s ease;
+}
+
+.exp-text {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+  display: block;
+}
+
+/* 陪伴统计 */
+.companion-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF9F55;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 互动按钮区域 */
+.action-section {
+  margin-bottom: 30rpx;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 0 0 calc(33.33% - 14rpx);
+  min-width: 140rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: 20rpx;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.feed-btn:active {
+  background: rgba(163, 211, 156, 0.2);
+}
+
+.play-btn:active {
+  background: rgba(246, 208, 58, 0.2);
+}
+
+.walk-btn:active {
+  background: rgba(135, 206, 235, 0.2);
+}
+
+.game-btn:active {
+  background: rgba(255, 105, 180, 0.2);
+}
+
+.rest-btn:active {
+  background: rgba(147, 112, 219, 0.2);
+}
+
+.test-btn:active {
+  background: rgba(138, 43, 226, 0.2);
+}
+
+.btn-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-btn text {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 宠物阶段测试区域 */
+.test-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.stage-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin: 20rpx 0;
+  justify-content: center;
+}
+
+.stage-btn {
+  background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+  color: #333;
+  border: none;
+  border-radius: 25rpx;
+  padding: 15rpx 25rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 15rpx rgba(255, 154, 158, 0.3);
+  transition: all 0.3s ease;
+  min-width: 120rpx;
+}
+
+.stage-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 10rpx rgba(255, 154, 158, 0.4);
+}
+
+.action-test-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-top: 20rpx;
+  justify-content: center;
+}
+
+.test-action-btn {
+  background: linear-gradient(135deg, #A8E6CF 0%, #88D8A3 100%);
+  color: #333;
+  border: none;
+  border-radius: 20rpx;
+  padding: 12rpx 20rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-shadow: 0 3rpx 12rpx rgba(168, 230, 207, 0.3);
+  transition: all 0.3s ease;
+  min-width: 140rpx;
+}
+
+.test-action-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(168, 230, 207, 0.4);
+}
+
+/* 今日任务区域 */
+.today-tasks {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.section-title text:first-child {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.task-progress {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+.task-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 0;
+}
+
+.task-icon {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  border: 3rpx solid #ddd;
+  margin-right: 20rpx;
+}
+
+.task-icon.completed {
+  background: #A3D39C;
+  border-color: #A3D39C;
+}
+
+.task-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.task-reward {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx 0;
+}
+
+.loading-state text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+  gap: 20rpx;
+}
+
+.empty-state text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.refresh-btn {
+  background: #A3D39C;
+  color: white;
+  border: none;
+  border-radius: 30rpx;
+  padding: 15rpx 30rpx;
+  font-size: 26rpx;
+  box-shadow: 0 4rpx 12rpx rgba(163, 211, 156, 0.3);
+}
+
+.refresh-btn::after {
+  border: none;
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+  background: #8BC98B;
+}
+
+/* 宠物提示语 */
+.pet-message {
+  position: fixed;
+  bottom: 200rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.message-bubble {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20rpx 30rpx;
+  border-radius: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15rpx solid transparent;
+  border-right: 15rpx solid transparent;
+  border-top: 15rpx solid rgba(255, 255, 255, 0.95);
+}
+
+.message-bubble text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 暗色主题 */
+.dark-theme .home-container {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+}
+
+.dark-theme .pet-display-area,
+.dark-theme .status-card,
+.dark-theme .exp-container,
+.dark-theme .action-btn,
+.dark-theme .today-tasks {
+  background: rgba(52, 73, 94, 0.8);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .pet-name,
+.dark-theme .status-label,
+.dark-theme .exp-label,
+.dark-theme .section-title text:first-child,
+.dark-theme .task-name,
+.dark-theme .action-btn text {
+  color: #ecf0f1;
+}
+
+.dark-theme .pet-status,
+.dark-theme .status-value,
+.dark-theme .exp-text,
+.dark-theme .loading-state text,
+.dark-theme .empty-state text,
+.dark-theme .stat-label {
+  color: #bdc3c7;
+}
+
+.dark-theme .task-progress,
+.dark-theme .task-reward,
+.dark-theme .stat-value {
+  color: #f39c12;
+}
+
+.dark-theme .progress-bar,
+.dark-theme .exp-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .companion-stats {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .task-icon {
+  border-color: #7f8c8d;
+}
+
+.dark-theme .task-icon.completed {
+  background: #27ae60;
+  border-color: #27ae60;
+}
+
+/* 深色主题样式 */
+.dark-theme .home-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.dark-theme .pet-avatar {
+  border-color: #7fb069;
+}
+
+.dark-theme .pet-level {
+  background: #e67e22;
+}
+
+.dark-theme .pet-name {
+  color: #ffffff;
+}
+
+.dark-theme .pet-status {
+  color: #cccccc;
+}
+
+.dark-theme .status-card {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .status-label {
+  color: #ffffff;
+}
+
+.dark-theme .progress-bar {
+  background: #404040;
+}
+
+.dark-theme .status-value {
+  color: #cccccc;
+}
+
+.dark-theme .exp-container {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .exp-label {
+  color: #ffffff;
+}
+
+.dark-theme .exp-bar {
+  background: #404040;
+}
+
+.dark-theme .exp-text {
+  color: #cccccc;
+}
+
+.dark-theme .stat-value {
+  color: #e67e22;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .action-button {
+  background: rgba(45, 45, 45, 0.9);
+  color: #ffffff;
+  border: 1rpx solid #555555;
+}
+
+.dark-theme .action-button:active {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.dark-theme .action-icon {
+  filter: brightness(1.2);
+}
+
+.dark-theme .action-text {
+  color: #ffffff;
+}
+
+.dark-theme .pet-message .message-bubble {
+  background: rgba(52, 73, 94, 0.9);
+  color: #ecf0f1;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  position: fixed;
+  top: 20rpx;
+  right: 20rpx;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  font-size: 32rpx;
+}
+
+/* 编辑宠物名字模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  width: 600rpx;
+  max-width: 90%;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 40rpx 40rpx 20rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-body {
+  padding: 40rpx;
+}
+
+.name-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 32rpx;
+  color: #333;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.name-input:focus {
+  border-color: #4CAF50;
+  background: white;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.cancel-btn, .confirm-btn {
+  flex: 1;
+  height: 100rpx;
+  border: none;
+  font-size: 32rpx;
+  background: none;
+  border-radius: 0;
+}
+
+.cancel-btn {
+  color: #666;
+  border-right: 1rpx solid #f0f0f0;
+}
+
+.confirm-btn {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.cancel-btn:active {
+  background: #f5f5f5;
+}
+
+.confirm-btn:active {
+  background: #f0f8f0;
+}
+
+/* 暗色主题下的模态框样式 */
+.dark .modal-content {
+  background: #2d2d2d;
+}
+
+.dark .modal-title {
+  color: #fff;
+}
+
+.dark .modal-header,
+.dark .modal-footer {
+  border-color: #404040;
+}
+
+.dark .name-input {
+  background: #404040;
+  border-color: #555;
+  color: #fff;
+}
+
+.dark .name-input:focus {
+  background: #4a4a4a;
+  border-color: #4CAF50;
+}
+
+.dark .cancel-btn {
+  color: #ccc;
+  border-color: #404040;
+}
+
+.dark .cancel-btn:active {
+  background: #404040;
+}
+
+.dark .confirm-btn:active {
+  background: #2d4a2d;
+}

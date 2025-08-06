@@ -1,0 +1,171 @@
+<!--宠物聊天页面-->
+<view class="chat-container">
+  <!-- 宠物状态栏 -->
+  <view class="pet-status-bar">
+    <view class="pet-avatar-small">
+      <image class="avatar-img" src="{{petInfo.avatar || '/images/default-pet.png'}}" mode="aspectFit"></image>
+      <view class="status-indicator {{petInfo.mood}}"></view>
+    </view>
+    <view class="pet-status-info">
+      <text class="pet-name">{{petInfo.name || '小绿'}}</text>
+      <text class="pet-mood">{{petInfo.moodText || '开心聊天中'}}</text>
+    </view>
+    <view class="chat-settings">
+      <button class="settings-btn" bindtap="openChatSettings">
+        <image class="settings-icon" src="/images/icons/settings.png"></image>
+      </button>
+    </view>
+  </view>
+
+  <!-- 聊天消息区域 -->
+  <scroll-view class="chat-messages" 
+               scroll-y="true" 
+               scroll-top="{{scrollTop}}"
+               scroll-into-view="{{scrollIntoView}}"
+               enable-back-to-top="true">
+    
+    <!-- 欢迎消息 -->
+    <view class="welcome-message" wx:if="{{messages.length === 0}}">
+      <view class="welcome-card">
+        <image class="welcome-pet" src="{{petInfo.avatar || '/images/default-pet.png'}}"></image>
+        <text class="welcome-text">{{texts.chat.welcomeMessage}}</text>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view class="message-list">
+      <view class="message-item {{item.type}}" 
+            wx:for="{{messages}}" 
+            wx:key="id"
+            id="msg-{{item.id}}">
+        
+        <!-- 用户消息 -->
+        <view class="user-message" wx:if="{{item.type === 'user'}}">
+          <view class="message-content">
+            <text class="message-text">{{item.content}}</text>
+            <text class="message-time">{{item.time}}</text>
+          </view>
+          <view class="user-avatar">
+            <image class="avatar-img" src="{{userInfo.avatar || '/images/default-user.png'}}"></image>
+          </view>
+        </view>
+
+        <!-- 宠物消息 -->
+        <view class="pet-message" wx:if="{{item.type === 'pet'}}">
+          <view class="pet-avatar-msg">
+            <image class="avatar-img" src="{{petInfo.avatar || '/images/default-pet.png'}}"></image>
+            <view class="typing-indicator" wx:if="{{item.typing}}"></view>
+          </view>
+          <view class="message-content">
+            <text class="message-text">{{item.content}}</text>
+            <text class="message-time">{{item.time}}</text>
+            <!-- 消息操作 -->
+            <view class="message-actions" wx:if="{{!item.typing}}">
+              <button class="action-btn like {{item.liked ? 'active' : ''}}" 
+                      bindtap="likeMessage" data-id="{{item.id}}">
+                <image class="action-icon" src="/images/icons/{{item.liked ? 'heart-filled' : 'heart'}}.svg"></image>
+              </button>
+              <button class="action-btn copy" bindtap="copyMessage" data-content="{{item.content}}">
+                <image class="action-icon" src="/images/icons/copy.png"></image>
+              </button>
+            </view>
+          </view>
+        </view>
+
+        <!-- 系统消息 -->
+        <view class="system-message" wx:if="{{item.type === 'system'}}">
+          <text class="system-text">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 正在输入提示 -->
+    <view class="typing-message" wx:if="{{isTyping}}">
+      <view class="pet-avatar-msg">
+        <image class="avatar-img" src="{{petInfo.avatar || '/images/default-pet.png'}}"></image>
+      </view>
+      <view class="typing-content">
+          <text>{{texts.chat.typingIndicator}}</text>
+          <view class="typing-dots">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+          </view>
+        </view>
+    </view>
+  </scroll-view>
+
+
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <view class="input-container">
+      <view class="input-box">
+        <textarea class="message-input" 
+                  placeholder="{{texts.chat.inputPlaceholder}}"
+                  value="{{inputText}}"
+                  bindinput="onInputChange"
+                  bindconfirm="sendMessage"
+                  auto-height="true"
+                  maxlength="500"
+                  show-confirm-bar="false">
+        </textarea>
+      </view>
+      <button class="send-btn {{inputText.length > 0 ? 'active' : ''}}" 
+              bindtap="sendMessage"
+              disabled="{{inputText.length === 0 || isSending}}">
+        <image class="send-icon" src="/images/icons/send.svg"></image>
+      </button>
+    </view>
+  </view>
+
+  <!-- 表情面板 -->
+  <view class="emoji-panel" wx:if="{{showEmojiPanel}}">
+    <view class="emoji-grid">
+      <view class="emoji-item" 
+            wx:for="{{emojis}}" 
+            wx:key="index"
+            bindtap="insertEmoji" 
+            data-emoji="{{item}}">
+        <text class="emoji-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+
+
+  <!-- 聊天设置面板 -->
+  <view class="settings-panel" wx:if="{{showSettingsPanel}}">
+    <view class="settings-mask" bindtap="closeChatSettings"></view>
+    <view class="settings-content">
+      <view class="settings-header">
+        <text class="settings-title">{{texts.chat.settings.title}}</text>
+        <button class="close-btn" bindtap="closeChatSettings">
+          <image class="close-icon" src="/images/icons/close.png"></image>
+        </button>
+      </view>
+      
+      <view class="settings-options">
+        <view class="option-item">
+          <text class="option-label">{{texts.chat.settings.smartReply}}</text>
+          <switch class="option-switch" checked="{{settings.smartReply}}" bindchange="toggleSmartReply"></switch>
+        </view>
+        
+        <view class="option-item">
+          <text class="option-label">{{texts.chat.settings.voicePlay}}</text>
+          <switch class="option-switch" checked="{{settings.voicePlay}}" bindchange="toggleVoicePlay"></switch>
+        </view>
+        
+        <view class="option-item">
+          <text class="option-label">{{texts.chat.settings.notification}}</text>
+          <switch class="option-switch" checked="{{settings.notification}}" bindchange="toggleNotification"></switch>
+        </view>
+        
+        <view class="option-item" bindtap="clearChatHistoryManual">
+          <text class="option-label danger">{{texts.chat.settings.clearHistory}}</text>
+          <image class="option-arrow" src="/images/icons/arrow-right.svg"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

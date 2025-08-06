@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "健康数据",
+  "navigationBarBackgroundColor": "#A3D39C",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#A3D39C",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 50
+}

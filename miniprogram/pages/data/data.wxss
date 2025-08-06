@@ -1,0 +1,1179 @@
+/* 健康数据页面样式 */
+.data-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 50%, #FF9F55 100%);
+  padding: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 数据概览区域 */
+.overview-section {
+  margin-bottom: 30rpx;
+}
+
+.overview-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.overview-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.overview-date {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.overview-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.stat-icon.steps {
+  background: linear-gradient(135deg, #A3D39C, #7BC97B);
+}
+
+.stat-icon.water {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.stat-icon.sleep {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.stat-icon.exercise {
+  background: linear-gradient(135deg, #FF9F55, #e67e22);
+}
+
+.stat-icon image {
+  width: 35rpx;
+  height: 35rpx;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.stat-value.editable {
+  cursor: pointer;
+  position: relative;
+  padding: 5rpx 10rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.stat-value.editable:hover {
+  background: rgba(255, 159, 85, 0.1);
+  transform: scale(1.05);
+}
+
+.stat-value.editable::after {
+  content: '✏️';
+  font-size: 20rpx;
+  margin-left: 8rpx;
+  opacity: 0.6;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 分类标签 */
+.category-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 10rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 10rpx;
+  border-radius: 15rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #FF9F55;
+  color: white;
+}
+
+.tab-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+.tab-item text {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.tab-item.active text {
+  color: white;
+}
+
+/* 时间范围选择 */
+.time-range-section {
+  margin-bottom: 30rpx;
+}
+
+.range-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15rpx;
+  padding: 8rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.range-tab {
+  flex: 1;
+  text-align: center;
+  padding: 15rpx;
+  border-radius: 10rpx;
+  transition: all 0.3s ease;
+}
+
+.range-tab.active {
+  background: #A3D39C;
+  color: white;
+}
+
+.range-tab text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 数据详情卡片 */
+.data-detail-section {
+  margin-bottom: 10rpx;
+}
+
+.data-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25rpx;
+}
+
+/* 运动时间柱状图样式 */
+.exercise-time-chart {
+  margin-top: 30rpx;
+}
+
+.chart-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.time-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 200rpx;
+  padding: 0 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.time-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  margin: 0 5rpx;
+}
+
+.bar-container {
+  position: relative;
+  width: 40rpx;
+  height: 150rpx;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10rpx;
+}
+
+.bar-fill {
+  width: 100%;
+  border-radius: 20rpx;
+  transition: height 0.5s ease;
+  position: relative;
+  min-height: 10rpx;
+}
+
+.bar-value {
+  position: absolute;
+  top: -25rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20rpx;
+  color: #333;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.bar-label {
+  font-size: 22rpx;
+  color: #666;
+  text-align: center;
+}
+
+.chart-legend {
+  text-align: center;
+  padding: 15rpx;
+  background: rgba(255, 159, 85, 0.1);
+  border-radius: 15rpx;
+}
+
+.legend-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.data-card {
+  padding: 30rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-target {
+  background: rgba(163, 211, 156, 0.2);
+  padding: 8rpx 15rpx;
+  border-radius: 15rpx;
+}
+
+.card-target text {
+  font-size: 22rpx;
+  color: #A3D39C;
+  font-weight: 500;
+}
+
+/* 步数进度圆环 */
+.progress-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.circular-progress {
+  margin-right: 40rpx;
+}
+
+.progress-circle {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background: conic-gradient(#A3D39C 0%, #f0f0f0 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-circle::before {
+  content: '';
+  position: absolute;
+  width: 160rpx;
+  height: 160rpx;
+  background: white;
+  border-radius: 50%;
+}
+
+.progress-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.progress-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.progress-unit {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.progress-info {
+  flex: 1;
+}
+
+.completion-rate {
+  display: block;
+  font-size: 28rpx;
+  color: #A3D39C;
+  font-weight: 500;
+  margin-bottom: 15rpx;
+}
+
+.remaining {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 图表容器 */
+.chart-container {
+  margin: 30rpx auto 5rpx auto;
+  width: 70%;
+  display: flex;
+  justify-content: center;
+}
+
+.data-chart {
+  width: 100%;
+  height: 40rpx;
+  border-radius: 15rpx;
+}
+
+/* 数据洞察 */
+.data-insights {
+  background: rgba(163, 211, 156, 0.1);
+  padding: 25rpx;
+  border-radius: 15rpx;
+  border-left: 6rpx solid #A3D39C;
+}
+
+.insights-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #A3D39C;
+  margin-bottom: 10rpx;
+}
+
+.insights-content {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 饮水进度 */
+.water-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.water-bottle {
+  position: relative;
+  width: 80rpx;
+  height: 250rpx;
+  background: rgba(52, 152, 219, 0.1);
+  border: 4rpx solid #3498db;
+  border-radius: 15rpx 15rpx 25rpx 25rpx;
+  margin-right: 40rpx;
+  overflow: hidden;
+}
+
+.water-level {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, #3498db, #2980b9);
+  transition: height 0.5s ease;
+  border-radius: 0 0 20rpx 20rpx;
+}
+
+.water-marks {
+  position: absolute;
+  right: -60rpx;
+  top: 0;
+  height: 100%;
+}
+
+.mark {
+  position: absolute;
+  right: 0;
+  width: 50rpx;
+  height: 2rpx;
+  background: #ddd;
+}
+
+.mark text {
+  position: absolute;
+  right: 60rpx;
+  top: -10rpx;
+  font-size: 20rpx;
+  color: #666;
+}
+
+.water-info {
+  flex: 1;
+}
+
+.water-current {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #3498db;
+  margin-bottom: 15rpx;
+}
+
+.water-remaining {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 饮水记录 */
+.water-records {
+  margin-bottom: 30rpx;
+}
+
+.records-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.record-list {
+  max-height: 300rpx;
+  overflow-y: auto;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.record-amount {
+  font-size: 26rpx;
+  color: #3498db;
+  font-weight: 500;
+}
+
+/* 快速添加饮水 */
+.quick-add-water {
+  background: rgba(52, 152, 219, 0.1);
+  padding: 25rpx;
+  border-radius: 15rpx;
+}
+
+.add-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.add-buttons {
+  display: flex;
+  gap: 15rpx;
+}
+
+.add-btn {
+  flex: 1;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 15rpx;
+  padding: 20rpx 15rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.add-btn::after {
+  border: none;
+}
+
+.add-btn.custom {
+  background: #A3D39C;
+}
+
+/* 睡眠数据 */
+.sleep-overview {
+  margin-bottom: 30rpx;
+}
+
+.sleep-time {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(155, 89, 182, 0.1);
+  padding: 25rpx;
+  border-radius: 15rpx;
+}
+
+.time-item {
+  text-align: center;
+}
+
+.time-label {
+  display: block;
+  font-size: 22rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.time-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #9b59b6;
+}
+
+.sleep-quality {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.quality-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 30rpx;
+}
+
+.quality-score {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.score-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border: 8rpx solid #9b59b6;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 25rpx;
+}
+
+.score-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #9b59b6;
+}
+
+.score-unit {
+  font-size: 20rpx;
+  color: #666;
+}
+
+.quality-desc text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.sleep-phases {
+  background: rgba(155, 89, 182, 0.1);
+  padding: 25rpx;
+  border-radius: 15rpx;
+}
+
+.phases-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.phases-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.phase-item {
+  display: flex;
+  align-items: center;
+}
+
+.phase-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.phase-name {
+  flex: 1;
+  font-size: 24rpx;
+  color: #333;
+}
+
+.phase-duration {
+  font-size: 24rpx;
+  color: #9b59b6;
+  font-weight: 500;
+}
+
+/* 运动数据 */
+.exercise-summary {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 159, 85, 0.1);
+  padding: 25rpx;
+  border-radius: 15rpx;
+  margin-bottom: 30rpx;
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FF9F55;
+  margin-bottom: 8rpx;
+}
+
+.summary-label {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.exercise-types {
+  margin-bottom: 30rpx;
+}
+
+.types-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.type-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: rgba(255, 159, 85, 0.1);
+  border-radius: 15rpx;
+}
+
+.type-icon {
+  width: 60rpx;
+  height: 60rpx;
+  background: #FF9F55;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.type-icon image {
+  width: 35rpx;
+  height: 35rpx;
+}
+
+.type-info {
+  flex: 1;
+}
+
+.type-name {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 5rpx;
+}
+
+.type-duration {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.type-calories {
+  font-size: 24rpx;
+  color: #FF9F55;
+  font-weight: 500;
+}
+
+/* 数据操作按钮 */
+.data-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.action-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 20rpx;
+  padding: 25rpx 15rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.export:active {
+  background: rgba(163, 211, 156, 0.2);
+}
+
+.action-btn.sync:active {
+  background: rgba(246, 208, 58, 0.2);
+}
+
+.action-btn.settings:active {
+  background: rgba(255, 159, 85, 0.2);
+}
+
+.btn-icon {
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-btn text {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 自定义饮水弹窗 */
+.custom-water-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600rpx;
+  background: white;
+  border-radius: 25rpx;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  width: 50rpx;
+  height: 50rpx;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close::after {
+  border: none;
+}
+
+.modal-close image {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.modal-body {
+  padding: 40rpx 30rpx;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  border-radius: 15rpx;
+  padding: 20rpx;
+}
+
+.water-input {
+  flex: 1;
+  font-size: 32rpx;
+  color: #333;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.input-unit {
+  font-size: 28rpx;
+  color: #666;
+  margin-left: 15rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 30rpx 30rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  border: none;
+  border-radius: 15rpx;
+  padding: 25rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.modal-btn::after {
+  border: none;
+}
+
+.modal-btn.cancel {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.modal-btn.confirm {
+  background: #3498db;
+  color: white;
+}
+
+/* 深色主题样式 */
+.dark-theme .data-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #e67e22 100%);
+}
+
+.dark-theme .overview-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .overview-title {
+  color: #ffffff;
+}
+
+.dark-theme .overview-date {
+  color: #cccccc;
+}
+
+.dark-theme .stat-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .stat-value {
+  color: #ffffff;
+}
+
+.dark-theme .stat-label {
+  color: #cccccc;
+}
+
+.dark-theme .category-tabs {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .tab-item {
+  color: #cccccc;
+}
+
+.dark-theme .tab-item.active {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .range-tabs {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.dark-theme .range-tab {
+  color: #cccccc;
+}
+
+.dark-theme .range-tab.active {
+  background: #7fb069;
+  color: #ffffff;
+}
+
+.dark-theme .data-card {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.dark-theme .card-title {
+  color: #ffffff;
+}
+
+.dark-theme .chart-container {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .insights-content {
+  color: #cccccc;
+}
+
+.dark-theme .record-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .record-time {
+  color: #cccccc;
+}
+
+.dark-theme .record-amount {
+  color: #ffffff;
+}
+
+.dark-theme .phase-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .phase-name {
+  color: #ffffff;
+}
+
+.dark-theme .phase-duration {
+  color: #cccccc;
+}
+
+.dark-theme .type-item {
+  background: rgba(60, 60, 60, 0.8);
+}
+
+.dark-theme .type-name {
+  color: #ffffff;
+}
+
+.dark-theme .type-duration {
+  color: #cccccc;
+}
+
+.dark-theme .type-calories {
+  color: #e67e22;
+}
+
+/* 编辑弹窗样式 */
+.edit-data-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 深色主题编辑弹窗样式 */
+.dark-theme .edit-data-modal {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.dark-theme .edit-modal-content {
+  background: #2c3e50;
+}
+
+.dark-theme .edit-modal-title {
+  color: #ffffff;
+}
+
+.dark-theme .edit-form-group {
+  border-bottom-color: #555555;
+}
+
+.dark-theme .edit-label {
+  color: #ffffff;
+}
+
+.dark-theme .edit-input {
+  background: rgba(60, 60, 60, 0.8);
+  color: #ffffff;
+  border-color: #666666;
+}
+
+.dark-theme .edit-input::placeholder {
+  color: #999999;
+}
+
+.dark-theme .edit-buttons {
+  border-top-color: #555555;
+}
+
+.dark-theme .edit-cancel-btn {
+  background: #7f8c8d;
+  color: #ffffff;
+}
+
+.dark-theme .edit-confirm-btn {
+  background: #e67e22;
+  color: #ffffff;
+}
+
+.dark-theme .edit-cancel-btn:active {
+  background: #6c7b7d;
+}
+
+.dark-theme .edit-confirm-btn:active {
+  background: #d35400;
+}
+
+.data-input {
+  flex: 1;
+  font-size: 32rpx;
+  color: #333;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+/* 其他可编辑元素样式 */
+.water-current.editable,
+.time-value.editable,
+.summary-value.editable {
+  cursor: pointer;
+  position: relative;
+  padding: 5rpx 10rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.water-current.editable:hover,
+.time-value.editable:hover,
+.summary-value.editable:hover {
+  background: rgba(255, 159, 85, 0.1);
+  transform: scale(1.05);
+}
+
+.water-current.editable::after,
+.time-value.editable::after,
+.summary-value.editable::after {
+  content: '✏️';
+  font-size: 20rpx;
+  margin-left: 8rpx;
+  opacity: 0.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .modal-content {
+    width: 90%;
+    max-width: 600rpx;
+  }
+  
+  .overview-stats {
+    grid-template-columns: 1fr;
+    gap: 15rpx;
+  }
+  
+  .data-actions {
+    flex-direction: column;
+  }
+}

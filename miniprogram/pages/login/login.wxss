@@ -1,0 +1,202 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #A3D39C 0%, #F6D03A 100%);
+  padding: 40rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 80rpx;
+  z-index: 10;
+  position: relative;
+}
+
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 80rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.15);
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.app-name {
+  font-size: 52rpx;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.3);
+  letter-spacing: 2rpx;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-section {
+  width: 100%;
+  max-width: 500rpx;
+  z-index: 10;
+  position: relative;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 50rpx;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.15);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  animation: slideInUp 0.8s ease-out 0.5s both;
+}
+
+.login-btn::after {
+  border: none;
+}
+
+.login-btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wechat-icon {
+  width: 44rpx;
+  height: 44rpx;
+  margin-right: 24rpx;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 30rpx;
+  padding: 50rpx;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.15);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  animation: slideInUp 0.8s ease-out 0.5s both;
+}
+
+.avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 70rpx;
+  margin-bottom: 30rpx;
+  border: 4rpx solid rgba(163, 211, 156, 0.3);
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+  animation: avatarPulse 2s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.continue-btn {
+  width: 240rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, #A3D39C 0%, #7BC97B 100%);
+  color: white;
+  border-radius: 40rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  line-height: 80rpx;
+  box-shadow: 0 8rpx 20rpx rgba(163, 211, 156, 0.4);
+  transition: all 0.3s ease;
+}
+
+.continue-btn::after {
+  border: none;
+}
+
+.continue-btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(163, 211, 156, 0.6);
+}
+
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, rgba(163, 211, 156, 0.95) 0%, rgba(246, 208, 58, 0.95) 100%);
+  color: white;
+  padding: 30rpx 50rpx;
+  border-radius: 30rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10rpx);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  z-index: 1000;
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+}
