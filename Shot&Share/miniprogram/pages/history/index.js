@@ -122,14 +122,30 @@ Page({
       
       query.limit(this.data.pageSize)
         .get()
-        .then(res => {
+        .then(async res => {
           console.log('加载记录成功:', res.data.length)
           
-          // 预处理数据，添加格式化时间
-          const processedRecords = res.data.map(record => {
+          // 预处理数据，添加格式化时间和转换图片链接
+          const processedRecords = await Promise.all(res.data.map(async record => {
             record.formattedTime = this.formatTime(record.createdAt)
+            
+            // 如果imageUrl是云存储fileId，转换为临时链接
+            if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
+              try {
+                const tempUrlRes = await wx.cloud.getTempFileURL({
+                  fileList: [record.imageUrl]
+                })
+                if (tempUrlRes.fileList && tempUrlRes.fileList[0] && tempUrlRes.fileList[0].tempFileURL) {
+                  record.imageUrl = tempUrlRes.fileList[0].tempFileURL
+                }
+              } catch (error) {
+                console.warn('获取图片临时链接失败:', error)
+                // 保持原有的fileId，让小程序尝试直接显示
+              }
+            }
+            
             return record
-          })
+          }))
           
           this.setData({
             records: processedRecords,
@@ -207,14 +223,30 @@ Page({
       query.skip(this.data.page * this.data.pageSize)
         .limit(this.data.pageSize)
         .get()
-        .then(res => {
+        .then(async res => {
           console.log('加载更多记录成功:', res.data.length)
           
-          // 预处理新数据，添加格式化时间
-          const processedNewRecords = res.data.map(record => {
+          // 预处理新数据，添加格式化时间和转换图片链接
+          const processedNewRecords = await Promise.all(res.data.map(async record => {
             record.formattedTime = this.formatTime(record.createdAt)
+            
+            // 如果imageUrl是云存储fileId，转换为临时链接
+            if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
+              try {
+                const tempUrlRes = await wx.cloud.getTempFileURL({
+                  fileList: [record.imageUrl]
+                })
+                if (tempUrlRes.fileList && tempUrlRes.fileList[0] && tempUrlRes.fileList[0].tempFileURL) {
+                  record.imageUrl = tempUrlRes.fileList[0].tempFileURL
+                }
+              } catch (error) {
+                console.warn('获取图片临时链接失败:', error)
+                // 保持原有的fileId，让小程序尝试直接显示
+              }
+            }
+            
             return record
-          })
+          }))
           
           this.setData({
             records: this.data.records.concat(processedNewRecords),
@@ -359,36 +391,33 @@ Page({
   performDelete: function(recordId, index) {
     getApp().showLoading('删除中...')
     
-    // 先确保数据库集合存在
+    // 调用删除记录云函数
     wx.cloud.callFunction({
-      name: 'initDatabase'
-    }).then(() => {
-      const db = wx.cloud.database()
-      db.collection('copywriting_records')
-        .doc(recordId)
-        .remove()
-        .then(() => {
-          console.log('删除记录成功')
-          getApp().hideLoading()
-          getApp().showToast('删除成功', 'success')
-          
-          // 从本地数据中移除
-          const records = this.data.records
-          records.splice(index, 1)
-          this.setData({
-            records: records,
-            total: this.data.total - 1
-          })
-        })
-        .catch(err => {
-          console.error('删除记录失败:', err)
-          getApp().hideLoading()
-          getApp().showToast('删除失败')
-        })
-    }).catch(err => {
-      console.error('初始化数据库失败:', err)
+      name: 'deleteRecord',
+      data: {
+        recordId: recordId
+      }
+    }).then(res => {
+      console.log('删除记录云函数调用结果:', res)
       getApp().hideLoading()
-      getApp().showToast('删除失败')
+      
+      if (res.result.success) {
+        getApp().showToast('删除成功', 'success')
+        
+        // 从本地数据中移除
+        const records = this.data.records
+        records.splice(index, 1)
+        this.setData({
+          records: records,
+          total: this.data.total - 1
+        })
+      } else {
+        getApp().showToast(res.result.error || '删除失败')
+      }
+    }).catch(err => {
+      console.error('删除记录失败:', err)
+      getApp().hideLoading()
+      getApp().showToast('删除失败，请重试')
     })
   },
 

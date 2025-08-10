@@ -34,14 +34,39 @@ Page({
         console.log('记录详情:', res.data)
         
         if (res.data) {
-          this.setData({
-            record: res.data,
-            loading: false
-          })
+          const record = res.data
+          
+          // 如果imageUrl是云存储fileId，转换为临时链接
+          if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
+            wx.cloud.getTempFileURL({
+              fileList: [record.imageUrl]
+            }).then(tempUrlRes => {
+              if (tempUrlRes.fileList && tempUrlRes.fileList[0] && tempUrlRes.fileList[0].tempFileURL) {
+                record.imageUrl = tempUrlRes.fileList[0].tempFileURL
+              }
+              
+              this.setData({
+                record: record,
+                loading: false
+              })
+            }).catch(error => {
+              console.warn('获取图片临时链接失败:', error)
+              // 保持原有的fileId，让小程序尝试直接显示
+              this.setData({
+                record: record,
+                loading: false
+              })
+            })
+          } else {
+            this.setData({
+              record: record,
+              loading: false
+            })
+          }
           
           // 设置页面标题
           wx.setNavigationBarTitle({
-            title: `${res.data.styleName || '文案'}详情`
+            title: `${record.styleName || '文案'}详情`
           })
         } else {
           throw new Error('记录不存在')

@@ -248,8 +248,8 @@ Page({
       .then(res => {
         console.log('文案生成结果:', res)
         
-        if (res.result.success) {
-          const result = res.result.data
+        if (res.success) {
+          const result = res.data
           
           // 处理多条文案结果
           let copywritingArray = []
@@ -349,7 +349,8 @@ Page({
           console.log(`第${i + 1}张图片上传结果:`, uploadRes)
           
           if (uploadRes.result.success) {
-            uploadedUrls.push(uploadRes.result.data.tempUrl)
+            // 保存fileId而不是tempUrl，确保图片链接永久有效
+            uploadedUrls.push(uploadRes.result.data.fileId)
           } else {
             throw new Error(uploadRes.result.error || `第${i + 1}张图片上传失败`)
           }
@@ -381,13 +382,24 @@ Page({
           userId: app.globalData.openid
         },
         success: res => {
+          console.log('云函数调用结果:', res)
+          
+          // 检查返回结果的结构
+          if (!res || !res.result) {
+            reject(new Error('云函数返回结果格式错误'))
+            return
+          }
+          
           if (res.result.success) {
             resolve(res.result)
           } else {
             reject(new Error(res.result.error || '生成失败'))
           }
         },
-        fail: reject
+        fail: err => {
+          console.error('云函数调用失败:', err)
+          reject(err)
+        }
       })
     })
   },

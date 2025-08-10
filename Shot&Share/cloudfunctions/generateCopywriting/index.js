@@ -139,10 +139,38 @@ exports.main = async (event, context) => {
     
     console.log('提示词构建完成，调用API，图片数量:', imageUrlArray.length)
     
+    // 将云存储fileId转换为临时访问链接
+    let accessibleImageUrls = []
+    try {
+      for (const imageUrl of imageUrlArray) {
+        if (imageUrl.startsWith('cloud://')) {
+          // 如果是云存储fileId，转换为临时链接
+          const tempUrlResult = await cloud.getTempFileURL({
+            fileList: [imageUrl]
+          })
+          if (tempUrlResult.fileList && tempUrlResult.fileList[0] && tempUrlResult.fileList[0].tempFileURL) {
+            accessibleImageUrls.push(tempUrlResult.fileList[0].tempFileURL)
+          } else {
+            console.warn('获取临时链接失败:', imageUrl)
+            accessibleImageUrls.push(imageUrl) // 使用原始URL
+          }
+        } else {
+          // 如果已经是HTTP URL，直接使用
+          accessibleImageUrls.push(imageUrl)
+        }
+      }
+    } catch (urlError) {
+      console.error('转换图片URL失败:', urlError)
+      // 如果转换失败，使用原始URL
+      accessibleImageUrls = imageUrlArray
+    }
+    
+    console.log('图片URL转换完成，可访问URL数量:', accessibleImageUrls.length)
+    
     // 调用Qwen-Omni API
     let generatedContent
     try {
-      generatedContent = await callQwenOmniAPI(imageUrlArray, prompt)
+      generatedContent = await callQwenOmniAPI(accessibleImageUrls, prompt)
     } catch (apiError) {
       console.error('API调用失败:', apiError)
       throw new Error(`文案生成失败: ${apiError.message}`)
@@ -291,18 +319,16 @@ async function callQwenOmniAPI(imageUrls, prompt) {
     })
     
     const requestData = {
-      model: 'qwen-omni-turbo',
+      model: 'qwen-vl-plus',
       messages: [
         {
           role: 'user',
           content: content
         }
       ],
-      modalities: ['text'],
-      stream: true,
-      stream_options: {
-        include_usage: true
-      }
+      stream: false,
+      max_tokens: 1500,
+      temperature: 0.7
     }
     
     const postData = JSON.stringify(requestData)
@@ -333,54 +359,28 @@ async function callQwenOmniAPI(imageUrls, prompt) {
       }
       
       res.on('data', (chunk) => {
-        try {
-          data += chunk.toString()
-          
-          // 处理流式响应
-          const lines = data.split('\n')
-          data = lines.pop() // 保留最后一行（可能不完整）
-          
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const jsonStr = line.substring(6).trim()
-              if (jsonStr === '[DONE]') {
-                continue
-              }
-              
-              try {
-                const parsed = JSON.parse(jsonStr)
-                if (parsed.error) {
-                  if (!isResolved) {
-                    isResolved = true
-                    reject(new Error(`API错误: ${parsed.error.message || '未知错误'}`))
-                  }
-                  return
-                }
-                if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
-                  content += parsed.choices[0].delta.content
-                }
-              } catch (e) {
-                console.warn('解析JSON失败:', e.message, 'JSON:', jsonStr)
-                // 忽略解析错误，继续处理
-              }
-            }
-          }
-        } catch (error) {
-          console.error('处理数据块时出错:', error)
-          if (!isResolved) {
-            isResolved = true
-            reject(error)
-          }
-        }
+        data += chunk.toString()
       })
       
       res.on('end', () => {
-        if (!isResolved) {
-          isResolved = true
-          if (content.trim()) {
-            resolve(content.trim())
-          } else {
-            reject(new Error('API返回内容为空，请检查图片URL是否有效或重试'))
+        try {
+          if (!isResolved) {
+            isResolved = true
+            const parsed = JSON.parse(data)
+            if (parsed.error) {
+              reject(new Error(`API错误: ${parsed.error.message || '未知错误'}`))
+              return
+            }
+            if (parsed.choices && parsed.choices[0] && parsed.choices[0].message && parsed.choices[0].message.content) {
+              resolve(parsed.choices[0].message.content.trim())
+            } else {
+              reject(new Error('API返回格式错误'))
+            }
+          }
+        } catch (error) {
+          if (!isResolved) {
+            isResolved = true
+            reject(new Error(`解析API响应失败: ${error.message}`))
           }
         }
       })
