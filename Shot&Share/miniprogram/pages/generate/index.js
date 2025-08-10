@@ -414,7 +414,7 @@ Page({
    */
   handleGenerateSuccess: function(result) {
     this.setData({
-      generatedCopywriting: result.copywriting || [],
+      generatedCopywriting: result.data.copywritings || [],
       showResult: true
     })
     
