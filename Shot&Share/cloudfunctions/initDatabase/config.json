@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "openapi": [
+      "cloudbase.createCollection",
+      "cloudbase.database.collection.add",
+      "cloudbase.database.collection.count"
+    ]
+  },
+  "triggers": [],
+  "environment": {}
+}

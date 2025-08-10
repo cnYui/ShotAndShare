@@ -1,0 +1,287 @@
+/**profile.wxss**/
+
+page {
+  background-color: #f8f9fa;
+}
+
+/* 用户信息区域 */
+.user-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60rpx 32rpx 40rpx;
+  color: #fff;
+  margin-bottom: 32rpx;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.user-location {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.login-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.8;
+}
+
+.login-text {
+  font-size: 28rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.9;
+}
+
+.login-prompt .btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10rpx);
+}
+
+.login-prompt .btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 统计数据区域 */
+.stats-section {
+  margin-bottom: 32rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx 16rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 功能菜单区域 */
+.menu-section {
+  margin-bottom: 32rpx;
+}
+
+.menu-list {
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 0 32rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f8f9fa;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 24rpx;
+  width: 60rpx;
+  text-align: center;
+}
+
+.menu-content {
+  flex: 1;
+}
+
+.menu-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.menu-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.menu-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}
+
+/* 偏好设置区域 */
+.preferences-section {
+  margin-bottom: 32rpx;
+}
+
+.preference-list {
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 0 32rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.preference-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f8f9fa;
+}
+
+.preference-item:last-child {
+  border-bottom: none;
+}
+
+.preference-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.preference-value {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* 应用信息区域 */
+.app-info-section {
+  margin-bottom: 32rpx;
+}
+
+.app-info {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin: 0 32rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.app-logo {
+  font-size: 60rpx;
+  margin-right: 24rpx;
+}
+
+.app-details {
+  flex: 1;
+}
+
+.app-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.app-version {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 4rpx;
+}
+
+.app-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 快捷操作区域 */
+.quick-actions {
+  padding: 0 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.quick-actions .btn {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .user-section {
+    padding: 40rpx 24rpx 32rpx;
+  }
+  
+  .stats-grid {
+    padding: 0 24rpx;
+  }
+  
+  .menu-list,
+  .preference-list,
+  .app-info,
+  .quick-actions {
+    margin: 0 24rpx;
+  }
+  
+  .section-title {
+    margin: 0 24rpx 20rpx;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12rpx;
+  }
+  
+  .stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    padding: 24rpx;
+  }
+  
+  .stat-number {
+    margin-bottom: 0;
+  }
+}

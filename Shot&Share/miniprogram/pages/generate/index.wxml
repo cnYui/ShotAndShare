@@ -1,0 +1,166 @@
+<!--generate.wxml-->
+<view class="container">
+  <!-- 图片上传区域 -->
+  <view class="upload-section">
+    <view class="section-title">选择图片 ({{selectedImages.length}}/{{maxImages}})</view>
+    
+    <view wx:if="{{selectedImages.length === 0}}" class="upload-area" bindtap="chooseImage">
+      <view class="upload-icon">📷</view>
+      <view class="upload-text">点击选择图片</view>
+      <view class="upload-desc">支持选择多张图片，最多{{maxImages}}张</view>
+    </view>
+    
+    <view wx:else class="images-preview">
+      <view class="images-grid">
+        <view class="image-item" wx:for="{{selectedImages}}" wx:key="index">
+          <image class="preview-image" src="{{item}}" mode="aspectFill"></image>
+          <view class="image-remove" bindtap="removeImage" data-index="{{index}}">×</view>
+        </view>
+        
+        <view wx:if="{{selectedImages.length < maxImages}}" class="add-image-btn" bindtap="chooseImage">
+          <view class="add-icon">+</view>
+          <view class="add-text">添加图片</view>
+        </view>
+      </view>
+      
+      <view class="image-actions">
+        <button class="btn btn-outline" bindtap="clearAllImages">清空所有</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 文字描述区域 -->
+  <view class="description-section">
+    <view class="section-title">描述内容（可选）</view>
+    <view class="input-group">
+      <textarea 
+        class="textarea" 
+        placeholder="{{descriptionPlaceholder}}"
+        value="{{description}}"
+        bindinput="onDescriptionInput"
+        maxlength="200"
+        show-confirm-bar="{{false}}"
+      ></textarea>
+      <view class="char-count">{{description.length}}/200</view>
+    </view>
+  </view>
+
+  <!-- 风格选择区域 -->
+  <view class="style-section">
+    <view class="section-title">选择文案风格</view>
+    <view class="style-grid">
+      <view 
+        class="style-card {{item.selected ? 'selected' : ''}}"
+        wx:for="{{styles}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="selectStyle"
+      >
+        <view class="style-name">{{item.name}}</view>
+        <view class="style-desc">{{item.desc}}</view>
+        <view wx:if="{{item.selected}}" class="style-check">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="generate-section">
+    <button 
+      class="btn btn-primary generate-btn {{generating || checkingLogin ? 'loading' : ''}}"
+      bindtap="generateCopywriting"
+      disabled="{{generating || checkingLogin || selectedImages.length === 0}}"
+    >
+      <view wx:if="{{generating || checkingLogin}}" class="loading-spinner"></view>
+      <text wx:if="{{checkingLogin}}">正在验证登录状态...</text>
+      <text wx:elif="{{generating}}">AI正在生成中...</text>
+      <text wx:else>生成文案</text>
+    </button>
+  </view>
+
+  <!-- 生成结果区域 -->
+  <view wx:if="{{showResult}}" class="result-section">
+    <view class="section-title">生成结果</view>
+    
+    <view wx:if="{{generatedCopywriting.length > 0}}" class="copywriting-list">
+      <view 
+        class="copywriting-item"
+        wx:for="{{generatedCopywriting}}"
+        wx:key="index"
+      >
+        <view class="copywriting-header">
+          <view class="copywriting-number">文案 {{index + 1}}</view>
+        </view>
+        <view class="copywriting-content">{{item.content}}</view>
+        
+        <view wx:if="{{item.tags && item.tags.length > 0}}" class="copywriting-tags">
+          <view class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">
+            #{{tag}}
+          </view>
+        </view>
+        
+        <view class="copywriting-actions">
+          <button 
+            class="action-btn copy-btn"
+            data-index="{{index}}"
+            bindtap="copyCopywriting"
+          >
+            📋 复制
+          </button>
+          <button 
+            class="action-btn save-btn"
+            data-index="{{index}}"
+            bindtap="saveCopywriting"
+          >
+            💾 保存
+          </button>
+          <button 
+            class="action-btn share-btn"
+            data-index="{{index}}"
+            bindtap="shareCopywriting"
+          >
+            📤 分享
+          </button>
+        </view>
+      </view>
+    </view>
+    
+    <view wx:else class="empty-result">
+      <view class="empty-icon">😔</view>
+      <view class="empty-text">暂无生成结果</view>
+      <view class="empty-desc">请检查图片和网络连接后重试</view>
+    </view>
+    
+    <!-- 结果操作按钮 -->
+    <view class="result-actions">
+      <button class="btn btn-outline" bindtap="regenerate">
+        🔄 重新生成
+      </button>
+      <button class="btn btn-secondary" bindtap="reset">
+        🗑️ 清空重置
+      </button>
+    </view>
+  </view>
+
+  <!-- 使用提示 -->
+  <view wx:if="{{!showResult}}" class="tips-section">
+    <view class="section-title">使用提示</view>
+    <view class="tips-list">
+      <view class="tip-item">
+        <view class="tip-icon">💡</view>
+        <view class="tip-text">选择清晰、主题明确的图片效果更好</view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-icon">✨</view>
+        <view class="tip-text">添加描述可以让AI更好地理解你的意图</view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-icon">🎨</view>
+        <view class="tip-text">不同风格会生成不同情感基调的文案</view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-icon">⚡</view>
+        <view class="tip-text">生成过程需要几秒钟，请耐心等待</view>
+      </view>
+    </view>
+  </view>
+</view>

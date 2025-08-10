@@ -1,0 +1,174 @@
+<!--preview.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 记录详情 -->
+  <view class="preview-content" wx:if="{{!loading && record}}">
+    <!-- 头部信息 -->
+    <view class="header-info">
+      <view class="style-info">
+        <text class="style-name">{{record.styleName || '未知风格'}}</text>
+        <text class="create-time">{{formatTime(record.createdAt)}}</text>
+      </view>
+      <view class="status-info">
+        <text class="status-item" wx:if="{{record.saved}}">
+          ⭐ 已保存
+        </text>
+        <text class="status-item" wx:if="{{record.shared}}">
+          📤 已分享
+        </text>
+      </view>
+    </view>
+
+    <!-- 图片展示 -->
+    <view class="image-section" wx:if="{{record.imageUrl}}">
+      <view class="image-container">
+        <image 
+          class="preview-image" 
+          src="{{record.imageUrl}}" 
+          mode="aspectFit"
+          bindload="onImageLoad"
+          binderror="onImageError"
+          bindtap="previewImage"
+        />
+        <view class="image-overlay" wx:if="{{!imageLoaded}}">
+          <text class="loading-text">图片加载中...</text>
+        </view>
+      </view>
+      <view class="image-tip">
+        <text>点击图片可放大查看</text>
+      </view>
+    </view>
+
+    <!-- 用户描述 -->
+    <view class="description-section" wx:if="{{record.description}}">
+      <view class="section-title">
+        <text class="title-icon">💭</text>
+        <text class="title-text">用户描述</text>
+      </view>
+      <view class="description-content">
+        <text class="description-text">{{record.description}}</text>
+      </view>
+    </view>
+
+    <!-- 文案内容 -->
+    <view class="content-section">
+      <view class="section-title">
+        <text class="title-icon">✨</text>
+        <text class="title-text">生成文案</text>
+      </view>
+      <view class="content-container">
+        <text class="content-text" selectable>{{record.content}}</text>
+      </view>
+    </view>
+
+    <!-- 标签 -->
+    <view class="tags-section" wx:if="{{record.tags && record.tags.length > 0}}">
+      <view class="section-title">
+        <text class="title-icon">🏷️</text>
+        <text class="title-text">相关标签</text>
+      </view>
+      <view class="tags-container">
+        <text 
+          class="tag" 
+          wx:for="{{record.tags}}" 
+          wx:key="*this"
+        >
+          #{{item}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="actions-section">
+      <view class="primary-actions">
+        <button 
+          class="action-btn primary"
+          bindtap="copyContent"
+        >
+          <text class="btn-icon">📋</text>
+          <text class="btn-text">复制文案</text>
+        </button>
+        <button 
+          class="action-btn primary"
+          bindtap="shareContent"
+        >
+          <text class="btn-icon">📤</text>
+          <text class="btn-text">分享文案</text>
+        </button>
+      </view>
+      
+      <view class="secondary-actions">
+        <button 
+          class="action-btn secondary"
+          bindtap="saveRecord"
+          disabled="{{record.saved}}"
+        >
+          <text class="btn-icon">⭐</text>
+          <text class="btn-text">{{record.saved ? '已保存' : '保存'}}</text>
+        </button>
+        <button 
+          class="action-btn secondary"
+          bindtap="regenerate"
+        >
+          <text class="btn-icon">🔄</text>
+          <text class="btn-text">重新生成</text>
+        </button>
+      </view>
+      
+      <view class="danger-actions">
+        <button 
+          class="action-btn danger"
+          bindtap="deleteRecord"
+        >
+          <text class="btn-icon">🗑️</text>
+          <text class="btn-text">删除记录</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 详细信息 -->
+    <view class="details-section">
+      <view class="section-title">
+        <text class="title-icon">ℹ️</text>
+        <text class="title-text">详细信息</text>
+      </view>
+      <view class="details-list">
+        <view class="detail-item">
+          <text class="detail-label">创建时间</text>
+          <text class="detail-value">{{formatTime(record.createdAt)}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{record.savedAt}}">
+          <text class="detail-label">保存时间</text>
+          <text class="detail-value">{{formatTime(record.savedAt)}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{record.sharedAt}}">
+          <text class="detail-label">分享时间</text>
+          <text class="detail-value">{{formatTime(record.sharedAt)}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">文案风格</text>
+          <text class="detail-value">{{record.styleName || '未知'}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">字数统计</text>
+          <text class="detail-value">{{record.content.length}}字</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-state" wx:if="{{!loading && !record}}">
+    <view class="error-icon">😕</view>
+    <view class="error-title">记录不存在</view>
+    <view class="error-desc">该记录可能已被删除或不存在</view>
+    <button class="btn btn-primary" bindtap="goBack">
+      返回上一页
+    </button>
+  </view>
+</view>

@@ -1,0 +1,95 @@
+<!--profile.wxml-->
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <view wx:if="{{hasUserInfo}}" class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <view class="user-name">{{userInfo.nickName}}</view>
+        <view class="user-location" wx:if="{{userInfo.city}}">
+          📍 {{userInfo.province}} {{userInfo.city}}
+        </view>
+      </view>
+    </view>
+    
+    <view wx:else class="login-prompt">
+      <view class="login-icon">👤</view>
+      <view class="login-text">登录后查看个人信息</view>
+      <button class="btn btn-primary" bindtap="getUserInfo">立即登录</button>
+    </view>
+  </view>
+
+  <!-- 统计数据区域 -->
+  <view wx:if="{{hasUserInfo}}" class="stats-section">
+    <view class="stats-grid">
+      <view class="stat-card">
+        <view class="stat-number">{{stats.totalGenerated}}</view>
+        <view class="stat-label">生成文案</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-number">{{stats.totalSaved}}</view>
+        <view class="stat-label">保存记录</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-number">{{stats.totalShared}}</view>
+        <view class="stat-label">分享次数</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单区域 -->
+  <view class="menu-section">
+    <view class="section-title">功能菜单</view>
+    <view class="menu-list">
+      <view 
+        class="menu-item"
+        wx:for="{{menuItems}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onMenuClick"
+      >
+        <view class="menu-icon">{{item.icon}}</view>
+        <view class="menu-content">
+          <view class="menu-title">{{item.title}}</view>
+          <view class="menu-desc">{{item.desc}}</view>
+        </view>
+        <view wx:if="{{item.arrow}}" class="menu-arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 偏好设置区域 -->
+  <view wx:if="{{hasUserInfo}}" class="preferences-section">
+    <view class="section-title">个人偏好</view>
+    <view class="preference-list">
+      <view class="preference-item">
+        <view class="preference-label">默认文案风格</view>
+        <view class="preference-value">{{preferences.defaultStyle}}</view>
+      </view>
+      <view class="preference-item">
+        <view class="preference-label">自动保存</view>
+        <view class="preference-value">{{preferences.autoSave ? '已开启' : '已关闭'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 应用信息区域 -->
+  <view class="app-info-section">
+    <view class="section-title">应用信息</view>
+    <view class="app-info">
+      <view class="app-logo">📸</view>
+      <view class="app-details">
+        <view class="app-name">Shot&Share</view>
+        <view class="app-version">版本 1.0.0</view>
+        <view class="app-desc">智能朋友圈配文助手</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作区域 -->
+  <view class="quick-actions">
+    <button class="btn btn-outline" open-type="share">
+      📤 分享给朋友
+    </button>
+  </view>
+</view>

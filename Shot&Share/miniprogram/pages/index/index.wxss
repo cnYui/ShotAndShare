@@ -1,0 +1,308 @@
+/**index.wxss**/
+
+page {
+  background-color: #f8f9fa;
+}
+
+/* 头部区域 */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60rpx 32rpx 40rpx;
+  color: #fff;
+  margin-bottom: 32rpx;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.logo {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.app-name {
+  font-size: 48rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.app-desc {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.user-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 16rpx 24rpx;
+  border-radius: 50rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.user-name {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.login-section .btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10rpx);
+}
+
+.login-section .btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 统计数据区域 */
+.stats-section {
+  margin-bottom: 32rpx;
+}
+
+.stats-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin: 0 32rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-around;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 功能区域 */
+.features-section {
+  margin-bottom: 32rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin: 0 32rpx 24rpx;
+}
+
+.features-grid {
+  padding: 0 32rpx;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.feature-card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 48rpx;
+  margin-right: 24rpx;
+  width: 80rpx;
+  text-align: center;
+}
+
+.feature-content {
+  flex: 1;
+}
+
+.feature-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.feature-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}
+
+/* 快速开始区域 */
+.quick-start-section {
+  margin-bottom: 32rpx;
+}
+
+.quick-start-card {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin: 0 32rpx;
+  border: 2rpx solid rgba(102, 126, 234, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quick-start-content {
+  flex: 1;
+  margin-right: 24rpx;
+}
+
+.quick-start-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.quick-start-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.quick-start-btn {
+  padding: 20rpx 32rpx;
+  font-size: 28rpx;
+  white-space: nowrap;
+}
+
+/* 使用说明区域 */
+.guide-section {
+  margin-bottom: 32rpx;
+}
+
+.guide-steps {
+  padding: 0 32rpx;
+}
+
+.guide-step {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.step-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .header {
+    padding: 40rpx 24rpx 32rpx;
+  }
+  
+  .logo {
+    font-size: 64rpx;
+  }
+  
+  .app-name {
+    font-size: 40rpx;
+  }
+  
+  .stats-card,
+  .quick-start-card {
+    margin: 0 24rpx;
+    padding: 24rpx;
+  }
+  
+  .features-grid,
+  .guide-steps {
+    padding: 0 24rpx;
+  }
+  
+  .section-title {
+    margin: 0 24rpx 20rpx;
+  }
+  
+  .feature-card,
+  .guide-step {
+    padding: 24rpx;
+  }
+  
+  .quick-start-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .quick-start-content {
+    margin-right: 0;
+    margin-bottom: 24rpx;
+    text-align: center;
+  }
+  
+  .quick-start-btn {
+    width: 100%;
+  }
+}

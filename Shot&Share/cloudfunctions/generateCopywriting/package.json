@@ -1,0 +1,21 @@
+{
+  "name": "generateCopywriting",
+  "version": "1.0.0",
+  "description": "Shot&Share文案生成云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "cloud",
+    "copywriting",
+    "ai"
+  ],
+  "author": "Shot&Share",
+  "license": "MIT"
+}

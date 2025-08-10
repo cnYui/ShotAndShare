@@ -1,0 +1,77 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="logo-section">
+      <view class="logo">📸</view>
+      <view class="app-name">Shot&Share</view>
+      <view class="app-desc">智能朋友圈配文助手</view>
+    </view>
+    
+    <!-- 用户信息区域 -->
+    <view class="user-section">
+      <view wx:if="{{hasUserInfo}}" class="user-info">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="user-name">{{userInfo.nickName}}</view>
+      </view>
+      <view wx:else class="login-section">
+        <button class="btn btn-primary" bindtap="getUserInfo">登录使用</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计数据区域 -->
+  <view class="stats-section" wx:if="{{hasUserInfo}}">
+    <view class="stats-card">
+      <view class="stat-item">
+        <view class="stat-number">{{stats.totalGenerated}}</view>
+        <view class="stat-label">生成文案</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{stats.totalSaved}}</view>
+        <view class="stat-label">保存记录</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{stats.totalShared}}</view>
+        <view class="stat-label">分享次数</view>
+      </view>
+    </view>
+  </view>
+
+
+
+  <!-- 使用说明区域 -->
+  <view class="guide-section">
+    <view class="section-title">使用说明</view>
+    <view class="guide-steps">
+      <view class="guide-step">
+        <view class="step-number">1</view>
+        <view class="step-content">
+          <view class="step-title">上传图片</view>
+          <view class="step-desc">选择相册中的图片或拍摄新照片</view>
+        </view>
+      </view>
+      <view class="guide-step">
+        <view class="step-number">2</view>
+        <view class="step-content">
+          <view class="step-title">选择风格</view>
+          <view class="step-desc">选择适合的文案风格和情感基调</view>
+        </view>
+      </view>
+      <view class="guide-step">
+        <view class="step-number">3</view>
+        <view class="step-content">
+          <view class="step-title">生成文案</view>
+          <view class="step-desc">AI智能分析图片内容，生成精美文案</view>
+        </view>
+      </view>
+      <view class="guide-step">
+        <view class="step-number">4</view>
+        <view class="step-content">
+          <view class="step-title">保存分享</view>
+          <view class="step-desc">保存喜欢的文案，一键分享到朋友圈</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

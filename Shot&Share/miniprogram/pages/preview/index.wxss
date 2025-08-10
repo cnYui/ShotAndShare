@@ -1,0 +1,382 @@
+/**preview.wxss**/
+
+page {
+  background-color: #f8f9fa;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top: 4rpx solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 预览内容 */
+.preview-content {
+  padding: 32rpx;
+}
+
+/* 头部信息 */
+.header-info {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.style-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.style-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.create-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  align-items: flex-end;
+}
+
+.status-item {
+  font-size: 22rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 图片展示 */
+.image-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.preview-image {
+  width: 100%;
+  max-height: 600rpx;
+  border-radius: 12rpx;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 12rpx;
+}
+
+.image-tip {
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.image-tip text {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 通用区块样式 */
+.description-section,
+.content-section,
+.tags-section,
+.details-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #f8f9fa;
+}
+
+.title-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.title-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 用户描述 */
+.description-content {
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #667eea;
+}
+
+.description-text {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #666;
+  font-style: italic;
+}
+
+/* 文案内容 */
+.content-container {
+  padding: 24rpx;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12rpx;
+  border: 2rpx solid #e9ecef;
+}
+
+.content-text {
+  font-size: 30rpx;
+  line-height: 1.8;
+  color: #333;
+  word-break: break-all;
+}
+
+/* 标签 */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag {
+  font-size: 22rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  border: 2rpx solid rgba(102, 126, 234, 0.2);
+}
+
+/* 操作按钮 */
+.actions-section {
+  margin-bottom: 24rpx;
+}
+
+.primary-actions,
+.secondary-actions,
+.danger-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 16rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  gap: 8rpx;
+}
+
+.action-btn.primary {
+  background: #667eea;
+  color: #fff;
+}
+
+.action-btn.primary:active {
+  background: #5a6fd8;
+  transform: scale(0.98);
+}
+
+.action-btn.secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 2rpx solid #e9ecef;
+}
+
+.action-btn.secondary:active {
+  background: #e9ecef;
+  transform: scale(0.98);
+}
+
+.action-btn.secondary[disabled] {
+  background: #e9ecef;
+  color: #999;
+  opacity: 0.6;
+}
+
+.action-btn.danger {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 2rpx solid rgba(220, 53, 69, 0.2);
+}
+
+.action-btn.danger:active {
+  background: rgba(220, 53, 69, 0.2);
+  transform: scale(0.98);
+}
+
+.btn-icon {
+  font-size: 24rpx;
+}
+
+.btn-text {
+  font-size: 26rpx;
+}
+
+/* 详细信息 */
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 2rpx solid #f8f9fa;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 错误状态 */
+.error-state {
+  text-align: center;
+  padding: 120rpx 32rpx;
+}
+
+.error-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.6;
+}
+
+.error-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.error-desc {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.5;
+  margin-bottom: 48rpx;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .preview-content {
+    padding: 24rpx;
+  }
+  
+  .header-info,
+  .image-section,
+  .description-section,
+  .content-section,
+  .tags-section,
+  .details-section {
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  .style-name {
+    font-size: 28rpx;
+  }
+  
+  .content-text {
+    font-size: 28rpx;
+  }
+  
+  .action-btn {
+    padding: 20rpx 12rpx;
+    font-size: 24rpx;
+  }
+  
+  .primary-actions,
+  .secondary-actions {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    flex: none;
+  }
+  
+  .error-state {
+    padding: 80rpx 24rpx;
+  }
+  
+  .error-icon {
+    font-size: 100rpx;
+  }
+}

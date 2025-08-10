@@ -1,0 +1,60 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/generate/index",
+    "pages/profile/index",
+    "pages/history/index",
+    "pages/preview/index"
+  ],
+  "window": {
+    "backgroundColor": "#FAFAFA",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "Shot&Share",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2C2C2C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/icons/home.png",
+        "selectedIconPath": "images/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/generate/index",
+        "text": "创作",
+        "iconPath": "images/icons/create.png",
+        "selectedIconPath": "images/icons/create-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "images/icons/profile.png",
+        "selectedIconPath": "images/icons/profile-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userInfo": {
+      "desc": "用于完善用户资料"
+    },
+    "scope.camera": {
+      "desc": "用于拍摄照片生成文案"
+    },
+    "scope.album": {
+      "desc": "用于选择相册图片生成文案"
+    },
+    "scope.writePhotosAlbum": {
+      "desc": "用于保存生成的文案图片到相册"
+    }
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "cloud": true
+}

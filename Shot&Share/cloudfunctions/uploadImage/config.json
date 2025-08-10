@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "openapi": [
+      "cloudbase.uploadFile",
+      "cloudbase.deleteFile",
+      "cloudbase.getTempFileURL",
+      "cloudbase.database.collection.add",
+      "cloudbase.database.collection.get"
+    ]
+  }
+}

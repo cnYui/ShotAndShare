@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "openapi": [
+      "cloudbase.uploadFile",
+      "cloudbase.deleteFile",
+      "cloudbase.getTempFileURL"
+    ]
+  },
+  "triggers": [],
+  "timeout": 30,
+  "environment": {
+    "QWEN_API_KEY": "sk-7ecb18df3ff5473e98ab5d8c806616db",
+    "QWEN_BASE_URL": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  }
+}
