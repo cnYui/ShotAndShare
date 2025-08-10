@@ -105,35 +105,121 @@ Shot&Share/
 5. **配置API密钥**
    - 在 `generateCopywriting/index.js` 中配置通义千问API密钥
 
-## 数据库设计
+## 🗄️ 数据库设计
 
-### copywriting_records 集合
-存储用户生成的文案记录
+### 数据库概况
+![数据库概况](pics/数据库概况.png)
+
+系统共包含6个主要数据集合，每个集合都有其特定的功能和用途：
+
+### 1. copywriting_records 集合
+**功能**: 存储用户生成的文案记录，是系统的核心数据表
 ```javascript
 {
-  _id: String,
-  userId: String,        // 用户ID
-  imageUrls: Array,      // 图片URL数组
-  description: String,   // 用户描述
-  style: String,         // 文案风格
-  copywritings: Array,   // 生成的文案数组
-  tags: Array,          // 标签
-  createTime: Date,     // 创建时间
-  updateTime: Date      // 更新时间
+  _id: ObjectId,           // 记录唯一标识
+  userId: String,          // 用户微信openid
+  imageUrl: String,        // 主图片URL（向后兼容）
+  imageUrls: Array,        // 多图片URL数组
+  description: String,     // 用户输入的图片描述
+  style: String,           // 选择的文案风格ID
+  styleName: String,       // 文案风格名称
+  content: String,         // 生成的文案内容
+  tags: Array,            // 文案标签数组
+  saved: Boolean,         // 是否已保存
+  shared: Boolean,        // 是否已分享
+  createdAt: Date,        // 创建时间
+  updatedAt: Date         // 更新时间
 }
 ```
 
-### user_stats 集合
-存储用户统计信息
+### 2. users 集合
+**功能**: 存储用户基本信息和统计数据
 ```javascript
 {
-  _id: String,
-  userId: String,           // 用户ID
-  totalGenerations: Number, // 总生成次数
-  totalCopies: Number,      // 总复制次数
-  totalShares: Number,      // 总分享次数
-  createTime: Date,         // 创建时间
-  updateTime: Date          // 更新时间
+  _id: ObjectId,           // 用户唯一标识
+  openid: String,          // 微信用户openid
+  nickName: String,        // 用户昵称
+  avatarUrl: String,       // 用户头像URL
+  gender: Number,          // 性别（0-未知，1-男，2-女）
+  country: String,         // 国家
+  province: String,        // 省份
+  city: String,           // 城市
+  language: String,        // 语言
+  statistics: {            // 用户统计信息
+    generated: Number,     // 总生成次数
+    totalSaved: Number,    // 总保存次数
+    totalShared: Number,   // 总分享次数
+    totalCopied: Number    // 总复制次数
+  },
+  lastLoginAt: Date,       // 最后登录时间
+  createdAt: Date,         // 注册时间
+  updatedAt: Date          // 更新时间
+}
+```
+
+### 3. copywriting_templates 集合
+**功能**: 存储文案生成模板，支持不同风格的文案生成
+```javascript
+{
+  _id: ObjectId,           // 模板唯一标识
+  style: String,           // 文案风格ID
+  name: String,            // 风格名称
+  category: String,        // 分类（情感表达、娱乐搞笑等）
+  templates: [{            // 模板列表
+    pattern: String,       // 文案模板模式
+    variables: [String],   // 可替换变量
+    examples: [String],    // 示例文案
+    weight: Number         // 权重（用于随机选择）
+  }],
+  tags: [String],          // 相关标签
+  isActive: Boolean,       // 是否启用
+  createdAt: Date,         // 创建时间
+  updatedAt: Date          // 更新时间
+}
+```
+
+### 4. system_config 集合
+**功能**: 存储系统配置参数，便于动态调整系统行为
+```javascript
+{
+  _id: ObjectId,           // 配置唯一标识
+  key: String,             // 配置键名
+  value: Mixed,            // 配置值（可以是数字、字符串、数组等）
+  description: String,     // 配置描述
+  category: String,        // 配置分类（upload、generation等）
+  isActive: Boolean,       // 是否启用
+  createdAt: Date,         // 创建时间
+  updatedAt: Date          // 更新时间
+}
+```
+
+### 5. user_feedback 集合
+**功能**: 收集用户反馈，用于改进产品体验
+```javascript
+{
+  _id: ObjectId,           // 反馈唯一标识
+  userId: String,          // 用户ID
+  recordId: ObjectId,      // 相关文案记录ID（可选）
+  type: String,            // 反馈类型（like、dislike、report等）
+  content: String,         // 反馈内容
+  rating: Number,          // 评分（1-5）
+  status: String,          // 处理状态（pending、processed）
+  createdAt: Date          // 创建时间
+}
+```
+
+### 6. upload_records 集合
+**功能**: 记录图片上传历史，便于管理和统计
+```javascript
+{
+  _id: ObjectId,           // 上传记录唯一标识
+  userId: String,          // 用户ID
+  fileId: String,          // 云存储文件ID
+  fileName: String,        // 原始文件名
+  fileSize: Number,        // 文件大小（字节）
+  fileType: String,        // 文件类型
+  uploadStatus: String,    // 上传状态（success、failed）
+  createdAt: Date          // 上传时间
 }
 ```
 
