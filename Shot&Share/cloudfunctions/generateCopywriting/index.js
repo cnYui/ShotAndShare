@@ -469,11 +469,11 @@ async function updateUserStats(userId, action) {
       }
       
       if (action === 'generated') {
-        updateData['stats.generatedCount'] = db.command.inc(1)
+        updateData['statistics.totalGenerated'] = db.command.inc(1)
       } else if (action === 'saved') {
-        updateData['stats.savedCount'] = db.command.inc(1)
+        updateData['statistics.totalSaved'] = db.command.inc(1)
       } else if (action === 'shared') {
-        updateData['stats.sharedCount'] = db.command.inc(1)
+        updateData['statistics.totalShared'] = db.command.inc(1)
       }
       
       await userDoc.update({
@@ -483,10 +483,10 @@ async function updateUserStats(userId, action) {
       // 用户不存在，创建新记录
       const newUser = {
         _id: userId,
-        stats: {
-          generatedCount: action === 'generated' ? 1 : 0,
-          savedCount: action === 'saved' ? 1 : 0,
-          sharedCount: action === 'shared' ? 1 : 0
+        statistics: {
+          totalGenerated: action === 'generated' ? 1 : 0,
+          totalSaved: action === 'saved' ? 1 : 0,
+          totalShared: action === 'shared' ? 1 : 0
         },
         preferences: {
           defaultStyle: 'literary',
