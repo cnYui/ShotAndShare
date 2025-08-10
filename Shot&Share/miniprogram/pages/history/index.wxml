@@ -64,7 +64,24 @@
       </view>
 
       <!-- 图片预览 -->
-      <view class="record-image" wx:if="{{item.imageUrl}}">
+      <view class="record-images" wx:if="{{item.imageUrls && item.imageUrls.length > 0}}">
+        <view class="images-container">
+          <image 
+            class="preview-image" 
+            src="{{imageUrl}}" 
+            mode="aspectFill"
+            lazy-load
+            wx:for="{{item.imageUrls}}"
+            wx:for-item="imageUrl"
+            wx:key="*this"
+          />
+          <view class="image-count" wx:if="{{item.imageUrls.length > 1}}">
+            <text>{{item.imageUrls.length}}张</text>
+          </view>
+        </view>
+      </view>
+      <!-- 兼容旧版本单图片 -->
+      <view class="record-image" wx:elif="{{item.imageUrl}}">
         <image 
           class="preview-image" 
           src="{{item.imageUrl}}" 

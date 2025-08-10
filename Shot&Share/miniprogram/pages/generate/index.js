@@ -242,6 +242,11 @@ Page({
       .then(imageUrls => {
         getApp().showLoading('正在生成文案...')
         
+        // 保存上传后的图片URL到data中
+        this.setData({
+          imageUrls: imageUrls
+        })
+        
         // 调用文案生成云函数
         return this.callGenerateFunction(imageUrls)
       })
@@ -489,7 +494,8 @@ Page({
       return wx.cloud.database().collection('copywriting_records').add({
       data: {
         userId: app.globalData.openid,
-        imageUrl: this.data.imageUrl,
+        imageUrl: this.data.imageUrls && this.data.imageUrls.length > 0 ? this.data.imageUrls[0] : '', // 兼容性：第一张图片作为主图
+        imageUrls: this.data.imageUrls || [], // 新增：保存所有图片URL
         description: this.data.description,
         style: this.data.selectedStyle,
         content: copywriting.content,

@@ -129,18 +129,46 @@ Page({
           const processedRecords = await Promise.all(res.data.map(async record => {
             record.formattedTime = this.formatTime(record.createdAt)
             
-            // 如果imageUrl是云存储fileId，转换为临时链接
-            if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
+            // 处理图片URL（支持多图片）
+            if (record.imageUrls && Array.isArray(record.imageUrls) && record.imageUrls.length > 0) {
+              // 新版本：处理多图片
+              try {
+                const cloudFileIds = record.imageUrls.filter(url => url && url.startsWith('cloud://'))
+                if (cloudFileIds.length > 0) {
+                  const tempUrlRes = await wx.cloud.getTempFileURL({
+                    fileList: cloudFileIds
+                  })
+                  if (tempUrlRes.fileList) {
+                    // 创建URL映射
+                    const urlMap = {}
+                    tempUrlRes.fileList.forEach(file => {
+                      if (file.tempFileURL) {
+                        urlMap[file.fileID] = file.tempFileURL
+                      }
+                    })
+                    // 替换云存储URL为临时URL
+                    record.imageUrls = record.imageUrls.map(url => urlMap[url] || url)
+                  }
+                }
+                // 设置主图为第一张图片（向后兼容）
+                record.imageUrl = record.imageUrls[0]
+              } catch (error) {
+                console.warn('获取多图片临时链接失败:', error)
+                record.imageUrl = record.imageUrls[0] // 使用原始URL
+              }
+            } else if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
+              // 兼容旧版本：单图片处理
               try {
                 const tempUrlRes = await wx.cloud.getTempFileURL({
                   fileList: [record.imageUrl]
                 })
                 if (tempUrlRes.fileList && tempUrlRes.fileList[0] && tempUrlRes.fileList[0].tempFileURL) {
                   record.imageUrl = tempUrlRes.fileList[0].tempFileURL
+                  record.imageUrls = [record.imageUrl] // 转换为数组格式
                 }
               } catch (error) {
                 console.warn('获取图片临时链接失败:', error)
-                // 保持原有的fileId，让小程序尝试直接显示
+                record.imageUrls = [record.imageUrl] // 保持原有格式
               }
             }
             
