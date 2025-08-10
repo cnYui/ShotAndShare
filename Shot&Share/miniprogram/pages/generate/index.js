@@ -413,6 +413,11 @@ Page({
    * 处理生成成功
    */
   handleGenerateSuccess: function(result) {
+    console.log('处理生成成功，完整结果:', JSON.stringify(result, null, 2))
+    console.log('result.data:', result.data)
+    console.log('result.data.copywritings:', result.data.copywritings)
+    console.log('copywritings数量:', result.data.copywritings ? result.data.copywritings.length : 0)
+    
     this.setData({
       generatedCopywriting: result.data.copywritings || [],
       showResult: true
@@ -498,9 +503,11 @@ Page({
         imageUrls: this.data.imageUrls || [], // 新增：保存所有图片URL
         description: this.data.description,
         style: this.data.selectedStyle,
+        styleName: this.data.styles.find(s => s.id === this.data.selectedStyle)?.name || '未知风格',
         content: copywriting.content,
         tags: copywriting.tags || [],
-        isFavorite: true,
+        saved: true,
+        shared: false,
         createdAt: new Date(),
         updatedAt: new Date()
       },

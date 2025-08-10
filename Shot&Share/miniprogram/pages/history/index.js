@@ -134,41 +134,119 @@ Page({
               // 新版本：处理多图片
               try {
                 const cloudFileIds = record.imageUrls.filter(url => url && url.startsWith('cloud://'))
+                console.log('需要获取临时URL的云存储文件:', cloudFileIds)
+                
                 if (cloudFileIds.length > 0) {
                   const tempUrlRes = await wx.cloud.getTempFileURL({
                     fileList: cloudFileIds
                   })
+                  
+                  console.log('获取临时URL结果:', tempUrlRes)
+                  
+                  // 检查云环境配置
+                  if (tempUrlRes.errMsg && tempUrlRes.errMsg.includes('cloud init')) {
+                    console.warn('云环境未正确配置')
+                    wx.showModal({
+                      title: '云环境配置提示',
+                      content: '云存储服务未正确配置，图片可能无法正常显示。请联系开发者处理。',
+                      showCancel: false
+                    })
+                    // 使用降级处理
+                    record.imageUrls = record.imageUrls.map(url => {
+                      if (url.startsWith('cloud://')) {
+                        return url.replace('cloud://', '')
+                      }
+                      return url
+                    })
+                    record.imageUrl = record.imageUrls[0]
+                    return record
+                  }
+                  
                   if (tempUrlRes.fileList) {
                     // 创建URL映射
                     const urlMap = {}
                     tempUrlRes.fileList.forEach(file => {
                       if (file.tempFileURL) {
                         urlMap[file.fileID] = file.tempFileURL
+                        console.log('成功获取临时URL:', file.fileID, '->', file.tempFileURL)
+                      } else {
+                        console.warn('获取临时URL失败:', file.fileID, file.errMsg)
+                        // 对于获取失败的文件，移除cloud://前缀尝试直接访问
+                        urlMap[file.fileID] = file.fileID.replace('cloud://', '')
                       }
                     })
                     // 替换云存储URL为临时URL
-                    record.imageUrls = record.imageUrls.map(url => urlMap[url] || url)
+                    record.imageUrls = record.imageUrls.map(url => {
+                      if (url.startsWith('cloud://')) {
+                        return urlMap[url] || url.replace('cloud://', '')
+                      }
+                      return url
+                    })
                   }
                 }
                 // 设置主图为第一张图片（向后兼容）
                 record.imageUrl = record.imageUrls[0]
               } catch (error) {
-                console.warn('获取多图片临时链接失败:', error)
-                record.imageUrl = record.imageUrls[0] // 使用原始URL
+                console.error('获取多图片临时链接失败:', error)
+                
+                // 检查是否是云环境配置问题
+                if (error.errMsg && (error.errMsg.includes('cloud init') || error.errMsg.includes('Environment not found'))) {
+                  console.warn('云环境配置错误:', error.errMsg)
+                  wx.showModal({
+                    title: '云环境配置错误',
+                    content: '云存储服务未正确配置，请检查 app.js 中的云环境ID设置。图片将尝试降级显示。',
+                    showCancel: false
+                  })
+                }
+                
+                // 降级处理：移除cloud://前缀
+                record.imageUrls = record.imageUrls.map(url => {
+                  if (url.startsWith('cloud://')) {
+                    return url.replace('cloud://', '')
+                  }
+                  return url
+                })
+                record.imageUrl = record.imageUrls[0]
               }
             } else if (record.imageUrl && record.imageUrl.startsWith('cloud://')) {
               // 兼容旧版本：单图片处理
               try {
+                console.log('获取单图片临时URL:', record.imageUrl)
                 const tempUrlRes = await wx.cloud.getTempFileURL({
                   fileList: [record.imageUrl]
                 })
-                if (tempUrlRes.fileList && tempUrlRes.fileList[0] && tempUrlRes.fileList[0].tempFileURL) {
-                  record.imageUrl = tempUrlRes.fileList[0].tempFileURL
-                  record.imageUrls = [record.imageUrl] // 转换为数组格式
+                
+                console.log('单图片临时URL结果:', tempUrlRes)
+                
+                if (tempUrlRes.fileList && tempUrlRes.fileList[0]) {
+                  const fileResult = tempUrlRes.fileList[0]
+                  if (fileResult.tempFileURL) {
+                    record.imageUrl = fileResult.tempFileURL
+                    record.imageUrls = [record.imageUrl] // 转换为数组格式
+                    console.log('成功获取单图片临时URL:', fileResult.tempFileURL)
+                  } else {
+                    console.warn('单图片临时URL获取失败:', fileResult.errMsg)
+                    // 降级处理
+                    record.imageUrl = record.imageUrl.replace('cloud://', '')
+                    record.imageUrls = [record.imageUrl]
+                  }
                 }
               } catch (error) {
-                console.warn('获取图片临时链接失败:', error)
-                record.imageUrls = [record.imageUrl] // 保持原有格式
+                console.error('获取图片临时链接失败:', error)
+                
+                // 检查是否是云环境配置问题
+                if (error.errMsg && (error.errMsg.includes('cloud init') || error.errMsg.includes('Environment not found'))) {
+                  console.warn('云环境配置错误:', error.errMsg)
+                  wx.showModal({
+                    title: '云环境配置错误',
+                    content: '云存储服务未正确配置，请检查 app.js 中的云环境ID设置。图片将尝试降级显示。',
+                    showCancel: false
+                  })
+                }
+                
+                // 降级处理：移除cloud://前缀
+                record.imageUrl = record.imageUrl.replace('cloud://', '')
+                record.imageUrls = [record.imageUrl]
               }
             }
             
@@ -398,9 +476,27 @@ Page({
    * 删除记录
    */
   deleteRecord: function(e) {
-    e.stopPropagation()
-    const { index } = e.currentTarget.dataset
+    // 防止事件冒泡
+    if (e && e.stopPropagation) {
+      e.stopPropagation()
+    }
+    
+    // 获取数据
+    const dataset = e && e.currentTarget && e.currentTarget.dataset
+    if (!dataset || dataset.index === undefined) {
+      console.error('无法获取记录索引')
+      getApp().showToast('操作失败，请重试')
+      return
+    }
+    
+    const index = dataset.index
     const record = this.data.records[index]
+    
+    if (!record) {
+      console.error('记录不存在')
+      getApp().showToast('记录不存在')
+      return
+    }
     
     wx.showModal({
       title: '确认删除',
